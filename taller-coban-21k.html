@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uphill Coaching — Taller Estrategia Cobán 21K</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=League+Spartan:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Norwester';
+    src: url('https://cdn.jsdelivr.net/gh/theleagueof/norwester-fontface@master/norwester.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  :root {
+    --navy: #16222E;
+    --navy-deep: #0d1620;
+    --navy-light: #1f2f3f;
+    --red: #FF0000;
+    --white: #FFFFFF;
+    --black: #000000;
+    --offwhite: #FAFAFA;
+    --gray: #8A8A8A;
+
+    --font-primary: 'Poppins', system-ui, sans-serif;
+    --font-secondary: 'League Spartan', sans-serif;
+    --font-impact: 'Norwester', 'League Spartan', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    font-family: var(--font-primary);
+    background: var(--navy);
+    color: var(--white);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+  .presentation {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+    display: flex;
+    flex-direction: column;
+    padding: 60px 80px;
+    overflow-y: auto;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+    z-index: 10;
+  }
+
+  /* Typography */
+  h1, h2, h3 {
+    font-family: var(--font-impact);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  h1 { font-size: clamp(54px, 11vw, 144px); line-height: 0.88; }
+  h2 { font-size: clamp(38px, 6vw, 76px); line-height: 0.95; margin-bottom: 24px; }
+  h3 { font-size: clamp(20px, 2.5vw, 32px); line-height: 1.1; }
+  p, li { font-size: clamp(14px, 1.2vw, 18px); line-height: 1.7; font-weight: 400; }
+  .eyebrow {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: clamp(11px, 1vw, 13px);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+  .accent-text {
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-size: clamp(11px, 1vw, 14px);
+  }
+
+  /* Layout helpers */
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-center { justify-content: center; }
+  .gap-20 { gap: 20px; }
+  .gap-40 { gap: 40px; }
+  .mt-20 { margin-top: 20px; }
+  .mt-40 { margin-top: 40px; }
+  .mb-20 { margin-bottom: 20px; }
+  .w-full { width: 100%; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+  /* Components */
+  .card {
+    background: var(--navy-light);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 28px;
+  }
+  .card-red {
+    background: var(--red);
+    color: var(--white);
+    padding: 24px;
+    border-radius: 4px;
+  }
+  .input-group {
+    margin-bottom: 16px;
+  }
+  .input-group label {
+    display: block;
+    font-family: var(--font-secondary);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    color: var(--gray);
+  }
+  .input-group input, .input-group select {
+    width: 100%;
+    background: var(--navy-deep);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--white);
+    padding: 12px 16px;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .input-group input:focus, .input-group select:focus {
+    border-color: var(--red);
+  }
+  .btn {
+    display: inline-block;
+    background: var(--red);
+    color: var(--white);
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: transform 0.2s, background 0.3s, color 0.3s;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    background: transparent;
+    color: var(--red);
+    box-shadow: inset 0 0 0 1px var(--red);
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--white);
+  }
+  .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+  /* Table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .data-table th {
+    background: var(--navy-deep);
+    font-family: var(--font-secondary);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--red);
+  }
+  .data-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .data-table tr:hover td {
+    background: rgba(255,255,255,0.03);
+  }
+
+  /* Navigation */
+  .nav-dots {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+  }
+  .nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .nav-dot.active {
+    background: var(--red);
+    transform: scale(1.4);
+  }
+  .nav-arrows {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    gap: 12px;
+    z-index: 100;
+  }
+  .nav-arrow {
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: transparent;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s;
+  }
+  .nav-arrow:hover {
+    background: var(--red);
+    border-color: var(--red);
+  }
+  .slide-counter {
+    position: fixed;
+    bottom: 40px;
+    left: 80px;
+    font-family: var(--font-secondary);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--gray);
+    z-index: 100;
+  }
+
+  /* Special slides */
+  .hero-slide {
+    justify-content: center;
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 100%);
+  }
+  .hero-slide h1 {
+    max-width: 900px;
+  }
+  .hero-slide .subtitle {
+    font-family: var(--font-primary);
+    font-weight: 300;
+    font-size: clamp(16px, 1.6vw, 20px);
+    max-width: 600px;
+    margin-top: 20px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.55;
+  }
+  .red-line {
+    width: 60px;
+    height: 3px;
+    background: var(--red);
+    margin: 24px 0;
+  }
+
+  /* Calculator results */
+  .result-box {
+    background: var(--navy-deep);
+    border-left: 3px solid var(--red);
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .result-value {
+    font-family: var(--font-impact);
+    font-size: 36px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .result-label {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+
+  /* Pacing table container */
+  .pacing-container {
+    max-height: 50vh;
+    overflow-y: auto;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+  }
+  .pacing-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  .pacing-container::-webkit-scrollbar-thumb {
+    background: var(--red);
+    border-radius: 3px;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .slide { padding: 40px 30px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .nav-dots { display: none; }
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+  .delay-1 { animation-delay: 0.1s; opacity: 0; }
+  .delay-2 { animation-delay: 0.2s; opacity: 0; }
+  .delay-3 { animation-delay: 0.3s; opacity: 0; }
+
+  /* Logo watermark */
+  .logo-watermark {
+    position: fixed;
+    top: 30px;
+    left: 80px;
+    z-index: 100;
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* Checkbox list */
+  .checklist {
+    list-style: none;
+  }
+  .checklist li {
+    padding: 10px 0;
+    padding-left: 32px;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+  }
+  .checklist li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 2px;
+  }
+  .checklist li.checked::before {
+    background: var(--red);
+    border-color: var(--red);
+  }
+  .checklist li.checked::after {
+    content: "✓";
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--white);
+  }
+
+  /* Display values in pacing summary */
+  .display-value {
+    font-family: var(--font-impact);
+    font-size: 32px;
+    line-height: 1;
+  }
+  .stat-number {
+    font-family: var(--font-impact);
+    font-size: 48px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .pacing-pace {
+    font-family: var(--font-impact);
+    font-size: 18px;
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-watermark">UPHILL COACHING</div>
+
+<div class="presentation" id="presentation">
+
+<!-- SLIDE 1: PORTADA -->
+<div class="slide hero-slide active" data-slide="0">
+  <div class="eyebrow">Taller de Estrategia de Carrera</div>
+  <h1 class="animate-in">CONQUISTA<br><span style="color: var(--red);">TU CIMA.</span></h1>
+  <div class="red-line animate-in delay-1"></div>
+  <p class="subtitle animate-in delay-2">
+    Media Maratón Cobán 21K. Estrategia, pacing, técnica y nutrición basada en tu umbral real.
+    Para quienes se toman el deporte en serio.
+  </p>
+  <div class="mt-40 animate-in delay-3">
+    <span class="accent-text" style="color: var(--gray);">UPHILL COACHING · GUATEMALA · MAYO 2026</span>
+  </div>
+</div>
+
+<!-- SLIDE 2: FUNDAMENTOS -->
+<div class="slide" data-slide="1">
+  <div class="eyebrow">01 — Fundamentos y Mentalidad</div>
+  <h2>LA CIMA NO ES UN DESTINO.<br>ES LA DECISIÓN DE SEGUIR.</h2>
+  <div class="grid-2 mt-40">
+    <div class="card animate-in">
+      <h3 style="color: var(--red); margin-bottom: 16px;">La lógica de Cobán</h3>
+      <p style="color: rgba(255,255,255,0.8);">
+        Altitud: ~1,300 msnm. Menor O₂ disponible. Tu FC sube 5-10 lpm por el mismo esfuerzo.
+        Humedad alta: sudás más de lo que sentís. La ruta tiene 274m de ascenso micrometrajeado:
+        no es plano, es ondulado constante. La fatiga viene del cambio de zancada, no de una colina.
+      </p>
+    </div>
+    <div class="card animate-in delay-1">
+      <h3 style="color: var(--red); margin-bottom: 16px;">Tu cima de hoy</h3>
+      <p style="color: rgba(255,255,255,0.8);">
+        Cada quien define su cima: ¿primer 21K? ¿PB? ¿Revalidar marca?
+        <strong>Disciplina sobre motivación.</strong> La carrera se corre con lo que entrenaste,
+        no con lo que sentís al despertar. Ajustá expectativas de ritmo ~3-5% vs. tu entrenamiento en bajura.
+      </p>
+    </div>
+  </div>
+  <div class="mt-40 animate-in delay-2">
+    <div class="card" style="border-left: 3px solid var(--red);">
+      <p style="font-style: italic; font-size: 18px;">
+        "El running es un deporte mental. Ante la adversidad, la capacidad de decidir cómo te vas a sentir
+        es lo que te lleva a cruzar la meta." — Gabriel Bianchi
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: TEST DE UMBRAL -->
+<div class="slide" data-slide="2">
+  <div class="eyebrow">02 — Test de Umbral 20 Minutos</div>
+  <h2>TU DATO REAL.<br><span style="color: var(--red);">SIN ESTO, CORRÉS A CIEGAS.</span></h2>
+
+  <div class="grid-2 mt-40">
+    <div class="animate-in">
+      <div class="card">
+        <h3 style="margin-bottom: 20px;">Ingresá tus datos del test</h3>
+        <div class="input-group">
+          <label>Distancia en 20 min (km)</label>
+          <input type="number" id="dist20" step="0.01" placeholder="Ej: 5.2">
+        </div>
+        <div class="input-group">
+          <label>FC promedio (bpm)</label>
+          <input type="number" id="fc20" placeholder="Ej: 165">
+        </div>
+        <div class="input-group">
+          <label>Peso corporal (kg)</label>
+          <input type="number" id="peso" placeholder="Ej: 70">
+        </div>
+        <button class="btn" onclick="calcularUmbral()">Calcular mi estrategia</button>
+      </div>
+
+      <div class="mt-20" style="font-size: 13px; color: var(--gray);">
+        <strong>Protocolo:</strong> 15 min calentamiento + 20 min máximo sostenible + 10 min enfriamiento.
+        Registrá FC promedio y distancia exacta. Realizar 48-72h antes de la carrera.
+      </div>
+    </div>
+
+    <div class="animate-in delay-1">
+      <div id="resultadosUmbral" style="display:none;">
+        <div class="result-box">
+          <div class="result-value" id="ritmoUmbral">—</div>
+          <div class="result-label">Ritmo Umbral (min/km)</div>
+        </div>
+        <div class="result-box">
+          <div class="result-value" id="fcUmbral">—</div>
+          <div class="result-label">FC Umbral (bpm)</div>
+        </div>
+        <div class="result-box">
+          <div class="result-value" id="ritmo21k">—</div>
+          <div class="result-label">Ritmo Objetivo 21K (+5% altitud)</div>
+        </div>
+        <div class="result-box">
+          <div class="result-value" id="tiempo21k">—</div>
+          <div class="result-label">Tiempo Estimado 21K</div>
+        </div>
+      </div>
+      <div id="placeholderUmbral" style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--gray);">
+        <p>Completá el test para ver tu estrategia</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: ESTRATEGIA DE PACING -->
+<div class="slide" data-slide="3">
+  <div class="eyebrow">03 — Estrategia de Pacing</div>
+  <h2>UN PASO A LA VEZ.<br><span style="color: var(--red);">CADA KM TIENE UN PROPÓSITO.</span></h2>
+
+  <div class="mt-20" style="display:flex; gap: 20px; margin-bottom: 20px;">
+    <div style="flex:1; background: var(--navy-light); padding: 16px; border-radius: 4px;">
+      <div style="font-family: var(--font-secondary); font-size:11px; color:var(--gray); letter-spacing:0.15em; text-transform:uppercase;">Ritmo Objetivo</div>
+      <div id="displayRitmoObj" class="display-value" style="color:var(--red);">—</div>
+    </div>
+    <div style="flex:1; background: var(--navy-light); padding: 16px; border-radius: 4px;">
+      <div style="font-family: var(--font-secondary); font-size:11px; color:var(--gray); letter-spacing:0.15em; text-transform:uppercase;">Tiempo Proyectado</div>
+      <div id="displayTiempoObj" class="display-value" style="color:var(--white);">—</div>
+    </div>
+    <div style="flex:1; background: var(--navy-light); padding: 16px; border-radius: 4px;">
+      <div style="font-family: var(--font-secondary); font-size:11px; color:var(--gray); letter-spacing:0.15em; text-transform:uppercase;">FC Umbral</div>
+      <div id="displayFCObj" class="display-value" style="color:var(--white);">—</div>
+    </div>
+  </div>
+
+  <div class="pacing-container animate-in">
+    <table class="data-table" id="pacingTable">
+      <thead>
+        <tr>
+          <th>Km</th>
+          <th>Fase</th>
+          <th>Ritmo Objetivo</th>
+          <th>FC Estimada</th>
+          <th>Estrategia de Tramo</th>
+        </tr>
+      </thead>
+      <tbody id="pacingBody">
+        <!-- JS llenará esto -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SLIDE 5: ANÁLISIS DE RUTA -->
+<div class="slide" data-slide="4">
+  <div class="eyebrow">04 — Análisis de Ruta</div>
+  <h2>COBÁN 21K.<br><span style="color: var(--red);">DATOS REALES. CERO ILUSIONES.</span></h2>
+
+  <div class="grid-4 mt-40">
+    <div class="card animate-in" style="text-align:center;">
+      <div class="stat-number">21.11</div>
+      <div class="accent-text" style="color:var(--gray);">km</div>
+    </div>
+    <div class="card animate-in delay-1" style="text-align:center;">
+      <div class="stat-number">274</div>
+      <div class="accent-text" style="color:var(--gray);">m ascenso</div>
+    </div>
+    <div class="card animate-in delay-2" style="text-align:center;">
+      <div class="stat-number">1,300</div>
+      <div class="accent-text" style="color:var(--gray);">msnm altitud</div>
+    </div>
+    <div class="card animate-in delay-3" style="text-align:center;">
+      <div class="stat-number">7:00</div>
+      <div class="accent-text" style="color:var(--gray);">AM salida</div>
+    </div>
+  </div>
+
+  <div class="grid-2 mt-40">
+    <div class="card animate-in">
+      <h3 style="color: var(--red); margin-bottom: 16px;">El peligro del falso plano</h3>
+      <p style="color: rgba(255,255,255,0.8);">
+        274m de ascenso micrometrajeado significa que tu zancada cambia constantemente.
+        Cada cambio gasta más energía que mantener cadencia estable.
+        <strong>La táctica:</strong> cadencia 170-180 spm, zancada corta en subidas,
+        no acelerar en bajadas. Dejá que la gravedad haga su trabajo.
+      </p>
+    </div>
+    <div class="card animate-in delay-1">
+      <h3 style="color: var(--red); margin-bottom: 16px;">La altitud miente</h3>
+      <p style="color: rgba(255,255,255,0.8);">
+        A 1,300m tu cuerpo trabaja más por la misma sensación. La FC sube 5-10 lpm
+        vs. entrenos en bajura. <strong>No comparés sensaciones.</strong> Compará datos.
+        Si tu umbral es X en la ciudad, en Cobán operá al 95-97% de ese valor.
+      </p>
+    </div>
+  </div>
+
+  <div class="mt-40 animate-in delay-2">
+    <div class="card" style="border-left: 3px solid var(--red);">
+      <p style="font-size: 16px;">
+        <strong>Perfil real de la ruta:</strong> Ondulación constante. Ida hacia San Pedro Carchá
+        con microsubidas sostenidas. Retorno por Calzada Romeo Lucas García.
+        Giro de 180° en km ~15: cambio de carga muscular. Acortá zancada 3-4 segundos, reencontrá ritmo.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: NUTRICIÓN POR PILARES -->
+<div class="slide" data-slide="5">
+  <div class="eyebrow">05 — Nutrición por Pilares</div>
+  <h2>NO TE DIGO QUÉ COMER.<br><span style="color: var(--red);">TE ENSEÑO POR QUÉ.</span></h2>
+
+  <div class="grid-2 mt-40">
+    <div class="card animate-in">
+      <div class="eyebrow">Pilar 1</div>
+      <h3 style="margin-bottom: 12px;">EL DEPÓSITO DE CARBOHIDRATOS</h3>
+      <p style="color: rgba(255,255,255,0.8); font-size: 14px;">
+        <strong>La lógica:</strong> Tus músculos almacenan glucógeno, combustible de alta octanaje para ritmos de competencia.<br><br>
+        <strong>La raíz:</strong> A intensidades de 21K quemás principalmente glucógeno. Cuando el depósito baja, el ritmo se derrumba. No es falta de fuerza: es falta de combustible.<br><br>
+        <strong>La aplicación:</strong> Llená el tanque sin sobrecargar el sistema digestivo. Comés para llenar un depósito, no para sentirte lleno.
+      </p>
+    </div>
+    <div class="card animate-in delay-1">
+      <div class="eyebrow">Pilar 2</div>
+      <h3 style="margin-bottom: 12px;">HIDRATACIÓN COMO VOLUMEN SANGUÍNEO</h3>
+      <p style="color: rgba(255,255,255,0.8); font-size: 14px;">
+        <strong>La lógica:</strong> Tu sangre transporta oxígeno. Está hecha de agua. Si estás deshidratado, la sangre se espesa y el corazón bombea más veces.<br><br>
+        <strong>La raíz:</strong> En Cobán la humedad es alta. Sudás más de lo que sentís. A 1,300m esto se suma a menor O₂.<br><br>
+        <strong>La aplicación:</strong> Mantené volumen sanguíneo estable 48h antes. No esperés al día de la carrera.
+      </p>
+    </div>
+    <div class="card animate-in delay-2">
+      <div class="eyebrow">Pilar 3</div>
+      <h3 style="margin-bottom: 12px;">EL ESTÓMAGO EN CARRERA</h3>
+      <p style="color: rgba(255,255,255,0.8); font-size: 14px;">
+        <strong>La lógica:</strong> Al correr, la sangre se desvía del estómago a los músculos. Tu digestión trabaja al 30-40%.<br><br>
+        <strong>La raíz:</strong> Si metés algo de difícil digestión durante la carrera, o no se absorbe o le robás sangre a los músculos.<br><br>
+        <strong>La aplicación:</strong> Durante el 21K, consumí solo lo de rápida absorción y en concentraciones que el estómago en movimiento pueda procesar.
+      </p>
+    </div>
+    <div class="card animate-in delay-3">
+      <div class="eyebrow">Pilar 4</div>
+      <h3 style="margin-bottom: 12px;">RECUPERACIÓN COMO CONTINUACIÓN</h3>
+      <p style="color: rgba(255,255,255,0.8); font-size: 14px;">
+        <strong>La lógica:</strong> Post-esfuerzo, tus músculos tienen ventanas de absorción eficiente para repararse.<br><br>
+        <strong>La raíz:</strong> Si no reponés lo gastado, la recuperación se alarga y la adaptación se pierde. Correr 21K y no nutrirse después es como entrenar y no dormir.<br><br>
+        <strong>La aplicación:</strong> Reponé glucógeno + material de reparación + líquidos dentro de la primera hora.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: TÉCNICA APLICADA -->
+<div class="slide" data-slide="6">
+  <div class="eyebrow">06 — Técnica Aplicada</div>
+  <h2>TÉCNICA SOBRE VELOCIDAD.<br><span style="color: var(--red);">LA DISCIPLINA ES MECÁNICA.</span></h2>
+
+  <div class="grid-3 mt-40">
+    <div class="card animate-in">
+      <h3 style="color: var(--red); margin-bottom: 16px;">01. Cadencia y Zancada</h3>
+      <p style="color: rgba(255,255,255,0.8); font-size: 14px;">
+        En ondulación constante, cada cambio de zancada gasta energía.
+        <strong>Cadencia objetivo: 170-180 spm.</strong><br><br>
+        En microsubidas: mantené paso corto y frecuencia. No aumentés zancada.<br>
+        En microbajadas: no acelerés. Dejá que la gravedad trabaje.
+      </p>
+    </div>
+    <div class="card animate-in delay-1">
+      <h3 style="color: var(--red); margin-bottom: 16px;">02. Postura y Tensión</h3>
+      <p style="color: rgba(255,255,255,0.8); font-size: 14px;">
+        A partir del km 14 la técnica se degrada. Checkpoints cada 500m:<br><br>
+        <strong>Hombros:</strong> ¿Subidos? Bajalos. Relajá mandíbula.<br>
+        <strong>Mirada:</strong> 15-20m adelante. El que mira el piso corre más lento.<br>
+        <strong>Brazada:</strong> Cruzar el cuerpo = fatiga central. Corregí con conciencia.
+      </p>
+    </div>
+    <div class="card animate-in delay-2">
+      <h3 style="color: var(--red); margin-bottom: 16px;">03. Respiración en Altitud</h3>
+      <p style="color: rgba(255,255,255,0.8); font-size: 14px;">
+        Ritmo 2:2 (inhala 2 pasos, exhala 2) hasta el km 15.<br><br>
+        Si sentís "falta de aire", pasá a 2:1 (exhala más largo) para evacuar CO₂.<br><br>
+        No panic: la sensación de falta de aire en Cobán es normal los primeros 10 min.
+        Tu cuerpo ajusta.
+      </p>
+    </div>
+  </div>
+
+  <div class="mt-40 animate-in delay-3">
+    <div class="card" style="background: var(--red);">
+      <p style="font-size: 18px; font-weight: 600;">
+        "La técnica no es para verse bien. Es para gastar menos energía por cada kilómetro.
+        En el km 18, la técnica es lo único que te queda."
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: CHECKLIST Y CIERRE -->
+<div class="slide" data-slide="7">
+  <div class="eyebrow">07 — Checklist y Cierre</div>
+  <h2>EJECUTÁ LO QUE ENTRENASTE.<br><span style="color: var(--red);">NADA MÁS.</span></h2>
+
+  <div class="grid-2 mt-40">
+    <div class="animate-in">
+      <h3 style="margin-bottom: 20px; font-size: 24px;">72h ANTES</h3>
+      <ul class="checklist">
+        <li>Último entreno fuerte completado</li>
+        <li>Estrategia de llenado de depósitos iniciada</li>
+        <li>Ropa, zapatillas, combustible de carrera, número listos</li>
+      </ul>
+
+      <h3 style="margin: 30px 0 20px; font-size: 24px;">24h ANTES</h3>
+      <ul class="checklist">
+        <li>Hidratación activa en curso</li>
+        <li>Ruta al estadio verificada</li>
+        <li>Última comida pre-carrera planificada (familiar, alta en carbos disponibles)</li>
+      </ul>
+    </div>
+    <div class="animate-in delay-1">
+      <h3 style="margin-bottom: 20px; font-size: 24px;">DÍA DE CARRERA</h3>
+      <ul class="checklist">
+        <li>Despertador con 3h de margen para la última comida</li>
+        <li>Llegada 60 min antes</li>
+        <li>Calentamiento: 10 min trote + 3 x 30" progresivos + movilidad</li>
+        <li>Recordá: "Un paso a la vez. La cima de hoy es cruzar esa línea con la cabeza alta."</li>
+      </ul>
+
+      <div class="mt-40" style="padding: 24px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px;">
+        <div class="eyebrow">Tu plan de carrera</div>
+        <p style="font-size: 14px; color: rgba(255,255,255,0.7);">
+          Ritmo objetivo: <strong id="checkRitmo" style="color:var(--red);">—</strong><br>
+          FC umbral: <strong id="checkFC">—</strong><br>
+          Tiempo proyectado: <strong id="checkTiempo" style="color:var(--red);">—</strong><br>
+          Estrategia: <strong>Disciplina sobre motivación.</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-40 animate-in delay-2" style="text-align: center;">
+    <h1 style="font-size: clamp(36px, 5vw, 72px);">CONQUISTA <span style="color: var(--red);">TU CIMA.</span></h1>
+    <p class="accent-text" style="margin-top: 16px; color: var(--gray);">UPHILL COACHING · MAYO 2026</p>
+  </div>
+</div>
+
+</div><!-- end presentation -->
+
+<!-- Navigation -->
+<div class="nav-dots" id="navDots"></div>
+<div class="nav-arrows">
+  <div class="nav-arrow" onclick="prevSlide()">←</div>
+  <div class="nav-arrow" onclick="nextSlide()">→</div>
+</div>
+<div class="slide-counter" id="slideCounter">01 / 08</div>
+
+<script>
+// ===================== SLIDES =====================
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+
+function updateSlides() {
+  slides.forEach((s, i) => {
+    s.classList.toggle('active', i === currentSlide);
+  });
+  document.getElementById('slideCounter').textContent =
+    String(currentSlide + 1).padStart(2, '0') + ' / ' + String(totalSlides).padStart(2, '0');
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === currentSlide);
+  });
+}
+
+function nextSlide() {
+  if (currentSlide < totalSlides - 1) { currentSlide++; updateSlides(); }
+}
+function prevSlide() {
+  if (currentSlide > 0) { currentSlide--; updateSlides(); }
+}
+
+// Create dots
+const dotsContainer = document.getElementById('navDots');
+for (let i = 0; i < totalSlides; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => { currentSlide = i; updateSlides(); };
+  dotsContainer.appendChild(dot);
+}
+
+// Keyboard nav
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+// ===================== CALCULADORA UMBRAL =====================
+function calcularUmbral() {
+  const dist = parseFloat(document.getElementById('dist20').value);
+  const fc = parseFloat(document.getElementById('fc20').value);
+  const peso = parseFloat(document.getElementById('peso').value);
+
+  if (!dist || !fc) {
+    alert('Completá al menos distancia y FC promedio');
+    return;
+  }
+
+  // Ritmo umbral en min/km
+  const ritmoMin = 20 / dist; // minutos por km
+  const ritmoMinInt = Math.floor(ritmoMin);
+  const ritmoSec = Math.round((ritmoMin - ritmoMinInt) * 60);
+  const ritmoStr = ritmoMinInt + ':' + String(ritmoSec).padStart(2, '0');
+
+  // Ritmo 21K con ajuste +5% por altitud/duración
+  const ritmo21 = ritmoMin * 1.05;
+  const r21Min = Math.floor(ritmo21);
+  const r21Sec = Math.round((ritmo21 - r21Min) * 60);
+  const ritmo21Str = r21Min + ':' + String(r21Sec).padStart(2, '0');
+
+  // Tiempo estimado 21K
+  const tiempoTotalMin = ritmo21 * 21.1;
+  const tiempoH = Math.floor(tiempoTotalMin / 60);
+  const tiempoM = Math.floor(tiempoTotalMin % 60);
+  const tiempoS = Math.round((tiempoTotalMin - Math.floor(tiempoTotalMin)) * 60);
+  const tiempoStr = tiempoH + ':' + String(tiempoM).padStart(2, '0') + ':' + String(tiempoS).padStart(2, '0');
+
+  // Mostrar resultados
+  document.getElementById('ritmoUmbral').textContent = ritmoStr;
+  document.getElementById('fcUmbral').textContent = Math.round(fc) + ' bpm';
+  document.getElementById('ritmo21k').textContent = ritmo21Str;
+  document.getElementById('tiempo21k').textContent = tiempoStr;
+
+  document.getElementById('resultadosUmbral').style.display = 'block';
+  document.getElementById('placeholderUmbral').style.display = 'none';
+
+  // Actualizar displays en slide de pacing
+  document.getElementById('displayRitmoObj').textContent = ritmo21Str;
+  document.getElementById('displayTiempoObj').textContent = tiempoStr;
+  document.getElementById('displayFCObj').textContent = Math.round(fc) + ' bpm';
+
+  // Actualizar checklist
+  document.getElementById('checkRitmo').textContent = ritmo21Str;
+  document.getElementById('checkFC').textContent = Math.round(fc) + ' bpm';
+  document.getElementById('checkTiempo').textContent = tiempoStr;
+
+  // Generar tabla de pacing
+  generarTablaPacing(ritmo21, fc);
+}
+
+function generarTablaPacing(ritmoMin, fcUmbral) {
+  const tbody = document.getElementById('pacingBody');
+  tbody.innerHTML = '';
+
+  const fases = [
+    { hasta: 2, nombre: 'ALINEACIÓN', color: '#E8F4FD' },
+    { hasta: 10, nombre: 'ANCLAJE', color: '#D4EDDA' },
+    { hasta: 14, nombre: 'PUNTO MUERTO', color: '#FFF3CD' },
+    { hasta: 18, nombre: 'ENCENDIDO', color: '#FFE5CC' },
+    { hasta: 21.1, nombre: 'CIMA', color: '#F8D7DA' }
+  ];
+
+  const estrategias = {
+    1: "5-10s más lento. Calentamiento activo. Control total.",
+    2: "Buscar ritmo. No te dejes llevar por el grupo.",
+    3: "Primera ondulación. Cadencia estable, zancada corta.",
+    4: "Ritmo objetivo estricto. Resistí acelerar en bajadas.",
+    5: "Falso plano. La tentación es acelerar. Disciplina.",
+    6: "Evaluá: ¿podés mantener conversación corta?",
+    7: "Micrometrajeado constante. No cambies zancada.",
+    8: "Acercándote al giro. Mentalidad: mitad de ida.",
+    9: "Último km de ida. Sostené. No adelantes nada.",
+    10: "Giro. Evaluación honesta. ¿Vas bien o te fuiste?",
+    11: "Mitad de la verdad. Acá se define la carrera.",
+    12: "El desierto. El cuerpo pregunta '¿por qué?'. Disciplina.",
+    13: "Sostené. No busques excusas en la ondulación.",
+    14: "Último km del desierto. Aguanta.",
+    15: "Giro 180°. Cambio de carga. Acortá 3-4 segundos.",
+    16: "Reencontrá ritmo. Técnica sobre velocidad.",
+    17: "Si el plan va bien, acá podés empezar a presionar.",
+    18: "Entrega progresiva. Mirada adelante, hombros abajo.",
+    19: "Empezá a vaciar el tanque. Todo lo que entrenaste.",
+    20: "No acelerés hasta ver la línea. Control final.",
+    21: "Último 100m. Entregá todo. Cruzá con la cabeza alta."
+  };
+
+  for (let km = 1; km <= 21; km++) {
+    const fase = fases.find(f => km <= f.hasta);
+
+    // FC estimada por fase
+    let fcPct = 0.82;
+    if (km <= 2) fcPct = 0.82;
+    else if (km <= 5) fcPct = 0.88;
+    else if (km <= 10) fcPct = 0.92;
+    else if (km <= 15) fcPct = 0.95;
+    else if (km <= 18) fcPct = 0.97;
+    else fcPct = 1.00;
+
+    const fcEst = Math.round(fcUmbral * fcPct);
+
+    const rMin = Math.floor(ritmoMin);
+    const rSec = Math.round((ritmoMin - rMin) * 60);
+    const ritmoStr = rMin + ':' + String(rSec).padStart(2, '0');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:600;">${km}</td>
+      <td><span style="display:inline-block; padding:4px 10px; border-radius:2px; font-size:11px; font-family:'League Spartan'; letter-spacing:0.1em; background:${fase.color}; color:#16222E;">${fase.nombre}</span></td>
+      <td class="pacing-pace">${ritmoStr}</td>
+      <td>${fcEst} bpm</td>
+      <td style="font-size:13px; color:rgba(255,255,255,0.7);">${estrategias[km] || ''}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  // Fila meta
+  const trMeta = document.createElement('tr');
+  trMeta.style.background = 'rgba(255,0,0,0.1)';
+  trMeta.innerHTML = `
+    <td style="font-weight:600;">21.1</td>
+    <td><span style="display:inline-block; padding:4px 10px; border-radius:2px; font-size:11px; font-family:'League Spartan'; letter-spacing:0.1em; background:#F8D7DA; color:#16222E;">META</span></td>
+    <td class="pacing-pace" style="color:var(--red);">${Math.floor(ritmoMin) + ':' + String(Math.round((ritmoMin - Math.floor(ritmoMin)) * 60)).padStart(2, '0')}</td>
+    <td>—</td>
+    <td style="font-size:13px; color:var(--red); font-weight:600;">Conquistaste tu cima.</td>
+  `;
+  tbody.appendChild(trMeta);
+}
+
+// Checklist interactivity
+document.querySelectorAll('.checklist li').forEach(li => {
+  li.addEventListener('click', () => {
+    li.classList.toggle('checked');
+  });
+});
+</script>
+
+</body>
+</html>
