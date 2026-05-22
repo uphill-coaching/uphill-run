@@ -1,9 +1,10 @@
 // Uphill Taller — Service Worker
 // Versioned cache. Bump CACHE_VERSION to force clients to refetch.
-const CACHE_VERSION = 'uphill-taller-v1';
+const CACHE_VERSION = 'uphill-taller-v2';
 
 const PRECACHE_URLS = [
   './taller-coban-21k.html',
+  './estrategia.html',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

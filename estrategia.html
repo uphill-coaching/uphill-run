@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Uphill — Estrategia de Carrera Personalizada</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16222E">
+<meta name="description" content="Generador de estrategia de carrera personalizada de Uphill Coaching. Ingresá tu threshold y PRs, recibí tu plan ajustado a la ruta.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Uphill Estrategia">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="shortcut icon" href="icons/favicon.ico">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=League+Spartan:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  @font-face {
+    font-family: 'Norwester';
+    src: url('https://cdn.jsdelivr.net/gh/theleagueof/norwester-fontface@master/norwester.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --navy: #16222E;
+    --navy-deep: #0d1620;
+    --navy-light: #1f2f3f;
+    --red: #FF0000;
+    --white: #FFFFFF;
+    --black: #000000;
+    --gray: #8A8A8A;
+    --gray-light: #C5C5C5;
+    --border: rgba(255,255,255,0.08);
+    --font-primary: 'Poppins', system-ui, sans-serif;
+    --font-secondary: 'League Spartan', sans-serif;
+    --font-impact: 'Norwester', 'League Spartan', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    font-family: var(--font-primary);
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Typography */
+  h1, h2, h3, h4 { font-family: var(--font-impact); text-transform: uppercase; letter-spacing: 0.02em; }
+  h1 { font-size: clamp(40px, 7vw, 84px); line-height: 0.92; }
+  h2 { font-size: clamp(28px, 4vw, 48px); line-height: 0.95; }
+  h3 { font-size: clamp(20px, 2.4vw, 28px); line-height: 1.1; }
+  h4 { font-size: clamp(16px, 1.6vw, 20px); line-height: 1.2; }
+  p, li, label, input, select, textarea, button { font-family: var(--font-primary); }
+  .eyebrow {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 12px;
+  }
+  .accent {
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+
+  /* App shell */
+  .app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: max(40px, env(safe-area-inset-top, 0px) + 24px) clamp(20px, 4vw, 60px) 80px;
+  }
+  .app-header {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .app-header h1 { margin: 18px 0 14px; }
+  .app-header .subtitle {
+    font-weight: 300;
+    font-size: clamp(16px, 1.6vw, 19px);
+    color: rgba(255,255,255,0.7);
+    line-height: 1.55;
+    max-width: 720px;
+  }
+
+  /* Race selector */
+  .race-bar {
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .race-bar select {
+    flex: 1;
+    min-width: 200px;
+    max-width: 400px;
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 12px 16px;
+    font-family: var(--font-primary);
+    font-size: 14px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .race-bar select:focus { outline: 1px solid var(--red); }
+  .btn-tertiary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 12px 18px;
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn-tertiary:hover { border-color: var(--red); color: var(--red); }
+
+  /* Form sections */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .form-section.full-width { grid-column: 1 / -1; }
+  .form-section {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+  }
+  .form-section .section-num {
+    font-family: var(--font-impact);
+    font-size: 13px;
+    color: var(--red);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .form-section h3 { margin-bottom: 8px; }
+  .form-section .hint {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .input-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .input-row.single { grid-template-columns: 1fr; }
+  .input-row.triple { grid-template-columns: repeat(3, 1fr); }
+  .input-group { display: flex; flex-direction: column; }
+  .input-group label {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 6px;
+  }
+  .input-group input,
+  .input-group select,
+  .input-group textarea {
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 12px 14px;
+    font-family: var(--font-primary);
+    font-size: 15px;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-group input:focus,
+  .input-group select:focus,
+  .input-group textarea:focus { border-color: var(--red); }
+  .input-group textarea { resize: vertical; min-height: 80px; }
+  .input-group .micro {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+
+  /* Pacing time inputs (mm:ss) */
+  .pace-input { font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+
+  /* CTA */
+  .generate-cta {
+    text-align: center;
+    padding: 40px 0;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 18px 48px;
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--red);
+    color: var(--red);
+    transform: translateY(-2px);
+  }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .generate-cta .hint {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 14px;
+  }
+
+  /* Strategy output */
+  .strategy {
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .strategy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .strategy-header h2 { margin-bottom: 8px; }
+  .strategy-header .race-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.04em;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .summary-card {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    padding: 22px;
+    border-radius: 4px;
+  }
+  .summary-card.feature { border-left: 3px solid var(--red); }
+  .summary-card .label {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 10px;
+  }
+  .summary-card .value {
+    font-family: var(--font-impact);
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1;
+    color: var(--red);
+  }
+  .summary-card .sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 6px;
+  }
+
+  /* Strategy panels */
+  .panel {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .panel-head .eyebrow { margin-bottom: 4px; }
+  .panel-head h3 { color: var(--white); }
+  .panel-head .right-note {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* Pacing table */
+  .pacing-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .pacing-table th {
+    background: var(--navy-deep);
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 2px solid var(--red);
+  }
+  .pacing-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pacing-table td.pace { font-family: var(--font-impact); font-size: 18px; }
+  .phase-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--navy-deep);
+    color: var(--gray-light);
+  }
+  .phase-pill[data-phase="ALINEACIÓN"], .phase-pill[data-phase="PACIENCIA"], .phase-pill[data-phase="CALENTAR"]
+  { background: #1E3A8A33; color: #93C5FD; }
+  .phase-pill[data-phase="ANCLAJE"], .phase-pill[data-phase="RITMO"]
+  { background: #16653433; color: #86EFAC; }
+  .phase-pill[data-phase="PUNTO MUERTO"], .phase-pill[data-phase="CONCENTRACIÓN"]
+  { background: #92400E33; color: #FCD34D; }
+  .phase-pill[data-phase="ENCENDIDO"], .phase-pill[data-phase="EMPUJÁ"], .phase-pill[data-phase="EL MURO"]
+  { background: #9A341233; color: #FDBA74; }
+  .phase-pill[data-phase="CIMA"]
+  { background: #B91C1C33; color: #FCA5A5; }
+
+  /* Nutrition grid */
+  .nutr-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .nutr-stat {
+    background: var(--navy-deep);
+    padding: 18px;
+    border-radius: 4px;
+    border-left: 2px solid var(--red);
+  }
+  .nutr-stat .lbl {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .nutr-stat .val {
+    font-family: var(--font-impact);
+    font-size: 28px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .nutr-stat .unit {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 4px;
+  }
+  .timeline {
+    list-style: none;
+    padding: 0;
+  }
+  .timeline li {
+    padding: 12px 0 12px 32px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .timeline li::before {
+    content: "▸";
+    color: var(--red);
+    position: absolute;
+    left: 8px;
+    top: 12px;
+  }
+  .timeline li strong { color: var(--white); }
+
+  /* Checklist */
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .checklist-col h4 { margin-bottom: 14px; font-size: 18px; }
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+  .checklist li {
+    padding: 10px 0 10px 30px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .checklist li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 13px;
+    width: 16px;
+    height: 16px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 2px;
+  }
+  .checklist li.checked { color: rgba(255,255,255,0.45); text-decoration: line-through; }
+  .checklist li.checked::before {
+    background: var(--red);
+    border-color: var(--red);
+  }
+  .checklist li.checked::after {
+    content: "✓";
+    position: absolute;
+    left: 3px;
+    top: 8px;
+    font-size: 11px;
+    color: var(--white);
+  }
+
+  /* Escenarios ABC */
+  .scenarios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .scenario {
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--gray);
+    border-radius: 4px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .scenario[data-tier="A"] { border-top-color: #86EFAC; }
+  .scenario[data-tier="B"] { border-top-color: var(--red); }
+  .scenario[data-tier="C"] { border-top-color: #FDBA74; }
+  .scenario .tier {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .scenario .tier-letter {
+    font-family: var(--font-impact);
+    font-size: 42px;
+    line-height: 1;
+  }
+  .scenario[data-tier="A"] .tier-letter { color: #86EFAC; }
+  .scenario[data-tier="B"] .tier-letter { color: var(--red); }
+  .scenario[data-tier="C"] .tier-letter { color: #FDBA74; }
+  .scenario .tier-label {
+    font-family: var(--font-secondary);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+  .scenario h4 {
+    font-size: 17px;
+    line-height: 1.15;
+  }
+  .scenario .scenario-stats {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .scenario .scenario-stat { flex: 1; }
+  .scenario .scenario-stat .lbl {
+    font-family: var(--font-secondary);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 4px;
+  }
+  .scenario .scenario-stat .val {
+    font-family: var(--font-impact);
+    font-size: 20px;
+    color: var(--white);
+  }
+  .scenario .block .block-title {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+  .scenario .block p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.55;
+  }
+
+  /* Notes panel */
+  .notes-display {
+    background: var(--navy-deep);
+    padding: 18px 22px;
+    border-left: 3px solid var(--red);
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.85);
+    white-space: pre-wrap;
+  }
+  .notes-display em { color: var(--gray); font-style: italic; }
+
+  /* Logo watermark + badge */
+  .logo-watermark {
+    position: fixed;
+    top: 24px;
+    left: clamp(20px, 4vw, 60px);
+    z-index: 100;
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.3);
+  }
+  .storage-badge {
+    position: fixed;
+    top: 24px;
+    right: clamp(20px, 4vw, 60px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+  .storage-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    opacity: 0;
+  }
+  .storage-badge.saved .dot { opacity: 1; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 80px 24px;
+    color: rgba(255,255,255,0.4);
+    font-size: 14px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: var(--red);
+    color: var(--white);
+    padding: 14px 24px;
+    border-radius: 2px;
+    font-family: var(--font-secondary);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    z-index: 200;
+    transition: transform 0.4s ease;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .form-grid { grid-template-columns: 1fr; gap: 16px; }
+    .input-row, .input-row.triple { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    .nutr-stats { grid-template-columns: 1fr; }
+    .checklist-grid { grid-template-columns: 1fr; gap: 16px; }
+    .scenarios-grid { grid-template-columns: 1fr; gap: 14px; }
+    .logo-watermark { display: none; }
+    .app { padding-top: 64px; }
+    .form-section, .panel { padding: 20px; }
+    .strategy-header { flex-direction: column; align-items: flex-start; }
+    .pacing-table { font-size: 13px; }
+    .pacing-table th, .pacing-table td { padding: 10px 6px; }
+    .pacing-table td:nth-child(5) { font-size: 12px; }
+  }
+  @media (max-width: 540px) {
+    .summary-grid { grid-template-columns: 1fr; }
+    h1 { font-size: clamp(36px, 12vw, 56px); }
+  }
+
+  /* ========== PRINT STYLES (PDF) ========== */
+  @media print {
+    @page { size: A4; margin: 16mm 14mm; }
+    html, body {
+      background: #fff !important;
+      color: #16222E !important;
+      font-size: 11pt;
+    }
+    .logo-watermark, .storage-badge, .race-bar,
+    .form-grid, .generate-cta, .btn-primary,
+    .strategy-header .btn-tertiary,
+    .toast {
+      display: none !important;
+    }
+    .app, .app-header {
+      max-width: none;
+      padding: 0;
+      border: none;
+    }
+    .app-header { margin-bottom: 18mm; padding: 0; }
+    .app-header h1 {
+      color: #16222E !important;
+      font-size: 34pt;
+      line-height: 0.95;
+    }
+    .app-header h1 .red, .app-header h1 span[style*="--red"] { color: #FF0000 !important; }
+    .app-header .subtitle { color: #555 !important; font-size: 11pt; }
+    .strategy {
+      border-top: none;
+      padding-top: 0;
+    }
+    .strategy-header h2 {
+      color: #16222E !important;
+      font-size: 22pt;
+    }
+    .strategy-header .race-meta { color: #555 !important; }
+    .panel {
+      background: #fff !important;
+      border: 1px solid #d4d4d4 !important;
+      color: #16222E !important;
+      padding: 14pt;
+      margin-bottom: 12pt;
+      page-break-inside: avoid;
+    }
+    .panel h3, .panel-head h3 { color: #16222E !important; }
+    .panel-head .right-note { color: #777 !important; }
+    .eyebrow { color: #FF0000 !important; }
+    .summary-grid { gap: 8pt; margin-bottom: 14pt; }
+    .summary-card {
+      background: #f5f5f5 !important;
+      border: 1px solid #d4d4d4 !important;
+      color: #16222E !important;
+      padding: 10pt;
+    }
+    .summary-card .label { color: #555 !important; }
+    .summary-card .value { color: #FF0000 !important; font-size: 22pt; }
+    .summary-card .sub { color: #777 !important; }
+    .nutr-stat {
+      background: #f5f5f5 !important;
+      color: #16222E !important;
+      border-left: 2pt solid #FF0000 !important;
+    }
+    .nutr-stat .lbl { color: #555 !important; }
+    .nutr-stat .val { color: #FF0000 !important; font-size: 18pt; }
+    .nutr-stat .unit { color: #777 !important; }
+    .pacing-table { font-size: 9pt; }
+    .pacing-table th {
+      background: #f0f0f0 !important;
+      color: #16222E !important;
+      border-bottom: 1.5pt solid #FF0000 !important;
+    }
+    .pacing-table td {
+      border-bottom: 0.5pt solid #ddd !important;
+      color: #16222E !important;
+    }
+    .pacing-table td.pace { font-size: 13pt; color: #16222E !important; }
+    .phase-pill { background: #f0f0f0 !important; color: #16222E !important; }
+    .checklist li {
+      color: #16222E !important;
+      border-bottom: 0.5pt solid #ddd !important;
+      cursor: default;
+    }
+    .checklist li::before {
+      border: 1pt solid #555 !important;
+      background: #fff !important;
+    }
+    .checklist li.checked { color: #777 !important; }
+    .checklist li.checked::before { background: #FF0000 !important; border-color: #FF0000 !important; }
+    .scenarios-grid { gap: 6pt; }
+    .scenario {
+      background: #fafafa !important;
+      border: 1px solid #d4d4d4 !important;
+      color: #16222E !important;
+    }
+    .scenario .tier-letter { color: #FF0000 !important; }
+    .scenario .scenario-stat .lbl, .scenario .tier-label { color: #555 !important; }
+    .scenario .scenario-stat .val { color: #16222E !important; }
+    .scenario .block .block-title { color: #FF0000 !important; }
+    .scenario .block p { color: #16222E !important; }
+    .scenario h4 { color: #16222E !important; }
+    .timeline li { color: #16222E !important; border-bottom: 0.5pt solid #ddd !important; }
+    .timeline li::before { color: #FF0000 !important; }
+    .timeline li strong { color: #16222E !important; }
+    .notes-display {
+      background: #f9f9f9 !important;
+      color: #16222E !important;
+      border-left: 3pt solid #FF0000 !important;
+    }
+    .panel { page-break-inside: avoid; }
+    .checklist-grid { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-watermark">UPHILL COACHING</div>
+<div class="storage-badge" id="storageBadge">
+  <span class="dot"></span>
+  <span>DATOS GUARDADOS</span>
+</div>
+
+<main class="app">
+
+  <header class="app-header">
+    <div class="eyebrow">Generador de estrategia personalizada</div>
+    <h1>CONQUISTÁ <span style="color:var(--red);">TU CIMA.</span></h1>
+    <p class="subtitle">
+      Ingresá tu test de threshold, tus PRs y los datos de tu carrera. Recibí tu ritmo objetivo,
+      pacing km a km, nutrición e hidratación calculadas, y checklist 72h previas.
+      <strong>Disciplina sobre motivación.</strong>
+    </p>
+
+    <div class="race-bar no-print">
+      <select id="raceSelect" onchange="onRaceSelect()">
+        <option value="">— Nueva carrera —</option>
+      </select>
+      <button class="btn-tertiary" onclick="nuevaCarrera()">+ Nueva carrera</button>
+      <button class="btn-tertiary" id="deleteRaceBtn" onclick="borrarCarreraActual()" style="display:none;">Borrar carrera</button>
+    </div>
+  </header>
+
+  <!-- ==================== FORM ==================== -->
+  <div class="form-grid no-print">
+
+    <!-- Atleta -->
+    <section class="form-section">
+      <div class="section-num">01</div>
+      <h3>TU PERFIL</h3>
+      <p class="hint">Datos generales del atleta. Se reusan en todas tus carreras.</p>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Nombre completo</label>
+          <input type="text" id="aNombre" placeholder="Ej: Gabriel Bianchi">
+        </div>
+        <div class="input-group">
+          <label>Edad</label>
+          <input type="number" id="aEdad" min="14" max="90" placeholder="35">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Peso (kg)</label>
+          <input type="number" id="aPeso" min="35" max="160" step="0.1" placeholder="70">
+        </div>
+        <div class="input-group">
+          <label>Sexo</label>
+          <select id="aSexo">
+            <option value="">—</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Threshold -->
+    <section class="form-section">
+      <div class="section-num">02</div>
+      <h3>TEST DE THRESHOLD</h3>
+      <p class="hint">20 minutos al máximo sostenible, en ruta similar a tu carrera objetivo. Idealmente 7-14 días antes.</p>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Distancia en 20 min (km)</label>
+          <input type="number" id="tDist" step="0.01" min="2" max="8" placeholder="5.20">
+        </div>
+        <div class="input-group">
+          <label>FC promedio (bpm)</label>
+          <input type="number" id="tFc" min="100" max="220" placeholder="170">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Fecha del test</label>
+          <input type="date" id="tFecha">
+        </div>
+        <div class="input-group">
+          <label>FC máxima (opcional)</label>
+          <input type="number" id="tFcMax" min="140" max="230" placeholder="185">
+        </div>
+      </div>
+    </section>
+
+    <!-- Lactato -->
+    <section class="form-section">
+      <div class="section-num">03</div>
+      <h3>TEST DE LACTATO <span style="font-size:11px; color:var(--gray); letter-spacing:0.1em; font-family:var(--font-secondary);">(OPCIONAL)</span></h3>
+      <p class="hint">Si tenés prueba de lactato en pista, ingresá LT1 y LT2 (pace + mmol + FC). Reemplaza al test de threshold para mayor precisión.</p>
+
+      <div style="font-family:var(--font-secondary); font-size:10px; letter-spacing:0.2em; color:var(--gray); text-transform:uppercase; margin-bottom:8px;">LT1 · Umbral Aeróbico</div>
+      <div class="input-row triple">
+        <div class="input-group">
+          <label>Pace (min/km)</label>
+          <input type="text" id="lt1Pace" placeholder="5:10" class="pace-input">
+        </div>
+        <div class="input-group">
+          <label>Lactato (mmol/L)</label>
+          <input type="number" id="lt1Mmol" step="0.1" min="0.5" max="6" placeholder="2.0">
+        </div>
+        <div class="input-group">
+          <label>FC (bpm)</label>
+          <input type="number" id="lt1Fc" min="80" max="200" placeholder="148">
+        </div>
+      </div>
+
+      <div style="font-family:var(--font-secondary); font-size:10px; letter-spacing:0.2em; color:var(--gray); text-transform:uppercase; margin:14px 0 8px;">LT2 · Umbral Anaeróbico</div>
+      <div class="input-row triple">
+        <div class="input-group">
+          <label>Pace (min/km)</label>
+          <input type="text" id="lt2Pace" placeholder="4:15" class="pace-input">
+        </div>
+        <div class="input-group">
+          <label>Lactato (mmol/L)</label>
+          <input type="number" id="lt2Mmol" step="0.1" min="2" max="8" placeholder="4.0">
+        </div>
+        <div class="input-group">
+          <label>FC (bpm)</label>
+          <input type="number" id="lt2Fc" min="100" max="220" placeholder="172">
+        </div>
+      </div>
+
+      <div class="input-row single">
+        <div class="input-group">
+          <label>Fecha del test</label>
+          <input type="date" id="ltFecha">
+        </div>
+      </div>
+    </section>
+
+    <!-- PRs -->
+    <section class="form-section">
+      <div class="section-num">04</div>
+      <h3>PRs PREVIOS</h3>
+      <p class="hint">Opcional pero recomendado. Mejora la precisión del cálculo cuando hay PR reciente. Formato hh:mm:ss.</p>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>5K · mejor marca</label>
+          <input type="text" id="pr5k" placeholder="00:22:30" class="pace-input">
+        </div>
+        <div class="input-group">
+          <label>10K · mejor marca</label>
+          <input type="text" id="pr10k" placeholder="00:47:30" class="pace-input">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>21K · mejor marca</label>
+          <input type="text" id="pr21k" placeholder="01:42:00" class="pace-input">
+        </div>
+        <div class="input-group">
+          <label>42K · mejor marca</label>
+          <input type="text" id="pr42k" placeholder="03:30:00" class="pace-input">
+        </div>
+      </div>
+      <div class="input-row single">
+        <div class="input-group">
+          <label>Año del PR más reciente</label>
+          <input type="number" id="prAnio" min="2000" max="2030" placeholder="2025">
+        </div>
+      </div>
+    </section>
+
+    <!-- Carrera -->
+    <section class="form-section full-width">
+      <div class="section-num">05</div>
+      <h3>TU CARRERA OBJETIVO</h3>
+      <p class="hint">Datos de la carrera para ajustar pacing y nutrición a las condiciones reales.</p>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Nombre de la carrera</label>
+          <input type="text" id="cNombre" placeholder="Media Maratón Cobán 21K">
+        </div>
+        <div class="input-group">
+          <label>Distancia</label>
+          <select id="cDistancia">
+            <option value="10">10K</option>
+            <option value="21.1" selected>21K (media)</option>
+            <option value="42.2">42K (maratón)</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Fecha</label>
+          <input type="date" id="cFecha">
+        </div>
+        <div class="input-group">
+          <label>Hora de salida</label>
+          <input type="time" id="cHora" value="07:00">
+        </div>
+      </div>
+      <div class="input-row triple">
+        <div class="input-group">
+          <label>Altitud promedio (msnm)</label>
+          <input type="number" id="cAltitud" min="0" max="4500" placeholder="1300">
+        </div>
+        <div class="input-group">
+          <label>Elevación + (m)</label>
+          <input type="number" id="cDplus" min="0" max="3000" placeholder="274">
+        </div>
+        <div class="input-group">
+          <label>Temp. esperada (°C)</label>
+          <input type="number" id="cTemp" min="-5" max="45" placeholder="20">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Humedad esperada (%)</label>
+          <input type="number" id="cHumedad" min="10" max="100" placeholder="75">
+        </div>
+        <div class="input-group">
+          <label>Objetivo</label>
+          <select id="cObjetivo">
+            <option value="finish">Terminar bien</option>
+            <option value="pb" selected>Bajar mi PB</option>
+            <option value="time">Tiempo objetivo específico</option>
+            <option value="podio">Pelear podio / grupo edad</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-row single">
+        <div class="input-group">
+          <label>Notas de ruta (opcional)</label>
+          <textarea id="cNotas" placeholder="Ej: Giro 180° en km 15. Cuesta empinada de 600m al km 18. Bebederos cada 3km..."></textarea>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="generate-cta no-print">
+    <button class="btn-primary" onclick="generarEstrategia()">Generar mi estrategia</button>
+    <p class="hint">Necesitamos al menos test de threshold + carrera para calcular.</p>
+  </div>
+
+  <!-- ==================== STRATEGY OUTPUT ==================== -->
+  <section class="strategy" id="strategy" style="display:none;">
+
+    <div class="strategy-header">
+      <div>
+        <div class="eyebrow">Plan de carrera personalizado</div>
+        <h2 id="sTitulo">—</h2>
+        <div class="race-meta" id="sMeta">—</div>
+      </div>
+      <button class="btn-tertiary no-print" onclick="window.print()">⤓ Descargar plan en PDF</button>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-grid">
+      <div class="summary-card feature">
+        <div class="label">Tiempo proyectado</div>
+        <div class="value" id="sTiempo">—</div>
+        <div class="sub" id="sTiempoSub">—</div>
+      </div>
+      <div class="summary-card feature">
+        <div class="label">Ritmo objetivo</div>
+        <div class="value" id="sRitmo">—</div>
+        <div class="sub">min/km promedio</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">FC objetivo</div>
+        <div class="value" id="sFc">—</div>
+        <div class="sub" id="sFcSub">bpm</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Ajuste vs. bajura</div>
+        <div class="value" id="sAjuste">—</div>
+        <div class="sub" id="sAjusteSub">altitud + temp + D+</div>
+      </div>
+    </div>
+
+    <!-- Escenarios ABC -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">01 · Escenarios A · B · C</div>
+          <h3>Cómo se siente y cómo se ve cada día</h3>
+        </div>
+        <div class="right-note">No vas a saber cuál te toca hasta el km 10. Reconocelo y respondé.</div>
+      </div>
+      <div class="scenarios-grid" id="sScenarios"></div>
+    </div>
+
+    <!-- Pacing -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">02 · Pacing</div>
+          <h3>Bloque por bloque</h3>
+        </div>
+        <div class="right-note" id="pBlockNote">—</div>
+      </div>
+      <table class="pacing-table">
+        <thead>
+          <tr>
+            <th>Km</th>
+            <th>Fase</th>
+            <th>Ritmo</th>
+            <th>FC</th>
+            <th>Acumulado</th>
+            <th>Estrategia</th>
+          </tr>
+        </thead>
+        <tbody id="pBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Nutrition -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">03 · Nutrición e Hidratación</div>
+          <h3>Durante la carrera</h3>
+        </div>
+        <div class="right-note" id="nDurationNote">—</div>
+      </div>
+      <div class="nutr-stats">
+        <div class="nutr-stat">
+          <div class="lbl">Carbohidratos</div>
+          <div class="val" id="nCarbsH">—</div>
+          <div class="unit">g / hora · total <span id="nCarbsTotal">—</span> g</div>
+        </div>
+        <div class="nutr-stat">
+          <div class="lbl">Líquido</div>
+          <div class="val" id="nFluidH">—</div>
+          <div class="unit">ml / hora · total <span id="nFluidTotal">—</span> ml</div>
+        </div>
+        <div class="nutr-stat">
+          <div class="lbl">Sodio</div>
+          <div class="val" id="nSodiumH">—</div>
+          <div class="unit">mg / hora · total <span id="nSodiumTotal">—</span> mg</div>
+        </div>
+      </div>
+      <h4 style="margin: 24px 0 12px; font-size:14px; color:rgba(255,255,255,0.7);">TIMING EN CARRERA</h4>
+      <ul class="timeline" id="nTimeline"></ul>
+    </div>
+
+    <!-- Pre-race nutrition -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">04 · Semana Previa</div>
+          <h3>Carga + hidratación</h3>
+        </div>
+      </div>
+      <ul class="timeline" id="nPreRace"></ul>
+    </div>
+
+    <!-- Checklist -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">05 · Checklist</div>
+          <h3>72H antes · 24H antes · Día D</h3>
+        </div>
+        <div class="right-note">Tocá para marcar</div>
+      </div>
+      <div class="checklist-grid">
+        <div class="checklist-col">
+          <h4>72H ANTES</h4>
+          <ul class="checklist" id="ck72"></ul>
+        </div>
+        <div class="checklist-col">
+          <h4>24H ANTES</h4>
+          <ul class="checklist" id="ck24"></ul>
+        </div>
+        <div class="checklist-col">
+          <h4>DÍA DE CARRERA</h4>
+          <ul class="checklist" id="ckD"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Route notes -->
+    <div class="panel" id="notesPanel" style="display:none;">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">06 · Notas de Ruta</div>
+          <h3>Tus observaciones</h3>
+        </div>
+      </div>
+      <div class="notes-display" id="notesDisplay">—</div>
+    </div>
+
+    <!-- Closing -->
+    <div class="panel" style="border-left: 3px solid var(--red); background: var(--navy-deep);">
+      <div class="eyebrow">El cierre</div>
+      <h3 style="margin-bottom: 12px;">EL RENDIMIENTO ES CONSTANCIA.</h3>
+      <p style="font-size:14px; color:rgba(255,255,255,0.8); line-height:1.7;">
+        Esta estrategia no garantiza nada por sí sola. La carrera se corre con los meses de trabajo
+        que ya hiciste. Ejecutá lo que entrenaste. <strong>Un paso a la vez. Conquistá tu cima.</strong>
+      </p>
+    </div>
+
+  </section>
+
+  <div id="emptyHint" class="empty-state">
+    Completá los formularios y tocá <strong>"Generar mi estrategia"</strong> para ver tu plan personalizado.
+  </div>
+
+</main>
+
+<div class="toast" id="toast">—</div>
+
+<script>
+// =====================================================================
+// STORAGE
+// =====================================================================
+const STORAGE_KEY = 'uphill-estrategia-v1';
+
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultStore();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultStore(), parsed);
+  } catch { return defaultStore(); }
+}
+function defaultStore() {
+  return {
+    athlete: { nombre: '', edad: '', peso: '', sexo: '' },
+    threshold: { dist: '', fc: '', fcMax: '', fecha: '' },
+    lactate: {
+      lt1: { pace: '', mmol: '', fc: '' },
+      lt2: { pace: '', mmol: '', fc: '' },
+      fecha: ''
+    },
+    prs: { '5k': '', '10k': '', '21k': '', '42k': '', anio: '' },
+    races: {},
+    currentRaceId: null
+  };
+}
+function saveStore(store) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); flashSaved(); return true; }
+  catch (e) { console.warn(e); return false; }
+}
+function flashSaved() {
+  document.getElementById('storageBadge').classList.add('saved');
+}
+
+let STORE = loadStore();
+
+// =====================================================================
+// PACE PARSING / FORMATTING
+// =====================================================================
+function parseTimeToSeconds(str) {
+  if (!str) return null;
+  const parts = str.trim().split(':').map(s => parseFloat(s));
+  if (parts.some(isNaN)) return null;
+  if (parts.length === 3) return parts[0]*3600 + parts[1]*60 + parts[2];
+  if (parts.length === 2) return parts[0]*60 + parts[1];
+  if (parts.length === 1) return parts[0]; // already seconds
+  return null;
+}
+function secondsToHMS(sec) {
+  sec = Math.max(0, Math.round(sec));
+  const h = Math.floor(sec/3600);
+  const m = Math.floor((sec%3600)/60);
+  const s = sec%60;
+  return (h>0 ? h+':'+String(m).padStart(2,'0') : m) + ':' + String(s).padStart(2,'0');
+}
+function secondsToMSPace(sec) {
+  sec = Math.max(0, Math.round(sec));
+  const m = Math.floor(sec/60);
+  const s = sec%60;
+  return m + ':' + String(s).padStart(2,'0');
+}
+
+// =====================================================================
+// PACE CALCULATION
+// =====================================================================
+// Riegel: T2 = T1 * (D2/D1)^1.06
+function riegelPredict(timeSec, fromDist, toDist) {
+  return timeSec * Math.pow(toDist / fromDist, 1.06);
+}
+
+// Returns base race pace (sec/km) from best available source: lactate LT2 > PR > threshold test
+function basePaceFromInputs(threshold, prs, lactate, targetDistKm) {
+  const candidates = [];
+
+  // LT2 (anaerobic threshold) — most precise reference if available.
+  // LT2 pace approximates a ~1 hour race effort. Use Riegel from 1h race equivalent.
+  const lt2PaceSec = parseTimeToSeconds(lactate?.lt2?.pace);
+  if (lt2PaceSec) {
+    // LT2 pace ≈ 1-hour race pace for trained athletes (typical assumption)
+    // So "equivalent time at LT2 pace for 1h = 3600 sec, distance = 3600 / lt2PaceSec"
+    const lt2Dist = 3600 / lt2PaceSec;
+    const predicted = riegelPredict(3600, lt2Dist, targetDistKm);
+    candidates.push({ source: 'Lactato LT2', predicted, weight: 2.0, fromDist: lt2Dist });
+  }
+
+  // PRs: each gives a Riegel prediction to target distance
+  const prMap = { '5k': 5, '10k': 10, '21k': 21.1, '42k': 42.2 };
+  for (const [k, d] of Object.entries(prMap)) {
+    const sec = parseTimeToSeconds(prs[k]);
+    if (sec && sec > 0) {
+      const distRatio = Math.max(d, targetDistKm) / Math.min(d, targetDistKm);
+      const weight = 1.2 / Math.pow(distRatio, 0.5);
+      const predicted = riegelPredict(sec, d, targetDistKm);
+      candidates.push({ source: 'PR ' + k, predicted, weight, fromDist: d });
+    }
+  }
+
+  // Threshold test (20-min): treat as a 20-min effort of distance threshold.dist
+  if (threshold.dist && threshold.fc) {
+    const sec = 20 * 60;
+    const d = parseFloat(threshold.dist);
+    if (d > 0) {
+      const predicted = riegelPredict(sec, d, targetDistKm);
+      candidates.push({ source: 'Threshold 20min', predicted, weight: 1.0, fromDist: d });
+    }
+  }
+
+  if (candidates.length === 0) return null;
+
+  const totalWeight = candidates.reduce((a, c) => a + c.weight, 0);
+  const weightedTime = candidates.reduce((a, c) => a + c.predicted * c.weight, 0) / totalWeight;
+  return {
+    paceSec: weightedTime / targetDistKm,
+    timeSec: weightedTime,
+    sources: candidates
+  };
+}
+
+// Resolve which FC to use as "umbral" reference (LT2 FC preferred, then 20-min test)
+function resolveFcUmbral(threshold, lactate) {
+  const lt2Fc = parseFloat(lactate?.lt2?.fc);
+  if (lt2Fc) return { fc: lt2Fc, source: 'LT2' };
+  const t = parseFloat(threshold.fc);
+  if (t) return { fc: t, source: '20-min' };
+  return { fc: null, source: null };
+}
+
+// =====================================================================
+// ESCENARIOS A · B · C
+// =====================================================================
+function generateScenarios(targetPaceSec, targetTimeSec, fcUmbral, carrera) {
+  // Pace multipliers: A faster (good day), B on plan, C slower (survival)
+  const tiers = [
+    {
+      tier: 'A', label: 'Día Perfecto',
+      paceFactor: 0.97, fcPct: 0.94,
+      title: 'TODO ENCAJA. LAS PIERNAS RESPONDEN.',
+      feels: 'Esfuerzo presente pero "fácil". La respiración es ritmo 2:2 sin pedirla, los hombros están bajos, podés decir frases cortas sin cortarte. La mente está limpia, sin negociar.',
+      looks: 'Postura erguida, mirada lejos (15-20m), brazada relajada, cadencia 175-180 spm fluida. Estás pasando a gente sin acelerar conscientemente. Los kilómetros se sienten "cortos".',
+      doIt: 'NO acelerés porque te sentís bien. Respetá tu plan hasta el km 15 (en 21K) o km 30 (en 42K). Recién en el último tercio, si TODO sigue, empujás progresivamente. La trampa es regalar el día perfecto saliendo rápido.'
+    },
+    {
+      tier: 'B', label: 'Plan Ejecutado',
+      paceFactor: 1.00, fcPct: 0.96,
+      title: 'ESTÁS EN EL PLAN. ACÁ SE DEFINE.',
+      feels: 'Esfuerzo claro pero sostenible. La respiración pide foco. Conversación monosílaba — sí, no, "vamos". Las piernas saben que están trabajando. Aparecen pensamientos negativos cíclicos: ignoralos.',
+      looks: 'Cadencia estable, hombros que tendés a subir (bajalos cada 500m), mirada 15m adelante. Cuerpo en compromiso técnico. La técnica empieza a degradarse del km 14 (21K) o km 30 (42K).',
+      doIt: 'Disciplina sobre motivación. Repetí tu mantra. Un km a la vez. Esta es la zona donde se gana o se pierde la carrera. Hidratación + carbos a tiempo, no esperés a sentir la falta. Checkpoint cada 500m: hombros, mirada, mandíbula.'
+    },
+    {
+      tier: 'C', label: 'Día de Sobrevivir',
+      paceFactor: 1.04, fcPct: 0.98,
+      title: 'EL CUERPO NO RESPONDE COMO ESPERABAS.',
+      feels: 'Cada km pesa más que el anterior. Las piernas pierden resorte. La cabeza pregunta "¿por qué?". La respiración se vuelve corta, irregular. Aparece la duda: "¿abandono?". RESPUESTA: no.',
+      looks: 'Postura empieza a caer, hombros suben, zancada se acorta y se vuelve menos eficiente, mirada al piso. La cadencia baja. Aparece el balanceo lateral. Otros te empiezan a pasar.',
+      doIt: 'NO entres en pánico. Bajá ritmo 10-15s/km y RESPIRÁ profundo 30 segundos. Carbohidrato extra (gel inmediato + sorbo de líquido). Pasos cortos, mantené cadencia aunque baje el pace. Mirá al frente. Terminar es ganar. Ajustá el objetivo al día que tenés.'
+    }
+  ];
+
+  return tiers.map(t => {
+    const pace = targetPaceSec * t.paceFactor;
+    const time = targetTimeSec * t.paceFactor;
+    const fc = fcUmbral ? Math.round(fcUmbral * t.fcPct) : null;
+    return { ...t, paceSec: pace, timeSec: time, fc };
+  });
+}
+
+// Adjustments
+function applyAdjustments(basePaceSec, carrera) {
+  const altitud = parseFloat(carrera.altitud) || 0;
+  const dPlus = parseFloat(carrera.dPlus) || 0;
+  const temp = parseFloat(carrera.temp);
+  const humedad = parseFloat(carrera.humedad);
+  const distancia = parseFloat(carrera.distancia);
+
+  // Altitude: above 1000m, +0.5% per 100m
+  const altFactor = altitud > 1000 ? 1 + 0.005 * ((altitud - 1000) / 100) : 1;
+
+  // Temperature: above 15°C, +1% per 5°C
+  const tempFactor = (!isNaN(temp) && temp > 15) ? 1 + 0.01 * ((temp - 15) / 5) : 1;
+
+  // Humidity: above 70%, +0.5% per 10%
+  const humFactor = (!isNaN(humedad) && humedad > 70) ? 1 + 0.005 * ((humedad - 70) / 10) : 1;
+
+  // Elevation gain: +12s per 100m D+, distributed per km
+  const dPlusTotal = (dPlus / 100) * 12;
+  const dPlusPerKm = dPlusTotal / distancia;
+
+  const adjustedPace = basePaceSec * altFactor * tempFactor * humFactor + dPlusPerKm;
+
+  return {
+    paceSec: adjustedPace,
+    factors: {
+      altitude: altFactor, temperature: tempFactor, humidity: humFactor,
+      dPlusTotalSec: dPlusTotal, dPlusPerKm
+    },
+    pctSlowdown: ((adjustedPace / basePaceSec) - 1) * 100
+  };
+}
+
+// =====================================================================
+// PHASE / SPLIT GENERATION
+// =====================================================================
+function getPhases(distancia) {
+  if (distancia <= 12) {
+    return [
+      { hasta: 2, name: 'CALENTAR', factor: 1.05, note: 'Calentamiento activo. No te dejes llevar por el grupo. Control total.' },
+      { hasta: 7, name: 'RITMO', factor: 1.00, note: 'Ritmo objetivo estricto. Cadencia 175-180 spm. Mirada adelante.' },
+      { hasta: 10, name: 'EMPUJÁ', factor: 0.97, note: 'Última fracción. Si las piernas responden, presioná progresivamente.' }
+    ];
+  } else if (distancia <= 25) {
+    return [
+      { hasta: 2, name: 'ALINEACIÓN', factor: 1.04, note: '5-10s más lento. Calentamiento activo. No te dejes arrastrar.' },
+      { hasta: 10, name: 'ANCLAJE', factor: 1.00, note: 'Ritmo objetivo. Cadencia estable. Resistí acelerar en bajadas.' },
+      { hasta: 14, name: 'PUNTO MUERTO', factor: 1.00, note: 'El cuerpo pregunta "¿por qué?". Acá se define la carrera. Disciplina.' },
+      { hasta: 18, name: 'ENCENDIDO', factor: 0.99, note: 'Si el plan va bien, empezá a presionar progresivamente.' },
+      { hasta: 999, name: 'CIMA', factor: 0.97, note: 'Entrega progresiva. Vaciá el tanque. No acelerés hasta ver la línea.' }
+    ];
+  } else {
+    return [
+      { hasta: 8, name: 'PACIENCIA', factor: 1.06, note: 'Ritmo CONTROLADO. Te van a pasar. Dejalos pasar. Maratón = paciencia.' },
+      { hasta: 21.1, name: 'RITMO', factor: 1.00, note: 'Anclaje al ritmo objetivo. Hidratación + carbos en cada puesto.' },
+      { hasta: 32, name: 'CONCENTRACIÓN', factor: 1.01, note: 'Acá empieza el maratón real. Técnica antes que velocidad.' },
+      { hasta: 38, name: 'EL MURO', factor: 1.03, note: 'Si vas a perder ritmo, que sea ahora. Aguantá. Carbos a tiempo.' },
+      { hasta: 999, name: 'CIMA', factor: 0.99, note: 'Acortá zancada. Aumentá cadencia. Cruzá con la cabeza alta.' }
+    ];
+  }
+}
+
+function generateSplits(targetPaceSec, fcUmbral, carrera) {
+  const distancia = parseFloat(carrera.distancia);
+  const phases = getPhases(distancia);
+  const blockSize = distancia <= 12 ? 2 : 5;
+  const splits = [];
+  let cumulativeSec = 0;
+
+  let km = 0;
+  while (km < distancia) {
+    const blockEnd = Math.min(km + blockSize, distancia);
+    const blockMid = (km + blockEnd) / 2;
+    const phase = phases.find(p => blockMid <= p.hasta);
+    const blockKm = blockEnd - km;
+    const blockPaceSec = targetPaceSec * phase.factor;
+    const blockTimeSec = blockPaceSec * blockKm;
+    cumulativeSec += blockTimeSec;
+
+    // FC zones by phase (% of threshold FC)
+    let fcPct = 0.95;
+    if (phase.name === 'ALINEACIÓN' || phase.name === 'CALENTAR' || phase.name === 'PACIENCIA') fcPct = 0.88;
+    else if (phase.name === 'ANCLAJE' || phase.name === 'RITMO') fcPct = 0.94;
+    else if (phase.name === 'PUNTO MUERTO' || phase.name === 'CONCENTRACIÓN') fcPct = 0.96;
+    else if (phase.name === 'ENCENDIDO' || phase.name === 'EL MURO' || phase.name === 'EMPUJÁ') fcPct = 0.98;
+    else if (phase.name === 'CIMA') fcPct = 1.00;
+
+    const fcEst = fcUmbral ? Math.round(fcUmbral * fcPct) : null;
+
+    splits.push({
+      from: km, to: blockEnd,
+      paceSec: blockPaceSec,
+      timeSec: blockTimeSec,
+      cumulativeSec,
+      phase: phase.name,
+      note: phase.note,
+      fc: fcEst
+    });
+    km = blockEnd;
+  }
+  return splits;
+}
+
+// =====================================================================
+// NUTRITION
+// =====================================================================
+function generateNutrition(targetTimeSec, atleta, carrera) {
+  const hours = targetTimeSec / 3600;
+  const temp = parseFloat(carrera.temp);
+  const humedad = parseFloat(carrera.humedad);
+  const peso = parseFloat(atleta.peso) || 70;
+
+  // Carbs per hour scales with duration
+  let carbsPerHour;
+  if (hours < 1) carbsPerHour = 20;
+  else if (hours < 1.5) carbsPerHour = 30;
+  else if (hours < 2.5) carbsPerHour = 45;
+  else if (hours < 3.5) carbsPerHour = 60;
+  else carbsPerHour = 80;
+
+  // Fluid intake
+  let fluidPerHour = 500;
+  if (!isNaN(temp)) {
+    if (temp > 20) fluidPerHour = 600;
+    if (temp > 25) fluidPerHour = 700;
+    if (temp > 30) fluidPerHour = 800;
+  }
+  if (!isNaN(humedad) && humedad > 80) fluidPerHour += 100;
+
+  // Sodium
+  let sodiumPerHour = 400;
+  if (hours > 2) sodiumPerHour = 500;
+  if (hours > 3) sodiumPerHour = 700;
+  if (!isNaN(temp) && temp > 25) sodiumPerHour += 200;
+
+  // Pre-race carb load: 8g/kg for 36-48h before
+  const carbLoadDailyG = Math.round(peso * 8);
+
+  const schedule = generateRaceTimeline(targetTimeSec, carbsPerHour, fluidPerHour);
+  const preRace = generatePreRaceTimeline(carrera, atleta, carbLoadDailyG);
+
+  return {
+    carbsPerHour, fluidPerHour, sodiumPerHour,
+    totalCarbs: Math.round(carbsPerHour * hours),
+    totalFluid: Math.round(fluidPerHour * hours),
+    totalSodium: Math.round(sodiumPerHour * hours),
+    carbLoadDailyG,
+    schedule, preRace,
+    hours
+  };
+}
+
+function generateRaceTimeline(targetTimeSec, carbsPerHour, fluidPerHour) {
+  const items = [];
+  items.push({ time: 'KM 0', text: '<strong>Salida.</strong> Un sorbo de líquido (~150 ml). Nada de comida en este punto.' });
+
+  // Schedule: gel every 25-35 min, fluid every 15-20 min
+  const totalMin = targetTimeSec / 60;
+  const carbsPerGel = 25; // assume ~25g per gel
+  const gelInterval = Math.round(60 * carbsPerGel / carbsPerHour);
+
+  for (let min = gelInterval; min < totalMin - 5; min += gelInterval) {
+    const kmAtTime = (min / totalMin) * (targetTimeSec / 60); // approximate
+    items.push({
+      time: `MIN ${min}`,
+      text: `<strong>Gel / carbo ${carbsPerGel}g</strong> + sorbo de agua. Líquido total a este punto: ~${Math.round(fluidPerHour * (min/60))} ml.`
+    });
+  }
+
+  // Fluid checkpoints (every 5km approximately)
+  items.push({
+    time: 'CADA PUESTO',
+    text: `<strong>${Math.round(fluidPerHour/3)} ml de líquido</strong> (2-3 sorbos largos). Si está caliente, una pizca de sal o bebida isotónica.`
+  });
+
+  if (totalMin > 90) {
+    items.push({
+      time: 'KM 15-18',
+      text: '<strong>Carbo extra si sentís bajón.</strong> Si tu fc cae sin razón aparente, gel inmediato + 30 segundos de paso un poco menor para procesar.'
+    });
+  }
+
+  items.push({ time: 'META', text: '<strong>200-400 ml de líquido + carbo simple.</strong> Plátano, gel, bebida deportiva. La ventana de recuperación es 30 min.' });
+
+  return items;
+}
+
+function generatePreRaceTimeline(carrera, atleta, carbLoadG) {
+  const items = [];
+  items.push({
+    time: '5-7 DÍAS ANTES',
+    text: `<strong>Hidratación base.</strong> 35 ml/kg/día (~${Math.round((parseFloat(atleta.peso)||70) * 35)} ml). Sumá sodio si entrenás o hace calor. Orina clara = control.`
+  });
+  items.push({
+    time: '3 DÍAS ANTES',
+    text: '<strong>Última sesión de calidad terminada.</strong> A partir de acá: tapering. Trotes suaves, movilidad, no experimentar nada nuevo.'
+  });
+  items.push({
+    time: '36-48H ANTES',
+    text: `<strong>Carga de carbos: ~${carbLoadG}g/día</strong> (8g por kg de peso). Aumentá porciones de arroz, pasta, papa, pan en cada comida. NO más volumen total — más carbos en lugar de grasa.`
+  });
+  items.push({
+    time: 'NOCHE PREVIA',
+    text: '<strong>Cena familiar, alta en carbos, baja en grasa/fibra.</strong> Pasta con pollo, arroz blanco con proteína magra. Lo que ya probaste antes de tus rodajes largos.'
+  });
+  items.push({
+    time: 'DESPERTAR',
+    text: '<strong>500 ml de agua con pizca de sal.</strong> No esperés a tener sed.'
+  });
+  items.push({
+    time: '2-3 H ANTES SALIDA',
+    text: `<strong>Desayuno probado.</strong> ~${Math.round((parseFloat(atleta.peso)||70) * 1.5)}g de carbos (avena con miel + plátano, pan con mermelada, lo que SIEMPRE te funciona). Acompañado de café si es tu costumbre.`
+  });
+  items.push({
+    time: '30 MIN ANTES',
+    text: '<strong>1 gel o ~150 ml de bebida deportiva.</strong> Solo si entrenaste así.'
+  });
+  return items;
+}
+
+// =====================================================================
+// CHECKLIST GENERATION
+// =====================================================================
+function generateChecklist(carrera, targetTimeSec, atleta) {
+  const distancia = parseFloat(carrera.distancia);
+  const hours = targetTimeSec / 3600;
+  const nGeles = Math.max(1, Math.ceil(hours - 0.5)); // rough estimate
+
+  const ck72 = [
+    'Última sesión de calidad completada',
+    'Carga de carbos iniciada (+ porción en cada comida)',
+    'Hidratación activa (orina clara como control)',
+    'Equipo revisado: zapatillas, ropa, calcetines, gorra/visera',
+    `Compra/preparación de ${nGeles} geles + bebida deportiva`,
+    'Ruta al estadio/salida verificada (incluye opción B por tráfico)'
+  ];
+  if (distancia >= 21) ck72.push('Pin sin estrenar zapatillas — usa las de tus rodajes largos');
+  if (distancia >= 30) ck72.push('Plan de recuperación post-carrera coordinado (transporte, comida, masaje)');
+
+  const ck24 = [
+    'Hidratación constante durante el día',
+    'Comida principal familiar, alta en carbos, baja en grasa/fibra',
+    'Geles, número de pecho, imperdibles, chip listos en bolso',
+    'Reloj/GPS cargado + plan de pacing configurado',
+    'Alarma puesta con 3h de margen para la última comida',
+    'Acostarse temprano (no esperar a "dormir bien", solo descansar)'
+  ];
+  if (distancia >= 21) ck24.push('Última comida del día: cena temprano (3-4h antes de dormir)');
+
+  const ckD = [
+    `Desayuno 2-3h antes de la salida (mismo que probaste en rodajes)`,
+    '500 ml de agua con pizca de sal al despertar',
+    'Vaselina/cremas anti-rozamiento en puntos críticos',
+    'Salir con ropa de descarte (camiseta vieja para la espera)',
+    'Llegada 60 min antes de la salida',
+    'Calentamiento: 10 min trote + 3×30" progresivos + movilidad'
+  ];
+  if (hours > 1.5) ckD.push('Gel o bebida deportiva 30 min antes de la salida');
+  ckD.push('Recordá: un paso a la vez. Disciplina sobre motivación.');
+
+  return { ck72, ck24, ckD };
+}
+
+// =====================================================================
+// MAIN ORCHESTRATOR
+// =====================================================================
+function generarEstrategia() {
+  // Read all inputs into temporary store
+  syncAthleteFromUI();
+  syncThresholdFromUI();
+  syncLactateFromUI();
+  syncPRsFromUI();
+  const carrera = readCarreraFromUI();
+
+  // Validate minimums
+  if (!carrera.distancia) { toast('Falta seleccionar distancia'); return; }
+  const hasThreshold = STORE.threshold.dist && STORE.threshold.fc;
+  const hasAnyPR = ['5k','10k','21k','42k'].some(k => parseTimeToSeconds(STORE.prs[k]));
+  const hasLT2 = parseTimeToSeconds(STORE.lactate?.lt2?.pace);
+  if (!hasThreshold && !hasAnyPR && !hasLT2) {
+    toast('Necesitamos test de threshold, lactato (LT2) o al menos un PR');
+    return;
+  }
+
+  // Calculate
+  const base = basePaceFromInputs(
+    { dist: STORE.threshold.dist, fc: STORE.threshold.fc },
+    STORE.prs,
+    STORE.lactate,
+    parseFloat(carrera.distancia)
+  );
+  if (!base) { toast('No se pudo calcular el ritmo'); return; }
+
+  const adj = applyAdjustments(base.paceSec, carrera);
+  const fcRef = resolveFcUmbral(STORE.threshold, STORE.lactate);
+  const fcUmbral = fcRef.fc;
+  const splits = generateSplits(adj.paceSec, fcUmbral, carrera);
+  const targetTime = adj.paceSec * parseFloat(carrera.distancia);
+  const scenarios = generateScenarios(adj.paceSec, targetTime, fcUmbral, carrera);
+  const nutrition = generateNutrition(targetTime, STORE.athlete, carrera);
+  const checklist = generateChecklist(carrera, targetTime, STORE.athlete);
+
+  const strategy = { base, adj, splits, targetTime, scenarios, nutrition, checklist, fcRef, generatedAt: new Date().toISOString() };
+
+  // Save race (with strategy + inputs snapshot)
+  saveCurrentRace(carrera, strategy);
+
+  // Render
+  renderStrategy(carrera, strategy);
+
+  document.getElementById('strategy').style.display = 'block';
+  document.getElementById('emptyHint').style.display = 'none';
+  document.getElementById('strategy').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// =====================================================================
+// RENDERING
+// =====================================================================
+function renderStrategy(carrera, s) {
+  document.getElementById('sTitulo').textContent = (carrera.nombre || 'Carrera').toUpperCase();
+  const fecha = carrera.fecha ? new Date(carrera.fecha + 'T00:00:00').toLocaleDateString('es-GT', { day:'numeric', month:'long', year:'numeric' }) : '—';
+  const ath = STORE.athlete.nombre || 'Atleta';
+  document.getElementById('sMeta').textContent =
+    `${ath} · ${carrera.distancia} km · ${fecha} · Salida ${carrera.hora || '—'} · ${carrera.altitud || '—'} msnm`;
+
+  // Summary
+  document.getElementById('sTiempo').textContent = secondsToHMS(s.targetTime);
+  document.getElementById('sTiempoSub').textContent = `${carrera.distancia} km · ritmo promedio ${secondsToMSPace(s.adj.paceSec)} min/km`;
+  document.getElementById('sRitmo').textContent = secondsToMSPace(s.adj.paceSec);
+  const fcU = s.fcRef && s.fcRef.fc;
+  document.getElementById('sFc').textContent = fcU ? Math.round(fcU * 0.94) + '–' + Math.round(fcU * 0.98) : '—';
+  document.getElementById('sFcSub').textContent = fcU ? `bpm · umbral ${fcU} (${s.fcRef.source})` : 'sin datos de FC';
+  const pct = s.adj.pctSlowdown;
+  document.getElementById('sAjuste').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+  const f = s.adj.factors;
+  const adjParts = [];
+  if (f.altitude > 1.001) adjParts.push(`alt ${((f.altitude-1)*100).toFixed(1)}%`);
+  if (f.temperature > 1.001) adjParts.push(`temp ${((f.temperature-1)*100).toFixed(1)}%`);
+  if (f.humidity > 1.001) adjParts.push(`hum ${((f.humidity-1)*100).toFixed(1)}%`);
+  if (f.dPlusTotalSec > 0) adjParts.push(`D+ ${Math.round(f.dPlusTotalSec)}s`);
+  document.getElementById('sAjusteSub').textContent = adjParts.length ? adjParts.join(' · ') : 'sin ajustes';
+
+  // Escenarios ABC
+  const scWrap = document.getElementById('sScenarios');
+  scWrap.innerHTML = '';
+  s.scenarios.forEach(sc => {
+    const card = document.createElement('div');
+    card.className = 'scenario';
+    card.dataset.tier = sc.tier;
+    card.innerHTML = `
+      <div class="tier">
+        <div class="tier-letter">${sc.tier}</div>
+        <div>
+          <div class="tier-label">${sc.label}</div>
+          <h4 style="margin-top:4px;">${sc.title}</h4>
+        </div>
+      </div>
+      <div class="scenario-stats">
+        <div class="scenario-stat">
+          <div class="lbl">Ritmo</div>
+          <div class="val">${secondsToMSPace(sc.paceSec)}</div>
+        </div>
+        <div class="scenario-stat">
+          <div class="lbl">Tiempo</div>
+          <div class="val">${secondsToHMS(sc.timeSec)}</div>
+        </div>
+        <div class="scenario-stat">
+          <div class="lbl">FC</div>
+          <div class="val">${sc.fc ? sc.fc : '—'}</div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-title">Cómo se siente</div>
+        <p>${sc.feels}</p>
+      </div>
+      <div class="block">
+        <div class="block-title">Cómo se ve</div>
+        <p>${sc.looks}</p>
+      </div>
+      <div class="block">
+        <div class="block-title">Qué hacer</div>
+        <p>${sc.doIt}</p>
+      </div>
+    `;
+    scWrap.appendChild(card);
+  });
+
+  // Pacing
+  document.getElementById('pBlockNote').textContent = `Bloques de ${s.splits[0].to - s.splits[0].from} km`;
+  const pBody = document.getElementById('pBody');
+  pBody.innerHTML = '';
+  s.splits.forEach(sp => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${sp.from.toFixed(0)}–${sp.to.toFixed(sp.to % 1 === 0 ? 0 : 1)}</strong></td>
+      <td><span class="phase-pill" data-phase="${sp.phase}">${sp.phase}</span></td>
+      <td class="pace">${secondsToMSPace(sp.paceSec)}</td>
+      <td>${sp.fc ? sp.fc + ' bpm' : '—'}</td>
+      <td style="color:rgba(255,255,255,0.6);">${secondsToHMS(sp.cumulativeSec)}</td>
+      <td style="font-size:12.5px; color:rgba(255,255,255,0.75);">${sp.note}</td>
+    `;
+    pBody.appendChild(tr);
+  });
+
+  // Nutrition
+  document.getElementById('nDurationNote').textContent = `Para ${secondsToHMS(s.targetTime)} de carrera`;
+  document.getElementById('nCarbsH').textContent = s.nutrition.carbsPerHour;
+  document.getElementById('nCarbsTotal').textContent = s.nutrition.totalCarbs;
+  document.getElementById('nFluidH').textContent = s.nutrition.fluidPerHour;
+  document.getElementById('nFluidTotal').textContent = s.nutrition.totalFluid;
+  document.getElementById('nSodiumH').textContent = s.nutrition.sodiumPerHour;
+  document.getElementById('nSodiumTotal').textContent = s.nutrition.totalSodium;
+
+  const nTimeline = document.getElementById('nTimeline');
+  nTimeline.innerHTML = '';
+  s.nutrition.schedule.forEach(it => {
+    const li = document.createElement('li');
+    li.innerHTML = `<strong style="color:var(--red); font-family:var(--font-secondary); letter-spacing:0.12em; font-size:12px;">${it.time}</strong><br>${it.text}`;
+    nTimeline.appendChild(li);
+  });
+
+  const nPreRace = document.getElementById('nPreRace');
+  nPreRace.innerHTML = '';
+  s.nutrition.preRace.forEach(it => {
+    const li = document.createElement('li');
+    li.innerHTML = `<strong style="color:var(--red); font-family:var(--font-secondary); letter-spacing:0.12em; font-size:12px;">${it.time}</strong><br>${it.text}`;
+    nPreRace.appendChild(li);
+  });
+
+  // Checklist
+  const renderCk = (id, items, key) => {
+    const ul = document.getElementById(id);
+    ul.innerHTML = '';
+    const savedChecks = (STORE.races[STORE.currentRaceId]?.checks?.[key]) || {};
+    items.forEach((text, idx) => {
+      const li = document.createElement('li');
+      li.textContent = text;
+      li.dataset.key = key + '-' + idx;
+      if (savedChecks[li.dataset.key]) li.classList.add('checked');
+      li.addEventListener('click', () => {
+        li.classList.toggle('checked');
+        persistCheck(key, li.dataset.key, li.classList.contains('checked'));
+      });
+      ul.appendChild(li);
+    });
+  };
+  renderCk('ck72', s.checklist.ck72, '72h');
+  renderCk('ck24', s.checklist.ck24, '24h');
+  renderCk('ckD',  s.checklist.ckD,  'dia');
+
+  // Notes
+  const notes = (carrera.notas || '').trim();
+  if (notes) {
+    document.getElementById('notesPanel').style.display = 'block';
+    document.getElementById('notesDisplay').textContent = notes;
+  } else {
+    document.getElementById('notesPanel').style.display = 'none';
+  }
+}
+
+function persistCheck(group, key, checked) {
+  const race = STORE.races[STORE.currentRaceId];
+  if (!race) return;
+  if (!race.checks) race.checks = { '72h': {}, '24h': {}, 'dia': {} };
+  if (checked) race.checks[group][key] = true;
+  else delete race.checks[group][key];
+  saveStore(STORE);
+}
+
+// =====================================================================
+// FORM <-> STORE SYNC
+// =====================================================================
+function syncAthleteFromUI() {
+  STORE.athlete = {
+    nombre: document.getElementById('aNombre').value.trim(),
+    edad: document.getElementById('aEdad').value,
+    peso: document.getElementById('aPeso').value,
+    sexo: document.getElementById('aSexo').value
+  };
+  saveStore(STORE);
+}
+function syncThresholdFromUI() {
+  STORE.threshold = {
+    dist: document.getElementById('tDist').value,
+    fc: document.getElementById('tFc').value,
+    fcMax: document.getElementById('tFcMax').value,
+    fecha: document.getElementById('tFecha').value
+  };
+  saveStore(STORE);
+}
+function syncLactateFromUI() {
+  STORE.lactate = {
+    lt1: {
+      pace: document.getElementById('lt1Pace').value.trim(),
+      mmol: document.getElementById('lt1Mmol').value,
+      fc: document.getElementById('lt1Fc').value
+    },
+    lt2: {
+      pace: document.getElementById('lt2Pace').value.trim(),
+      mmol: document.getElementById('lt2Mmol').value,
+      fc: document.getElementById('lt2Fc').value
+    },
+    fecha: document.getElementById('ltFecha').value
+  };
+  saveStore(STORE);
+}
+function syncPRsFromUI() {
+  STORE.prs = {
+    '5k': document.getElementById('pr5k').value.trim(),
+    '10k': document.getElementById('pr10k').value.trim(),
+    '21k': document.getElementById('pr21k').value.trim(),
+    '42k': document.getElementById('pr42k').value.trim(),
+    anio: document.getElementById('prAnio').value
+  };
+  saveStore(STORE);
+}
+function readCarreraFromUI() {
+  return {
+    nombre: document.getElementById('cNombre').value.trim(),
+    fecha: document.getElementById('cFecha').value,
+    hora: document.getElementById('cHora').value,
+    distancia: document.getElementById('cDistancia').value,
+    altitud: document.getElementById('cAltitud').value,
+    dPlus: document.getElementById('cDplus').value,
+    temp: document.getElementById('cTemp').value,
+    humedad: document.getElementById('cHumedad').value,
+    objetivo: document.getElementById('cObjetivo').value,
+    notas: document.getElementById('cNotas').value.trim()
+  };
+}
+function fillCarreraInUI(c) {
+  document.getElementById('cNombre').value = c.nombre || '';
+  document.getElementById('cFecha').value = c.fecha || '';
+  document.getElementById('cHora').value = c.hora || '07:00';
+  document.getElementById('cDistancia').value = c.distancia || '21.1';
+  document.getElementById('cAltitud').value = c.altitud || '';
+  document.getElementById('cDplus').value = c.dPlus || '';
+  document.getElementById('cTemp').value = c.temp || '';
+  document.getElementById('cHumedad').value = c.humedad || '';
+  document.getElementById('cObjetivo').value = c.objetivo || 'pb';
+  document.getElementById('cNotas').value = c.notas || '';
+}
+
+function restoreUIFromStore() {
+  // Athlete
+  document.getElementById('aNombre').value = STORE.athlete.nombre || '';
+  document.getElementById('aEdad').value = STORE.athlete.edad || '';
+  document.getElementById('aPeso').value = STORE.athlete.peso || '';
+  document.getElementById('aSexo').value = STORE.athlete.sexo || '';
+  // Threshold
+  document.getElementById('tDist').value = STORE.threshold.dist || '';
+  document.getElementById('tFc').value = STORE.threshold.fc || '';
+  document.getElementById('tFcMax').value = STORE.threshold.fcMax || '';
+  document.getElementById('tFecha').value = STORE.threshold.fecha || '';
+  // Lactate
+  const lt = STORE.lactate || { lt1: {}, lt2: {} };
+  document.getElementById('lt1Pace').value = lt.lt1?.pace || '';
+  document.getElementById('lt1Mmol').value = lt.lt1?.mmol || '';
+  document.getElementById('lt1Fc').value = lt.lt1?.fc || '';
+  document.getElementById('lt2Pace').value = lt.lt2?.pace || '';
+  document.getElementById('lt2Mmol').value = lt.lt2?.mmol || '';
+  document.getElementById('lt2Fc').value = lt.lt2?.fc || '';
+  document.getElementById('ltFecha').value = lt.fecha || '';
+  // PRs
+  document.getElementById('pr5k').value = STORE.prs['5k'] || '';
+  document.getElementById('pr10k').value = STORE.prs['10k'] || '';
+  document.getElementById('pr21k').value = STORE.prs['21k'] || '';
+  document.getElementById('pr42k').value = STORE.prs['42k'] || '';
+  document.getElementById('prAnio').value = STORE.prs.anio || '';
+
+  // Show saved indicator if anything stored
+  const hasData = STORE.athlete.nombre || STORE.threshold.dist || Object.values(STORE.prs).some(Boolean) || Object.keys(STORE.races).length;
+  if (hasData) document.getElementById('storageBadge').classList.add('saved');
+
+  refreshRaceSelector();
+
+  // If a current race is loaded, fill its form
+  if (STORE.currentRaceId && STORE.races[STORE.currentRaceId]) {
+    const r = STORE.races[STORE.currentRaceId];
+    fillCarreraInUI(r.carrera);
+    if (r.strategy) {
+      renderStrategy(r.carrera, r.strategy);
+      document.getElementById('strategy').style.display = 'block';
+      document.getElementById('emptyHint').style.display = 'none';
+    }
+  }
+}
+
+// =====================================================================
+// RACE MANAGEMENT
+// =====================================================================
+function saveCurrentRace(carrera, strategy) {
+  if (!STORE.currentRaceId) {
+    STORE.currentRaceId = 'race-' + Date.now().toString(36);
+  }
+  const existing = STORE.races[STORE.currentRaceId] || {};
+  STORE.races[STORE.currentRaceId] = {
+    carrera, strategy,
+    checks: existing.checks || { '72h': {}, '24h': {}, 'dia': {} },
+    updatedAt: new Date().toISOString()
+  };
+  saveStore(STORE);
+  refreshRaceSelector();
+}
+function refreshRaceSelector() {
+  const sel = document.getElementById('raceSelect');
+  sel.innerHTML = '<option value="">— Nueva carrera —</option>';
+  const races = Object.entries(STORE.races).sort((a, b) =>
+    new Date(b[1].updatedAt) - new Date(a[1].updatedAt)
+  );
+  races.forEach(([id, r]) => {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = `${r.carrera.nombre || '(sin nombre)'} · ${r.carrera.distancia}K`;
+    if (id === STORE.currentRaceId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  document.getElementById('deleteRaceBtn').style.display = STORE.currentRaceId ? 'inline-block' : 'none';
+}
+function onRaceSelect() {
+  const sel = document.getElementById('raceSelect');
+  if (!sel.value) { nuevaCarrera(); return; }
+  STORE.currentRaceId = sel.value;
+  saveStore(STORE);
+  const r = STORE.races[STORE.currentRaceId];
+  if (r) {
+    fillCarreraInUI(r.carrera);
+    if (r.strategy) {
+      renderStrategy(r.carrera, r.strategy);
+      document.getElementById('strategy').style.display = 'block';
+      document.getElementById('emptyHint').style.display = 'none';
+    } else {
+      document.getElementById('strategy').style.display = 'none';
+      document.getElementById('emptyHint').style.display = 'block';
+    }
+  }
+  document.getElementById('deleteRaceBtn').style.display = 'inline-block';
+}
+function nuevaCarrera() {
+  STORE.currentRaceId = null;
+  saveStore(STORE);
+  fillCarreraInUI({});
+  document.getElementById('strategy').style.display = 'none';
+  document.getElementById('emptyHint').style.display = 'block';
+  refreshRaceSelector();
+  document.getElementById('cNombre').focus();
+}
+function borrarCarreraActual() {
+  if (!STORE.currentRaceId) return;
+  const r = STORE.races[STORE.currentRaceId];
+  if (!confirm(`¿Borrar "${r?.carrera?.nombre || 'esta carrera'}"? No se puede deshacer.`)) return;
+  delete STORE.races[STORE.currentRaceId];
+  STORE.currentRaceId = null;
+  saveStore(STORE);
+  nuevaCarrera();
+  toast('Carrera borrada');
+}
+
+// =====================================================================
+// UI WIRING
+// =====================================================================
+function wireInputAutoSave() {
+  // Athlete inputs
+  ['aNombre','aEdad','aPeso','aSexo'].forEach(id => {
+    document.getElementById(id).addEventListener('change', syncAthleteFromUI);
+    document.getElementById(id).addEventListener('blur', syncAthleteFromUI);
+  });
+  // Threshold
+  ['tDist','tFc','tFcMax','tFecha'].forEach(id => {
+    document.getElementById(id).addEventListener('change', syncThresholdFromUI);
+    document.getElementById(id).addEventListener('blur', syncThresholdFromUI);
+  });
+  // Lactate
+  ['lt1Pace','lt1Mmol','lt1Fc','lt2Pace','lt2Mmol','lt2Fc','ltFecha'].forEach(id => {
+    document.getElementById(id).addEventListener('change', syncLactateFromUI);
+    document.getElementById(id).addEventListener('blur', syncLactateFromUI);
+  });
+  // PRs
+  ['pr5k','pr10k','pr21k','pr42k','prAnio'].forEach(id => {
+    document.getElementById(id).addEventListener('change', syncPRsFromUI);
+    document.getElementById(id).addEventListener('blur', syncPRsFromUI);
+  });
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// =====================================================================
+// SERVICE WORKER + INIT
+// =====================================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then((reg) => console.log('[Uphill] SW registered:', reg.scope))
+      .catch((err) => console.warn('[Uphill] SW registration failed:', err));
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  restoreUIFromStore();
+  wireInputAutoSave();
+});
+</script>
+
+</body>
+</html>
