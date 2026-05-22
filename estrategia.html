@@ -957,6 +957,18 @@
           </select>
         </div>
       </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Altitud donde vivís (msnm)</label>
+          <input type="number" id="aLiveAlt" min="0" max="4500" step="50" placeholder="1500">
+          <div class="micro">Donde dormís la mayoría de noches. Define tu adaptación base.</div>
+        </div>
+        <div class="input-group">
+          <label>Altitud donde entrenás (msnm)</label>
+          <input type="number" id="aTrainAlt" min="0" max="4500" step="50" placeholder="igual que vivís">
+          <div class="micro">Solo si entrenás significativamente más alto que tu casa.</div>
+        </div>
+      </div>
     </section>
 
     <!-- Threshold -->
@@ -1209,7 +1221,7 @@
         <div class="sub" id="sFcSub">bpm</div>
       </div>
       <div class="summary-card">
-        <div class="label">Ajuste vs. bajura</div>
+        <div class="label">Ajuste vs. tu base</div>
         <div class="value" id="sAjuste">—</div>
         <div class="sub" id="sAjusteSub">altitud + temp + D+</div>
       </div>
@@ -1346,7 +1358,7 @@ function loadStore() {
 }
 function defaultStore() {
   return {
-    athlete: { nombre: '', edad: '', peso: '', sexo: '' },
+    athlete: { nombre: '', edad: '', peso: '', sexo: '', livingAltitude: '', trainingAltitude: '' },
     threshold: { dist: '', fc: '', fcMax: '', fecha: '' },
     lactate: {
       lt1: { pace: '', mmol: '', fc: '' },
@@ -1506,15 +1518,33 @@ function generateScenarios(targetPaceSec, targetTimeSec, fcUmbral, carrera) {
 }
 
 // Adjustments
-function applyAdjustments(basePaceSec, carrera) {
-  const altitud = parseFloat(carrera.altitud) || 0;
+function applyAdjustments(basePaceSec, carrera, atleta) {
+  const raceAlt = parseFloat(carrera.altitud) || 0;
+  const livingAlt = parseFloat(atleta?.livingAltitude) || 0;
+  const trainingAlt = parseFloat(atleta?.trainingAltitude) || livingAlt;
   const dPlus = parseFloat(carrera.dPlus) || 0;
   const temp = parseFloat(carrera.temp);
   const humedad = parseFloat(carrera.humedad);
   const distancia = parseFloat(carrera.distancia);
 
-  // Altitude: above 1000m, +0.5% per 100m
-  const altFactor = altitud > 1000 ? 1 + 0.005 * ((altitud - 1000) / 100) : 1;
+  // Reference altitude (where the athlete is adapted to).
+  // Living altitude is the primary driver; training higher gives partial credit (30%).
+  let refAlt = livingAlt;
+  if (trainingAlt > livingAlt) {
+    refAlt += (trainingAlt - livingAlt) * 0.3;
+  }
+  const altDelta = raceAlt - refAlt;
+
+  // Penalty only if race is meaningfully higher than acclimated altitude (>100m delta).
+  // 0.3%/100m up to +2000m delta, then +0.5%/100m above that (steeper at extreme).
+  let altFactor = 1;
+  if (altDelta > 100) {
+    if (altDelta <= 2000) {
+      altFactor = 1 + 0.003 * (altDelta / 100);
+    } else {
+      altFactor = 1 + 0.003 * 20 + 0.005 * ((altDelta - 2000) / 100);
+    }
+  }
 
   // Temperature: above 15°C, +1% per 5°C
   const tempFactor = (!isNaN(temp) && temp > 15) ? 1 + 0.01 * ((temp - 15) / 5) : 1;
@@ -1532,7 +1562,8 @@ function applyAdjustments(basePaceSec, carrera) {
     paceSec: adjustedPace,
     factors: {
       altitude: altFactor, temperature: tempFactor, humidity: humFactor,
-      dPlusTotalSec: dPlusTotal, dPlusPerKm
+      dPlusTotalSec: dPlusTotal, dPlusPerKm,
+      altDelta, refAlt, raceAlt, livingAlt, trainingAlt
     },
     pctSlowdown: ((adjustedPace / basePaceSec) - 1) * 100
   };
@@ -1856,7 +1887,7 @@ function generarEstrategia() {
   );
   if (!base) { toast('No se pudo calcular el ritmo'); return; }
 
-  const adj = applyAdjustments(base.paceSec, carrera);
+  const adj = applyAdjustments(base.paceSec, carrera, STORE.athlete);
   const fcRef = resolveFcUmbral(STORE.threshold, STORE.lactate);
   const fcUmbral = fcRef.fc;
   const splits = generateSplits(adj.paceSec, fcUmbral, carrera);
@@ -1898,8 +1929,24 @@ function renderStrategy(carrera, s) {
   const pct = s.adj.pctSlowdown;
   document.getElementById('sAjuste').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
   const f = s.adj.factors;
+
+  // Altitude delta description
+  let altDescr;
+  if (f.altDelta > 100) {
+    altDescr = `subís +${Math.round(f.altDelta)}m`;
+  } else if (f.altDelta < -100) {
+    altDescr = `bajás ${Math.round(f.altDelta)}m (favorable)`;
+  } else if (f.refAlt > 0 || f.raceAlt > 0) {
+    altDescr = 'mantenés altitud';
+  } else {
+    altDescr = null;
+  }
+
   const adjParts = [];
-  if (f.altitude > 1.001) adjParts.push(`alt ${((f.altitude-1)*100).toFixed(1)}%`);
+  if (altDescr) {
+    const altPct = f.altitude > 1.001 ? ` ${((f.altitude-1)*100).toFixed(1)}%` : '';
+    adjParts.push(`alt: ${altDescr}${altPct}`);
+  }
   if (f.temperature > 1.001) adjParts.push(`temp ${((f.temperature-1)*100).toFixed(1)}%`);
   if (f.humidity > 1.001) adjParts.push(`hum ${((f.humidity-1)*100).toFixed(1)}%`);
   if (f.dPlusTotalSec > 0) adjParts.push(`D+ ${Math.round(f.dPlusTotalSec)}s`);
@@ -2065,7 +2112,9 @@ function syncAthleteFromUI() {
     nombre: document.getElementById('aNombre').value.trim(),
     edad: document.getElementById('aEdad').value,
     peso: document.getElementById('aPeso').value,
-    sexo: document.getElementById('aSexo').value
+    sexo: document.getElementById('aSexo').value,
+    livingAltitude: document.getElementById('aLiveAlt').value,
+    trainingAltitude: document.getElementById('aTrainAlt').value
   };
   saveStore(STORE);
 }
@@ -2150,6 +2199,8 @@ function restoreUIFromStore() {
   document.getElementById('aEdad').value = STORE.athlete.edad || '';
   document.getElementById('aPeso').value = STORE.athlete.peso || '';
   document.getElementById('aSexo').value = STORE.athlete.sexo || '';
+  document.getElementById('aLiveAlt').value = STORE.athlete.livingAltitude || '';
+  document.getElementById('aTrainAlt').value = STORE.athlete.trainingAltitude || '';
   // Threshold
   document.getElementById('tDist').value = STORE.threshold.dist || '';
   document.getElementById('tFc').value = STORE.threshold.fc || '';
@@ -2275,7 +2326,7 @@ function borrarCarreraActual() {
 // =====================================================================
 function wireInputAutoSave() {
   // Athlete inputs
-  ['aNombre','aEdad','aPeso','aSexo'].forEach(id => {
+  ['aNombre','aEdad','aPeso','aSexo','aLiveAlt','aTrainAlt'].forEach(id => {
     document.getElementById(id).addEventListener('change', syncAthleteFromUI);
     document.getElementById(id).addEventListener('blur', syncAthleteFromUI);
   });
