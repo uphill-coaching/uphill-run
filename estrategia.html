@@ -451,6 +451,142 @@
     color: var(--white);
   }
 
+  /* Source chips (nutrition sources multi-select) */
+  .source-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .source-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 14px;
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--gray-light);
+    user-select: none;
+    transition: all 0.2s;
+  }
+  .source-chip input { display: none; }
+  .source-chip.checked, .source-chip:has(input:checked) {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--white);
+  }
+  .source-chip:hover { border-color: var(--red); }
+
+  /* Nutrition strategy tiers */
+  .nutr-tiers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .nutr-tier {
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--gray);
+    border-radius: 4px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+  }
+  .nutr-tier[data-tier="CONSERVADOR"] { border-top-color: #86EFAC; }
+  .nutr-tier[data-tier="REALISTA"]    { border-top-color: var(--red); }
+  .nutr-tier[data-tier="AGRESIVO"]    { border-top-color: #FDBA74; }
+  .nutr-tier[data-tier="REALISTA"]::before {
+    content: "RECOMENDADO";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--red);
+    color: var(--white);
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+  .nutr-tier .tier-head { display: flex; align-items: baseline; justify-content: space-between; }
+  .nutr-tier .tier-name { font-family: var(--font-impact); font-size: 24px; line-height: 1; }
+  .nutr-tier[data-tier="CONSERVADOR"] .tier-name { color: #86EFAC; }
+  .nutr-tier[data-tier="REALISTA"]    .tier-name { color: var(--red); }
+  .nutr-tier[data-tier="AGRESIVO"]    .tier-name { color: #FDBA74; }
+  .nutr-tier .tier-freq {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+  .nutr-tier .tier-when {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.45;
+    font-style: italic;
+  }
+  .nutr-tier .tier-numbers {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .nutr-tier .num { text-align: center; }
+  .nutr-tier .num .v { font-family: var(--font-impact); font-size: 22px; color: var(--white); line-height: 1; }
+  .nutr-tier .num .l {
+    font-family: var(--font-secondary);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+  .nutr-tier .num .t {
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 2px;
+  }
+  .nutr-tier .recipe {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+  }
+  .nutr-tier .recipe strong { color: var(--white); }
+  .nutr-tier .recipe ul {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 0;
+  }
+  .nutr-tier .recipe li {
+    padding: 4px 0 4px 16px;
+    position: relative;
+    font-size: 12.5px;
+  }
+  .nutr-tier .recipe li::before {
+    content: "•";
+    color: var(--red);
+    position: absolute;
+    left: 4px;
+  }
+  .nutr-tier .warning {
+    font-size: 11.5px;
+    color: #FCA5A5;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(252,165,165,0.3);
+    line-height: 1.45;
+  }
+  .nutr-tier .warning strong { color: #FCA5A5; }
+
   /* Escenarios ABC */
   .scenarios-grid {
     display: grid;
@@ -612,6 +748,8 @@
     .nutr-stats { grid-template-columns: 1fr; }
     .checklist-grid { grid-template-columns: 1fr; gap: 16px; }
     .scenarios-grid { grid-template-columns: 1fr; gap: 14px; }
+    .nutr-tiers { grid-template-columns: 1fr; gap: 22px; }
+    .nutr-tier[data-tier="REALISTA"] { margin-top: 8px; }
     .logo-watermark { display: none; }
     .app { padding-top: 64px; }
     .form-section, .panel { padding: 20px; }
@@ -725,6 +863,26 @@
     .scenario .block .block-title { color: #FF0000 !important; }
     .scenario .block p { color: #16222E !important; }
     .scenario h4 { color: #16222E !important; }
+    .nutr-tiers { gap: 6pt; }
+    .nutr-tier {
+      background: #fafafa !important;
+      border: 1px solid #d4d4d4 !important;
+      color: #16222E !important;
+    }
+    .nutr-tier .tier-name { color: #16222E !important; }
+    .nutr-tier .tier-freq, .nutr-tier .tier-when { color: #555 !important; }
+    .nutr-tier .num .v { color: #16222E !important; }
+    .nutr-tier .num .l, .nutr-tier .num .t { color: #555 !important; }
+    .nutr-tier .recipe { color: #16222E !important; }
+    .nutr-tier .recipe strong { color: #16222E !important; }
+    .nutr-tier[data-tier="REALISTA"]::before {
+      background: #FF0000 !important;
+      color: #fff !important;
+    }
+    .nutr-tier .warning {
+      color: #B91C1C !important;
+      border-top: 1px dashed #B91C1C !important;
+    }
     .timeline li { color: #16222E !important; border-bottom: 0.5pt solid #ddd !important; }
     .timeline li::before { color: #FF0000 !important; }
     .timeline li strong { color: #16222E !important; }
@@ -875,9 +1033,47 @@
       </div>
     </section>
 
-    <!-- PRs -->
+    <!-- Nutrición personalizada -->
     <section class="form-section">
       <div class="section-num">04</div>
+      <h3>NUTRICIÓN PERSONALIZADA <span style="font-size:11px; color:var(--gray); letter-spacing:0.1em; font-family:var(--font-secondary);">(OPCIONAL)</span></h3>
+      <p class="hint">Para atletas experimentados que conocen su tolerancia. Si lo dejás vacío, calculamos desde baseline general.</p>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Tasa de sudoración (ml/h)</label>
+          <input type="number" id="nSweatRate" min="200" max="1500" step="50" placeholder="600">
+          <div class="micro">Medilo: peso antes − peso después del entreno + líquido tomado.</div>
+        </div>
+        <div class="input-group">
+          <label>Carbos máximos tolerados (g/h)</label>
+          <input type="number" id="nCarbsMax" min="20" max="120" step="5" placeholder="60">
+          <div class="micro">El máximo que aguantaste en un entreno largo sin malestar.</div>
+        </div>
+      </div>
+
+      <div class="input-group" style="margin-top:14px;">
+        <label>Fuentes de carbohidratos que usás</label>
+        <div class="source-chips" id="nSources">
+          <label class="source-chip"><input type="checkbox" name="src" value="geles"> Geles</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="isotonico"> Carb mix / Isotónico</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="miel"> Miel</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="frutos"> Frutos (banano / dátiles)</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="barras"> Galletas / barras</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="solida"> Comida sólida</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="otro"> Otro</label>
+        </div>
+      </div>
+
+      <div class="input-group" id="nOtroWrap" style="display:none; margin-top:10px;">
+        <label>Especificá "Otro"</label>
+        <input type="text" id="nOtroText" placeholder="Ej: papilla de avena casera, jugo de mango...">
+      </div>
+    </section>
+
+    <!-- PRs -->
+    <section class="form-section">
+      <div class="section-num">05</div>
       <h3>PRs PREVIOS</h3>
       <p class="hint">Opcional pero recomendado. Mejora la precisión del cálculo cuando hay PR reciente. Formato hh:mm:ss.</p>
 
@@ -911,7 +1107,7 @@
 
     <!-- Carrera -->
     <section class="form-section full-width">
-      <div class="section-num">05</div>
+      <div class="section-num">06</div>
       <h3>TU CARRERA OBJETIVO</h3>
       <p class="hint">Datos de la carrera para ajustar pacing y nutrición a las condiciones reales.</p>
 
@@ -1055,34 +1251,16 @@
       </table>
     </div>
 
-    <!-- Nutrition -->
+    <!-- Nutrition: 3 strategies -->
     <div class="panel">
       <div class="panel-head">
         <div>
           <div class="eyebrow">03 · Nutrición e Hidratación</div>
-          <h3>Durante la carrera</h3>
+          <h3>Tres estrategias · elegí según tu día</h3>
         </div>
         <div class="right-note" id="nDurationNote">—</div>
       </div>
-      <div class="nutr-stats">
-        <div class="nutr-stat">
-          <div class="lbl">Carbohidratos</div>
-          <div class="val" id="nCarbsH">—</div>
-          <div class="unit">g / hora · total <span id="nCarbsTotal">—</span> g</div>
-        </div>
-        <div class="nutr-stat">
-          <div class="lbl">Líquido</div>
-          <div class="val" id="nFluidH">—</div>
-          <div class="unit">ml / hora · total <span id="nFluidTotal">—</span> ml</div>
-        </div>
-        <div class="nutr-stat">
-          <div class="lbl">Sodio</div>
-          <div class="val" id="nSodiumH">—</div>
-          <div class="unit">mg / hora · total <span id="nSodiumTotal">—</span> mg</div>
-        </div>
-      </div>
-      <h4 style="margin: 24px 0 12px; font-size:14px; color:rgba(255,255,255,0.7);">TIMING EN CARRERA</h4>
-      <ul class="timeline" id="nTimeline"></ul>
+      <div class="nutr-tiers" id="nTiers"></div>
     </div>
 
     <!-- Pre-race nutrition -->
@@ -1174,6 +1352,12 @@ function defaultStore() {
       lt1: { pace: '', mmol: '', fc: '' },
       lt2: { pace: '', mmol: '', fc: '' },
       fecha: ''
+    },
+    nutrition: {
+      sweatRate: '',
+      carbsMax: '',
+      sources: [],
+      otroText: ''
     },
     prs: { '5k': '', '10k': '', '21k': '', '42k': '', anio: '' },
     races: {},
@@ -1427,83 +1611,140 @@ function generateSplits(targetPaceSec, fcUmbral, carrera) {
 // =====================================================================
 // NUTRITION
 // =====================================================================
-function generateNutrition(targetTimeSec, atleta, carrera) {
+function generateNutrition(targetTimeSec, atleta, carrera, nutritionProfile) {
   const hours = targetTimeSec / 3600;
-  const temp = parseFloat(carrera.temp);
-  const humedad = parseFloat(carrera.humedad);
   const peso = parseFloat(atleta.peso) || 70;
-
-  // Carbs per hour scales with duration
-  let carbsPerHour;
-  if (hours < 1) carbsPerHour = 20;
-  else if (hours < 1.5) carbsPerHour = 30;
-  else if (hours < 2.5) carbsPerHour = 45;
-  else if (hours < 3.5) carbsPerHour = 60;
-  else carbsPerHour = 80;
-
-  // Fluid intake
-  let fluidPerHour = 500;
-  if (!isNaN(temp)) {
-    if (temp > 20) fluidPerHour = 600;
-    if (temp > 25) fluidPerHour = 700;
-    if (temp > 30) fluidPerHour = 800;
-  }
-  if (!isNaN(humedad) && humedad > 80) fluidPerHour += 100;
-
-  // Sodium
-  let sodiumPerHour = 400;
-  if (hours > 2) sodiumPerHour = 500;
-  if (hours > 3) sodiumPerHour = 700;
-  if (!isNaN(temp) && temp > 25) sodiumPerHour += 200;
 
   // Pre-race carb load: 8g/kg for 36-48h before
   const carbLoadDailyG = Math.round(peso * 8);
 
-  const schedule = generateRaceTimeline(targetTimeSec, carbsPerHour, fluidPerHour);
+  const tiers = generateNutritionStrategies(targetTimeSec, nutritionProfile || {}, carrera);
   const preRace = generatePreRaceTimeline(carrera, atleta, carbLoadDailyG);
 
   return {
-    carbsPerHour, fluidPerHour, sodiumPerHour,
-    totalCarbs: Math.round(carbsPerHour * hours),
-    totalFluid: Math.round(fluidPerHour * hours),
-    totalSodium: Math.round(sodiumPerHour * hours),
+    tiers,
     carbLoadDailyG,
-    schedule, preRace,
+    preRace,
     hours
   };
 }
 
-function generateRaceTimeline(targetTimeSec, carbsPerHour, fluidPerHour) {
-  const items = [];
-  items.push({ time: 'KM 0', text: '<strong>Salida.</strong> Un sorbo de líquido (~150 ml). Nada de comida en este punto.' });
+// Three tiers: CONSERVADOR · REALISTA · AGRESIVO
+function generateNutritionStrategies(targetTimeSec, profile, carrera) {
+  const hours = targetTimeSec / 3600;
+  const temp = parseFloat(carrera.temp);
+  const humedad = parseFloat(carrera.humedad);
 
-  // Schedule: gel every 25-35 min, fluid every 15-20 min
-  const totalMin = targetTimeSec / 60;
-  const carbsPerGel = 25; // assume ~25g per gel
-  const gelInterval = Math.round(60 * carbsPerGel / carbsPerHour);
-
-  for (let min = gelInterval; min < totalMin - 5; min += gelInterval) {
-    const kmAtTime = (min / totalMin) * (targetTimeSec / 60); // approximate
-    items.push({
-      time: `MIN ${min}`,
-      text: `<strong>Gel / carbo ${carbsPerGel}g</strong> + sorbo de agua. Líquido total a este punto: ~${Math.round(fluidPerHour * (min/60))} ml.`
-    });
+  // User-stated carb tolerance OR duration-based default
+  let userCarbsMax = parseFloat(profile.carbsMax);
+  let carbsFromProfile = !!userCarbsMax;
+  if (!userCarbsMax) {
+    if (hours < 1) userCarbsMax = 35;
+    else if (hours < 1.5) userCarbsMax = 50;
+    else if (hours < 2.5) userCarbsMax = 65;
+    else if (hours < 3.5) userCarbsMax = 80;
+    else userCarbsMax = 95;
   }
 
-  // Fluid checkpoints (every 5km approximately)
-  items.push({
-    time: 'CADA PUESTO',
-    text: `<strong>${Math.round(fluidPerHour/3)} ml de líquido</strong> (2-3 sorbos largos). Si está caliente, una pizca de sal o bebida isotónica.`
+  // User-stated sweat rate OR derived from conditions
+  let userSweat = parseFloat(profile.sweatRate);
+  let sweatFromProfile = !!userSweat;
+  if (!userSweat) {
+    userSweat = 600;
+    if (!isNaN(temp) && temp > 20) userSweat = 750;
+    if (!isNaN(temp) && temp > 25) userSweat = 900;
+    if (!isNaN(humedad) && humedad > 80) userSweat += 80;
+  }
+
+  const sources = (profile.sources && profile.sources.length) ? profile.sources : ['geles', 'isotonico'];
+  const otroText = profile.otroText || '';
+
+  const tierDefs = [
+    {
+      tier: 'CONSERVADOR',
+      carbsFactor: 0.65, fluidFactor: 0.80,
+      sodiumBase: 400, freq: 35,
+      when: 'Día caluroso, primera vez en esta distancia, o si el estómago anda dudoso.',
+      risk: null
+    },
+    {
+      tier: 'REALISTA',
+      carbsFactor: 0.88, fluidFactor: 0.95,
+      sodiumBase: 550, freq: 25,
+      when: 'Día normal, condiciones esperadas, plan ejecutado. Tu punto de partida.',
+      risk: null
+    },
+    {
+      tier: 'AGRESIVO',
+      carbsFactor: 1.05, fluidFactor: 1.05,
+      sodiumBase: 700, freq: 20,
+      when: 'Día fresco, vas por PB, condiciones óptimas y entrenaste a este ritmo de ingesta.',
+      risk: 'Solo si ya tomaste esta cantidad sin malestar en al menos 2 rodajes largos.'
+    }
+  ];
+
+  return tierDefs.map(t => {
+    const carbsPerHour = Math.round(userCarbsMax * t.carbsFactor);
+    let fluidPerHour = Math.round(userSweat * t.fluidFactor);
+    fluidPerHour = Math.min(1000, Math.max(300, fluidPerHour));
+    let sodiumPerHour = t.sodiumBase;
+    if (!isNaN(temp) && temp > 25) sodiumPerHour += 200;
+    if (hours > 3) sodiumPerHour += 100;
+
+    return {
+      tier: t.tier,
+      carbsPerHour, fluidPerHour, sodiumPerHour,
+      totalCarbs: Math.round(carbsPerHour * hours),
+      totalFluid: Math.round(fluidPerHour * hours),
+      totalSodium: Math.round(sodiumPerHour * hours),
+      freq: t.freq,
+      recipe: buildRecipeFromSources(carbsPerHour, fluidPerHour, sources, otroText, hours),
+      when: t.when,
+      risk: t.risk,
+      basedOnProfile: { carbs: carbsFromProfile, sweat: sweatFromProfile }
+    };
   });
+}
 
-  if (totalMin > 90) {
-    items.push({
-      time: 'KM 15-18',
-      text: '<strong>Carbo extra si sentís bajón.</strong> Si tu fc cae sin razón aparente, gel inmediato + 30 segundos de paso un poco menor para procesar.'
-    });
-  }
+// Returns array of recipe lines like ["4 geles", "1 botella isotónica", ...]
+function buildRecipeFromSources(carbsPerHour, fluidPerHour, sources, otroText, hours) {
+  const totalCarbs = carbsPerHour * hours;
+  const totalFluid = fluidPerHour * hours;
 
-  items.push({ time: 'META', text: '<strong>200-400 ml de líquido + carbo simple.</strong> Plátano, gel, bebida deportiva. La ventana de recuperación es 30 min.' });
+  const SRC = {
+    geles:     { name: 'gel',                       plural: 'geles',                       g: 25 },
+    isotonico: { name: 'botella de isotónico',      plural: 'botellas de isotónico',       g: 30, fluid: 500 },
+    miel:      { name: 'cda de miel',               plural: 'cdas de miel',                g: 18 },
+    frutos:    { name: 'fruto (banano/dátiles)',    plural: 'frutos (banano/dátiles)',     g: 22 },
+    barras:    { name: 'barrita',                   plural: 'barritas',                    g: 28 },
+    solida:    { name: 'porción sólida',            plural: 'porciones sólidas',           g: 30 },
+    otro:      { name: otroText || 'fuente custom', plural: otroText || 'fuentes custom',  g: 22 }
+  };
+
+  // Distribute carbs across selected sources, weighted toward geles + isotonico as primary
+  const primaryOrder = ['geles', 'isotonico', 'miel', 'frutos', 'barras', 'solida', 'otro'];
+  const selected = primaryOrder.filter(s => sources.includes(s));
+
+  if (selected.length === 0) return ['Sin fuentes seleccionadas — definí tus preferidas en el form'];
+
+  // Weights: primary sources get larger share
+  const weights = selected.map((s, i) => {
+    if (s === 'isotonico') return 0.30; // always significant for fluid + carbs
+    if (s === 'geles') return 0.40;
+    return 0.15;
+  });
+  const wSum = weights.reduce((a, b) => a + b, 0);
+
+  const items = selected.map((src, i) => {
+    const carbs = totalCarbs * (weights[i] / wSum);
+    let count = Math.max(1, Math.round(carbs / SRC[src].g));
+    // For isotonico, derive count from fluid (1 bottle = 500ml)
+    if (src === 'isotonico') {
+      count = Math.max(1, Math.round(totalFluid * 0.6 / 500));
+    }
+    const label = count === 1 ? SRC[src].name : SRC[src].plural;
+    return `${count} ${label}`;
+  });
 
   return items;
 }
@@ -1592,6 +1833,7 @@ function generarEstrategia() {
   syncAthleteFromUI();
   syncThresholdFromUI();
   syncLactateFromUI();
+  syncNutritionFromUI();
   syncPRsFromUI();
   const carrera = readCarreraFromUI();
 
@@ -1620,7 +1862,7 @@ function generarEstrategia() {
   const splits = generateSplits(adj.paceSec, fcUmbral, carrera);
   const targetTime = adj.paceSec * parseFloat(carrera.distancia);
   const scenarios = generateScenarios(adj.paceSec, targetTime, fcUmbral, carrera);
-  const nutrition = generateNutrition(targetTime, STORE.athlete, carrera);
+  const nutrition = generateNutrition(targetTime, STORE.athlete, carrera, STORE.nutrition);
   const checklist = generateChecklist(carrera, targetTime, STORE.athlete);
 
   const strategy = { base, adj, splits, targetTime, scenarios, nutrition, checklist, fcRef, generatedAt: new Date().toISOString() };
@@ -1725,21 +1967,46 @@ function renderStrategy(carrera, s) {
     pBody.appendChild(tr);
   });
 
-  // Nutrition
+  // Nutrition: 3 tiers
   document.getElementById('nDurationNote').textContent = `Para ${secondsToHMS(s.targetTime)} de carrera`;
-  document.getElementById('nCarbsH').textContent = s.nutrition.carbsPerHour;
-  document.getElementById('nCarbsTotal').textContent = s.nutrition.totalCarbs;
-  document.getElementById('nFluidH').textContent = s.nutrition.fluidPerHour;
-  document.getElementById('nFluidTotal').textContent = s.nutrition.totalFluid;
-  document.getElementById('nSodiumH').textContent = s.nutrition.sodiumPerHour;
-  document.getElementById('nSodiumTotal').textContent = s.nutrition.totalSodium;
-
-  const nTimeline = document.getElementById('nTimeline');
-  nTimeline.innerHTML = '';
-  s.nutrition.schedule.forEach(it => {
-    const li = document.createElement('li');
-    li.innerHTML = `<strong style="color:var(--red); font-family:var(--font-secondary); letter-spacing:0.12em; font-size:12px;">${it.time}</strong><br>${it.text}`;
-    nTimeline.appendChild(li);
+  const nTiers = document.getElementById('nTiers');
+  nTiers.innerHTML = '';
+  s.nutrition.tiers.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'nutr-tier';
+    card.dataset.tier = t.tier;
+    const recipeHtml = t.recipe.map(r => `<li>${r}</li>`).join('');
+    const warning = t.risk ? `<div class="warning"><strong>⚠️ Atención:</strong> ${t.risk}</div>` : '';
+    card.innerHTML = `
+      <div class="tier-head">
+        <div class="tier-name">${t.tier}</div>
+        <div class="tier-freq">cada ${t.freq} min</div>
+      </div>
+      <div class="tier-when">${t.when}</div>
+      <div class="tier-numbers">
+        <div class="num">
+          <div class="v">${t.carbsPerHour}</div>
+          <div class="l">Carbos</div>
+          <div class="t">g/h · ${t.totalCarbs}g tot</div>
+        </div>
+        <div class="num">
+          <div class="v">${t.fluidPerHour}</div>
+          <div class="l">Líquido</div>
+          <div class="t">ml/h · ${t.totalFluid}ml tot</div>
+        </div>
+        <div class="num">
+          <div class="v">${t.sodiumPerHour}</div>
+          <div class="l">Sodio</div>
+          <div class="t">mg/h · ${t.totalSodium}mg tot</div>
+        </div>
+      </div>
+      <div class="recipe">
+        <strong>Recipe total para la carrera:</strong>
+        <ul>${recipeHtml}</ul>
+      </div>
+      ${warning}
+    `;
+    nTiers.appendChild(card);
   });
 
   const nPreRace = document.getElementById('nPreRace');
@@ -1827,6 +2094,19 @@ function syncLactateFromUI() {
   };
   saveStore(STORE);
 }
+function syncNutritionFromUI() {
+  const sources = Array.from(document.querySelectorAll('#nSources input[name="src"]:checked'))
+    .map(i => i.value);
+  STORE.nutrition = {
+    sweatRate: document.getElementById('nSweatRate').value,
+    carbsMax: document.getElementById('nCarbsMax').value,
+    sources,
+    otroText: document.getElementById('nOtroText').value.trim()
+  };
+  // Show/hide "Otro" text input
+  document.getElementById('nOtroWrap').style.display = sources.includes('otro') ? 'flex' : 'none';
+  saveStore(STORE);
+}
 function syncPRsFromUI() {
   STORE.prs = {
     '5k': document.getElementById('pr5k').value.trim(),
@@ -1884,6 +2164,17 @@ function restoreUIFromStore() {
   document.getElementById('lt2Mmol').value = lt.lt2?.mmol || '';
   document.getElementById('lt2Fc').value = lt.lt2?.fc || '';
   document.getElementById('ltFecha').value = lt.fecha || '';
+  // Nutrition profile
+  const np = STORE.nutrition || { sources: [] };
+  document.getElementById('nSweatRate').value = np.sweatRate || '';
+  document.getElementById('nCarbsMax').value = np.carbsMax || '';
+  document.getElementById('nOtroText').value = np.otroText || '';
+  const npSources = np.sources || [];
+  document.querySelectorAll('#nSources input[name="src"]').forEach(input => {
+    input.checked = npSources.includes(input.value);
+    input.closest('.source-chip').classList.toggle('checked', input.checked);
+  });
+  document.getElementById('nOtroWrap').style.display = npSources.includes('otro') ? 'flex' : 'none';
   // PRs
   document.getElementById('pr5k').value = STORE.prs['5k'] || '';
   document.getElementById('pr10k').value = STORE.prs['10k'] || '';
@@ -1997,6 +2288,17 @@ function wireInputAutoSave() {
   ['lt1Pace','lt1Mmol','lt1Fc','lt2Pace','lt2Mmol','lt2Fc','ltFecha'].forEach(id => {
     document.getElementById(id).addEventListener('change', syncLactateFromUI);
     document.getElementById(id).addEventListener('blur', syncLactateFromUI);
+  });
+  // Nutrition profile
+  ['nSweatRate','nCarbsMax','nOtroText'].forEach(id => {
+    document.getElementById(id).addEventListener('change', syncNutritionFromUI);
+    document.getElementById(id).addEventListener('blur', syncNutritionFromUI);
+  });
+  document.querySelectorAll('#nSources input[name="src"]').forEach(input => {
+    input.addEventListener('change', () => {
+      input.closest('.source-chip').classList.toggle('checked', input.checked);
+      syncNutritionFromUI();
+    });
   });
   // PRs
   ['pr5k','pr10k','pr21k','pr42k','prAnio'].forEach(id => {
