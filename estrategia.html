@@ -1395,9 +1395,140 @@
       </div>
     </section>
 
+    <!-- Últimas 3 carreras -->
+    <section class="form-section">
+      <div class="section-num">06</div>
+      <h3>TUS ÚLTIMAS CARRERAS <span style="font-size:11px; color:var(--gray); letter-spacing:0.1em; font-family:var(--font-secondary);">(OPCIONAL · ESENCIAL PARA ULTRAS)</span></h3>
+      <p class="hint">Para ultras, el test de threshold no captura tu capacidad de larga duración. Ingresá hasta 3 carreras recientes — son el mejor predictor real.</p>
+
+      <div class="past-races">
+        <div class="past-race">
+          <div class="pr-head">
+            <span class="pr-label">Carrera 1 · más reciente</span>
+          </div>
+          <div class="input-row">
+            <div class="input-group">
+              <label>Nombre (opcional)</label>
+              <input type="text" id="r1Name" placeholder="Ej: Acatenango Trail 50K">
+            </div>
+            <div class="input-group">
+              <label>Distancia (km)</label>
+              <input type="number" id="r1Dist" step="0.1" min="1" max="500" placeholder="50">
+            </div>
+          </div>
+          <div class="input-row triple">
+            <div class="input-group">
+              <label>D+ (m)</label>
+              <input type="number" id="r1Dplus" min="0" max="15000" placeholder="2400">
+            </div>
+            <div class="input-group">
+              <label>Tiempo total</label>
+              <input type="text" id="r1Time" placeholder="08:45:00" class="pace-input">
+            </div>
+            <div class="input-group">
+              <label>Rendimiento (1-10)</label>
+              <select id="r1Rating">
+                <option value="">—</option>
+                <option value="10">10 · día perfecto</option>
+                <option value="9">9 · excelente</option>
+                <option value="8">8 · muy bien</option>
+                <option value="7">7 · bien</option>
+                <option value="6">6 · ok</option>
+                <option value="5">5 · regular</option>
+                <option value="4">4 · flojo</option>
+                <option value="3">3 · malo</option>
+                <option value="2">2 · muy malo</option>
+                <option value="1">1 · terrible</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="past-race">
+          <div class="pr-head"><span class="pr-label">Carrera 2</span></div>
+          <div class="input-row">
+            <div class="input-group">
+              <label>Nombre (opcional)</label>
+              <input type="text" id="r2Name" placeholder="Ej: Media Maratón Antigua">
+            </div>
+            <div class="input-group">
+              <label>Distancia (km)</label>
+              <input type="number" id="r2Dist" step="0.1" min="1" max="500" placeholder="21.1">
+            </div>
+          </div>
+          <div class="input-row triple">
+            <div class="input-group">
+              <label>D+ (m)</label>
+              <input type="number" id="r2Dplus" min="0" max="15000" placeholder="350">
+            </div>
+            <div class="input-group">
+              <label>Tiempo total</label>
+              <input type="text" id="r2Time" placeholder="01:45:00" class="pace-input">
+            </div>
+            <div class="input-group">
+              <label>Rendimiento (1-10)</label>
+              <select id="r2Rating">
+                <option value="">—</option>
+                <option value="10">10 · día perfecto</option>
+                <option value="9">9 · excelente</option>
+                <option value="8">8 · muy bien</option>
+                <option value="7">7 · bien</option>
+                <option value="6">6 · ok</option>
+                <option value="5">5 · regular</option>
+                <option value="4">4 · flojo</option>
+                <option value="3">3 · malo</option>
+                <option value="2">2 · muy malo</option>
+                <option value="1">1 · terrible</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="past-race">
+          <div class="pr-head"><span class="pr-label">Carrera 3</span></div>
+          <div class="input-row">
+            <div class="input-group">
+              <label>Nombre (opcional)</label>
+              <input type="text" id="r3Name" placeholder="Ej: Ultra Atitlán 80K">
+            </div>
+            <div class="input-group">
+              <label>Distancia (km)</label>
+              <input type="number" id="r3Dist" step="0.1" min="1" max="500" placeholder="80">
+            </div>
+          </div>
+          <div class="input-row triple">
+            <div class="input-group">
+              <label>D+ (m)</label>
+              <input type="number" id="r3Dplus" min="0" max="15000" placeholder="4200">
+            </div>
+            <div class="input-group">
+              <label>Tiempo total</label>
+              <input type="text" id="r3Time" placeholder="14:20:00" class="pace-input">
+            </div>
+            <div class="input-group">
+              <label>Rendimiento (1-10)</label>
+              <select id="r3Rating">
+                <option value="">—</option>
+                <option value="10">10 · día perfecto</option>
+                <option value="9">9 · excelente</option>
+                <option value="8">8 · muy bien</option>
+                <option value="7">7 · bien</option>
+                <option value="6">6 · ok</option>
+                <option value="5">5 · regular</option>
+                <option value="4">4 · flojo</option>
+                <option value="3">3 · malo</option>
+                <option value="2">2 · muy malo</option>
+                <option value="1">1 · terrible</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Carrera -->
     <section class="form-section full-width">
-      <div class="section-num">06</div>
+      <div class="section-num">07</div>
       <h3>TU CARRERA OBJETIVO</h3>
       <p class="hint">Datos de la carrera para ajustar pacing y nutrición a las condiciones reales.</p>
 
@@ -1474,6 +1605,42 @@
         <div class="input-group">
           <label>Notas de ruta (opcional)</label>
           <textarea id="cNotas" placeholder="Ej: Giro 180° en km 15. Cuesta empinada de 600m al km 18. Bebederos cada 3km..."></textarea>
+        </div>
+      </div>
+
+      <!-- Ultra-specific questions: shown only when distance > 50 km -->
+      <div class="advanced-block" id="ultraBlock" style="display:none;">
+        <div class="advanced-header">
+          <div class="advanced-eyebrow">Ultra · datos para distancias +50K</div>
+          <h4>EXPERIENCIA Y LOGÍSTICA DE LA ULTRA</h4>
+          <p>
+            En ultras la experiencia y los puestos de abastecimiento son tan determinantes
+            como el ritmo. Estos campos ajustan tu predicción y suman el tiempo realista
+            que vas a parar en puestos.
+          </p>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>¿Cuántas veces hiciste esta distancia?</label>
+            <input type="number" id="cVecesEstaDist" min="0" max="50" placeholder="0">
+            <div class="micro">0 = primera vez (estimación más conservadora). 3+ = predicción más optimista.</div>
+          </div>
+          <div class="input-group">
+            <label>Distancia más larga corrida (km)</label>
+            <input type="number" id="cDistanciaMaxima" min="0" max="500" placeholder="50">
+            <div class="micro">Si esta carrera es más larga, agregamos un margen de "territorio desconocido".</div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Cantidad de puestos de abastecimiento</label>
+            <input type="number" id="cCantidadPuestos" min="0" max="50" placeholder="8">
+          </div>
+          <div class="input-group">
+            <label>Tiempo promedio en cada puesto (min)</label>
+            <input type="number" id="cTiempoPorPuesto" min="0" max="60" step="0.5" placeholder="3">
+            <div class="micro">Conservador: 2-3 min/puesto. Si te sentás a comer/descansar: 5-10 min.</div>
+          </div>
         </div>
       </div>
 
@@ -1887,6 +2054,37 @@ const TERRENO_FACTORS = {
   'trail-muy-tecnico': { factor: 1.35, label: 'trail muy técnico' }
 };
 
+// Per-terrain D+ cost: fraction of flat pace added per 100m D+.
+// Trail técnico uses the "1km equivalent per 100m D+" rule (factor = 1.0).
+// Road / mild terrain use a fraction of that since climbs stay runnable.
+const TERRENO_DPLUS_FACTOR = {
+  'asfalto':           0.15,
+  'mixto':             0.40,
+  'trail-suave':       0.70,
+  'trail-tecnico':     1.00,
+  'trail-muy-tecnico': 1.30
+};
+
+// =====================================================================
+// FATIGUE FACTOR (long-duration trail races)
+// =====================================================================
+// Returns pace multiplier accumulated due to fatigue. Only kicks in for
+// trail races > 3h. Cumulative bands grow steeper as duration extends.
+function computeFatigueFactor(estimatedTimeSec, distanciaKm, terrainKey) {
+  const hours = estimatedTimeSec / 3600;
+  const isRoad = terrainKey === 'asfalto';
+  if (hours <= 3) return 1.00;
+  if (distanciaKm <= 30 && isRoad) return 1.00; // road half/full marathons are bounded by Riegel
+
+  let extra = 0;
+  if (hours > 3)  extra += Math.min(5, hours - 3) * 0.012;  // hrs 3-8: +1.2% per hour
+  if (hours > 8)  extra += Math.min(8, hours - 8) * 0.018;  // hrs 8-16: +1.8% per hour
+  if (hours > 16) extra += Math.min(8, hours - 16) * 0.025; // hrs 16-24: +2.5% per hour
+  if (hours > 24) extra += (hours - 24) * 0.030;            // hrs 24+: +3% per hour (sleep deprivation)
+
+  return 1 + Math.min(extra, 0.60); // cap at +60% slowdown
+}
+
 // =====================================================================
 // PRESET BUTTONS (distance)
 // =====================================================================
@@ -1895,6 +2093,7 @@ function setDistanciaPreset(btn, val) {
   document.getElementById('cDistancia').dispatchEvent(new Event('change'));
   document.querySelectorAll('.preset-row button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  toggleUltraBlock();
 }
 
 // =====================================================================
@@ -1926,6 +2125,11 @@ function defaultStore() {
       otroText: ''
     },
     prs: { '5k': '', '10k': '', '21k': '', '42k': '', anio: '' },
+    pastRaces: [
+      { name: '', distancia: '', dPlus: '', tiempo: '', rating: '' },
+      { name: '', distancia: '', dPlus: '', tiempo: '', rating: '' },
+      { name: '', distancia: '', dPlus: '', tiempo: '', rating: '' }
+    ],
     races: {},
     currentRaceId: null
   };
@@ -1971,48 +2175,84 @@ function secondsToMSPace(sec) {
 // =====================================================================
 // Riegel: T2 = T1 * (D2/D1)^1.06
 function riegelPredict(timeSec, fromDist, toDist) {
+  // Kept for backwards compat; new code should use riegelPredictVar
   return timeSec * Math.pow(toDist / fromDist, 1.06);
 }
 
-// Returns base race pace (sec/km) from best available source: lactate LT2 > PR > threshold test
+// Variable Riegel exponent based on distance. The classic 1.06 underestimates
+// fatigue for ultras; use steeper exponent as distance grows.
+function riegelExponent(d1, d2) {
+  const maxD = Math.max(d1, d2);
+  if (maxD < 22)  return 1.06;
+  if (maxD < 45)  return 1.08;
+  if (maxD < 80)  return 1.12;
+  if (maxD < 120) return 1.16;
+  return 1.20;
+}
+
+function riegelPredictVar(timeSec, fromDist, toDist) {
+  return timeSec * Math.pow(toDist / fromDist, riegelExponent(fromDist, toDist));
+}
+
+// Subjective rating correction: 10 = no correction (perfect day = real potential),
+// 5 = 6% potential improvement, 1 = ~11% potential improvement
+function subjectiveCorrection(rating) {
+  const r = Math.max(1, Math.min(10, parseFloat(rating) || 7));
+  return 1 - ((10 - r) * 0.012);
+}
+
+// Predict target race time from a single past race result.
+// The past race's time ALREADY includes its own terrain, D+, climate, etc.
+// So we don't decompose those — we trust the past time as a direct signal.
+// We only apply: subjective correction (project to good day) + Riegel distance scaling.
+function predictFromPastRace(race, targetDistKm) {
+  const pastTimeSec = parseTimeToSeconds(race.tiempo);
+  const pastDist = parseFloat(race.distancia);
+  if (!pastTimeSec || !pastDist || pastDist <= 0) return null;
+  const correction = subjectiveCorrection(race.rating);
+  const correctedTime = pastTimeSec * correction;
+  const scaledTime = riegelPredictVar(correctedTime, pastDist, targetDistKm);
+  return { timeSec: scaledTime, paceSec: scaledTime / targetDistKm };
+}
+
+// Returns BASELINE flat-road pace (sec/km) from LT2 / PRs / threshold.
+// This is the "ideal flat road" prediction — applyAdjustments will then add
+// terrain/D+/altitude/climate/fatigue. Past races are handled separately.
 function basePaceFromInputs(threshold, prs, lactate, targetDistKm) {
   const candidates = [];
+  const isUltraTarget = targetDistKm > 42;
 
-  // LT2 (anaerobic threshold) — most precise reference if available.
-  // LT2 pace approximates a ~1 hour race effort. Use Riegel from 1h race equivalent.
   const lt2PaceSec = parseTimeToSeconds(lactate?.lt2?.pace);
   if (lt2PaceSec) {
-    // LT2 pace ≈ 1-hour race pace for trained athletes (typical assumption)
-    // So "equivalent time at LT2 pace for 1h = 3600 sec, distance = 3600 / lt2PaceSec"
     const lt2Dist = 3600 / lt2PaceSec;
-    const predicted = riegelPredict(3600, lt2Dist, targetDistKm);
-    candidates.push({ source: 'Lactato LT2', predicted, weight: 2.0, fromDist: lt2Dist });
+    const predicted = riegelPredictVar(3600, lt2Dist, targetDistKm);
+    const w = isUltraTarget ? 0.8 : 2.0;
+    candidates.push({ source: 'Lactato LT2', predicted, weight: w, fromDist: lt2Dist });
   }
 
-  // PRs: each gives a Riegel prediction to target distance
   const prMap = { '5k': 5, '10k': 10, '21k': 21.1, '42k': 42.2 };
   for (const [k, d] of Object.entries(prMap)) {
     const sec = parseTimeToSeconds(prs[k]);
     if (sec && sec > 0) {
       const distRatio = Math.max(d, targetDistKm) / Math.min(d, targetDistKm);
-      const weight = 1.2 / Math.pow(distRatio, 0.5);
-      const predicted = riegelPredict(sec, d, targetDistKm);
+      let weight = 1.2 / Math.pow(distRatio, 0.5);
+      if (isUltraTarget) weight *= 0.7;
+      const predicted = riegelPredictVar(sec, d, targetDistKm);
       candidates.push({ source: 'PR ' + k, predicted, weight, fromDist: d });
     }
   }
 
-  // Threshold test (20-min): treat as a 20-min effort of distance threshold.dist
   if (threshold.dist && threshold.fc) {
     const sec = 20 * 60;
     const d = parseFloat(threshold.dist);
     if (d > 0) {
-      const predicted = riegelPredict(sec, d, targetDistKm);
-      candidates.push({ source: 'Threshold 20min', predicted, weight: 1.0, fromDist: d });
+      const predicted = riegelPredictVar(sec, d, targetDistKm);
+      const w = isUltraTarget ? 0.5 : 1.0;
+      candidates.push({ source: 'Threshold 20min', predicted, weight: w, fromDist: d });
     }
   }
 
   if (candidates.length === 0) return null;
-
   const totalWeight = candidates.reduce((a, c) => a + c.weight, 0);
   const weightedTime = candidates.reduce((a, c) => a + c.predicted * c.weight, 0) / totalWeight;
   return {
@@ -2034,42 +2274,88 @@ function resolveFcUmbral(threshold, lactate) {
 // =====================================================================
 // ESCENARIOS A · B · C
 // =====================================================================
-function generateScenarios(targetPaceSec, targetTimeSec, fcUmbral, carrera) {
-  // Pace multipliers: A faster (good day), B on plan, C slower (survival)
-  const tiers = [
-    {
-      tier: 'A', label: 'Día Perfecto',
-      paceFactor: 0.97, fcPct: 0.94,
-      title: 'TODO ENCAJA. LAS PIERNAS RESPONDEN.',
-      feels: 'Esfuerzo presente pero "fácil". La respiración es ritmo 2:2 sin pedirla, los hombros están bajos, podés decir frases cortas sin cortarte. La mente está limpia, sin negociar.',
-      looks: 'Postura erguida, mirada lejos (15-20m), brazada relajada, cadencia 175-180 spm fluida. Estás pasando a gente sin acelerar conscientemente. Los kilómetros se sienten "cortos".',
-      doIt: 'NO acelerés porque te sentís bien. Respetá tu plan hasta el km 15 (en 21K) o km 30 (en 42K). Recién en el último tercio, si TODO sigue, empujás progresivamente. La trampa es regalar el día perfecto saliendo rápido.'
-    },
-    {
-      tier: 'B', label: 'Plan Ejecutado',
-      paceFactor: 1.00, fcPct: 0.96,
-      title: 'ESTÁS EN EL PLAN. ACÁ SE DEFINE.',
-      feels: 'Esfuerzo claro pero sostenible. La respiración pide foco. Conversación monosílaba — sí, no, "vamos". Las piernas saben que están trabajando. Aparecen pensamientos negativos cíclicos: ignoralos.',
-      looks: 'Cadencia estable, hombros que tendés a subir (bajalos cada 500m), mirada 15m adelante. Cuerpo en compromiso técnico. La técnica empieza a degradarse del km 14 (21K) o km 30 (42K).',
-      doIt: 'Disciplina sobre motivación. Repetí tu mantra. Un km a la vez. Esta es la zona donde se gana o se pierde la carrera. Hidratación + carbos a tiempo, no esperés a sentir la falta. Checkpoint cada 500m: hombros, mirada, mandíbula.'
-    },
-    {
-      tier: 'C', label: 'Día de Sobrevivir',
-      paceFactor: 1.04, fcPct: 0.98,
-      title: 'EL CUERPO NO RESPONDE COMO ESPERABAS.',
-      feels: 'Cada km pesa más que el anterior. Las piernas pierden resorte. La cabeza pregunta "¿por qué?". La respiración se vuelve corta, irregular. Aparece la duda: "¿abandono?". RESPUESTA: no.',
-      looks: 'Postura empieza a caer, hombros suben, zancada se acorta y se vuelve menos eficiente, mirada al piso. La cadencia baja. Aparece el balanceo lateral. Otros te empiezan a pasar.',
-      doIt: 'NO entres en pánico. Bajá ritmo 10-15s/km y RESPIRÁ profundo 30 segundos. Carbohidrato extra (gel inmediato + sorbo de líquido). Pasos cortos, mantené cadencia aunque baje el pace. Mirá al frente. Terminar es ganar. Ajustá el objetivo al día que tenés.'
-    }
-  ];
+// Distance-aware pace factors. Ultras have wider spread because asymmetric:
+// best case is bounded (physiology), worst case has long tail (GI, weather,
+// muscle fatigue, sleep deprivation, etc).
+function getScenarioFactors(distancia) {
+  if (distancia <= 30)  return { A: 0.97, B: 1.00, C: 1.04 }; // road/short
+  if (distancia <= 50)  return { A: 0.95, B: 1.00, C: 1.09 }; // marathon → ultra
+  if (distancia <= 80)  return { A: 0.93, B: 1.00, C: 1.14 }; // 50K → 80K
+  if (distancia <= 120) return { A: 0.91, B: 1.00, C: 1.22 }; // 100K
+  return { A: 0.89, B: 1.00, C: 1.30 };                       // 100mi+
+}
 
-  return tiers.map(t => {
-    const pace = targetPaceSec * t.paceFactor;
-    const time = targetTimeSec * t.paceFactor;
-    const fc = fcUmbral ? Math.round(fcUmbral * t.fcPct) : null;
-    return { ...t, paceSec: pace, timeSec: time, fc };
+function generateScenarios(targetPaceSec, targetTimeSec, fcUmbral, carrera) {
+  const distancia = parseFloat(carrera.distancia) || 21;
+  const factors = getScenarioFactors(distancia);
+  const isUltra = distancia > 50;
+  const isMega = distancia > 100;
+
+  // Distance-specific narrative content
+  const scenarios = isUltra ? ULTRA_SCENARIOS : STANDARD_SCENARIOS;
+
+  return ['A', 'B', 'C'].map(letter => {
+    const data = scenarios[letter];
+    const paceFactor = factors[letter];
+    const fcPct = data.fcPct;
+    return {
+      ...data,
+      tier: letter,
+      paceFactor,
+      paceSec: targetPaceSec * paceFactor,
+      timeSec: targetTimeSec * paceFactor,
+      fc: fcUmbral ? Math.round(fcUmbral * fcPct) : null
+    };
   });
 }
+
+const STANDARD_SCENARIOS = {
+  A: {
+    label: 'Día Perfecto', fcPct: 0.94,
+    title: 'TODO ENCAJA. LAS PIERNAS RESPONDEN.',
+    feels: 'Esfuerzo presente pero "fácil". La respiración es ritmo 2:2 sin pedirla, los hombros están bajos, podés decir frases cortas sin cortarte. La mente está limpia, sin negociar.',
+    looks: 'Postura erguida, mirada lejos (15-20m), brazada relajada, cadencia 175-180 spm fluida. Estás pasando a gente sin acelerar conscientemente. Los kilómetros se sienten "cortos".',
+    doIt: 'NO acelerés porque te sentís bien. Respetá tu plan hasta el km 15 (en 21K) o km 30 (en 42K). Recién en el último tercio, si TODO sigue, empujás progresivamente. La trampa es regalar el día perfecto saliendo rápido.'
+  },
+  B: {
+    label: 'Plan Ejecutado', fcPct: 0.96,
+    title: 'ESTÁS EN EL PLAN. ACÁ SE DEFINE.',
+    feels: 'Esfuerzo claro pero sostenible. La respiración pide foco. Conversación monosílaba — sí, no, "vamos". Las piernas saben que están trabajando. Aparecen pensamientos negativos cíclicos: ignoralos.',
+    looks: 'Cadencia estable, hombros que tendés a subir (bajalos cada 500m), mirada 15m adelante. Cuerpo en compromiso técnico. La técnica empieza a degradarse del km 14 (21K) o km 30 (42K).',
+    doIt: 'Disciplina sobre motivación. Repetí tu mantra. Un km a la vez. Esta es la zona donde se gana o se pierde la carrera. Hidratación + carbos a tiempo, no esperés a sentir la falta. Checkpoint cada 500m: hombros, mirada, mandíbula.'
+  },
+  C: {
+    label: 'Día de Sobrevivir', fcPct: 0.98,
+    title: 'EL CUERPO NO RESPONDE COMO ESPERABAS.',
+    feels: 'Cada km pesa más que el anterior. Las piernas pierden resorte. La cabeza pregunta "¿por qué?". La respiración se vuelve corta, irregular. Aparece la duda: "¿abandono?". RESPUESTA: no.',
+    looks: 'Postura empieza a caer, hombros suben, zancada se acorta y se vuelve menos eficiente, mirada al piso. La cadencia baja. Aparece el balanceo lateral. Otros te empiezan a pasar.',
+    doIt: 'NO entres en pánico. Bajá ritmo 10-15s/km y RESPIRÁ profundo 30 segundos. Carbohidrato extra (gel inmediato + sorbo de líquido). Pasos cortos, mantené cadencia aunque baje el pace. Mirá al frente. Terminar es ganar. Ajustá el objetivo al día que tenés.'
+  }
+};
+
+const ULTRA_SCENARIOS = {
+  A: {
+    label: 'Clase Magistral', fcPct: 0.85,
+    title: 'PACIENCIA, EJECUCIÓN, NUTRICIÓN.',
+    feels: 'Las piernas responden por horas. La nutrición entra perfecta, cero malestar digestivo. Mente limpia, conversación clara con corredores y crew. Las primeras 6-8h se sienten "fáciles" — eso es justo lo correcto.',
+    looks: 'Ritmo controlado y fluido. Caminás las subidas más fuertes sin culpa. En los puestos: entrar, comer, salir en 2-3 minutos. Cadencia se mantiene alta incluso después de 50K.',
+    doIt: 'NO te emboles las primeras 5 horas. Una ultra es un test de paciencia, no de velocidad. Mantené el plan estricto los primeros 50-60% de km. La carrera real empieza después. Nutrición proactiva, no reactiva.'
+  },
+  B: {
+    label: 'Plan Ejecutado', fcPct: 0.82,
+    title: 'EL CUERPO TRABAJA. LA CABEZA MANEJA.',
+    feels: 'Esfuerzo presente y constante. Hay valles emocionales (3-4 por carrera) pero pasajeros. Aparecen molestias menores: pies, espalda, GI. Conversación corta. La cabeza repite mantras cada 30 min.',
+    looks: 'Cadencia se mantiene; postura empieza a degradarse después de 6-8h. Caminás las subidas con propósito (no por agotamiento). En los puestos: 3-5 min, comés algo, llenás botellas, salís.',
+    doIt: 'Disciplina sobre motivación. Hidratación + carbos cada 30-45 min sin excusas, aunque no tengas hambre. Checkpoint horario: hombros, mandíbula, mirada, paso, técnica. Cambio de mentalidad por etapas: "llegar al próximo puesto", no a la meta.'
+  },
+  C: {
+    label: 'Modo Supervivencia', fcPct: 0.78,
+    title: 'TODO SE COMPLICA. TERMINAR ES GANAR.',
+    feels: 'GI distress (náuseas, vómitos), calambres recurrentes, sueño profundo (en ultras nocturnas), dolor de pies. La cabeza piensa "abandono" cada 10 min. El cuerpo no responde como entrenaste. Bajón emocional fuerte.',
+    looks: 'Caminás más que corrés. Los puestos se alargan (10-15 min, te sentás). Postura caída, mirada al piso, brazada arrastrada. Cadencia baja, paso corto involuntario. Demoras acumuladas.',
+    doIt: 'PLAN DE CONTINGENCIA. Bajá objetivos: ahora vamos a terminar. No te sentés más de 5 min en puestos (te enfría y desconecta). Pasos cortos, cadencia 165+, caminá rápido. Comida sólida si los geles ya no entran. Sal/electrolitos extra. Compañía si la tenés. Avanzar es ganar.'
+  }
+};
 
 // Adjustments
 function applyAdjustments(basePaceSec, carrera, atleta) {
@@ -2111,23 +2397,53 @@ function applyAdjustments(basePaceSec, carrera, atleta) {
   const terrainEntry = TERRENO_FACTORS[terrainKey] || TERRENO_FACTORS.asfalto;
   const terrainFactor = terrainEntry.factor;
 
-  // Elevation gain: +12s per 100m D+ on smooth terrain. On trail, the effect compounds.
-  // If GPX is loaded, the per-km Minetti factors already account for grade, so we DON'T
-  // apply the D+ flat additive (would double-count). Without GPX, the additive is the
-  // only signal we have for elevation impact.
-  const dPlusTotal = LOADED_GPX ? 0 : (dPlus / 100) * 12 * (terrainFactor); // amplified by terrain
+  // Pace BEFORE elevation: how fast you'd run this race if it were flat
+  const paceBeforeDplus = basePaceSec * altFactor * tempFactor * humFactor * terrainFactor;
+
+  // Elevation gain ("1km equivalent per 100m D+" rule, scaled by terrain):
+  // - Trail técnico (factor 1.00) = full rule: 100m D+ ≈ 1 km flat equivalent
+  // - Road/asphalt (factor 0.15) = mild penalty since climbs stay runnable
+  // If GPX is loaded, Minetti per-km factors account for grade so we skip this.
+  const dPlusEnergyFactor = TERRENO_DPLUS_FACTOR[terrainKey] || 0.15;
+  const dPlusTotal = LOADED_GPX ? 0 : (dPlus / 100) * paceBeforeDplus * dPlusEnergyFactor;
   const dPlusPerKm = dPlusTotal / distancia;
 
-  const adjustedPace = basePaceSec * altFactor * tempFactor * humFactor * terrainFactor + dPlusPerKm;
+  const preliminaryPace = paceBeforeDplus + dPlusPerKm;
+  const preliminaryTotalTime = preliminaryPace * distancia;
+
+  // Fatigue factor: pace decay for long durations (trail/ultra)
+  const fatigueFact = computeFatigueFactor(preliminaryTotalTime, distancia, terrainKey);
+
+  // Ultra-specific: experience + unknown territory + aid station time
+  const vecesEstaDist = parseFloat(carrera.vecesEstaDistancia);
+  const distMaxima = parseFloat(carrera.distanciaMaxima);
+  let experienceFactor = 1.00;
+  if (distancia > 50) {
+    if (isNaN(vecesEstaDist) || vecesEstaDist === 0) experienceFactor *= 1.05; // first time
+    else if (vecesEstaDist >= 5) experienceFactor *= 0.97;
+    else if (vecesEstaDist >= 3) experienceFactor *= 0.98;
+    if (!isNaN(distMaxima) && distancia > distMaxima) experienceFactor *= 1.05; // unknown territory
+  }
+
+  const adjustedPace = preliminaryPace * fatigueFact * experienceFactor;
+
+  // Aid station time (separate from running pace — added to total time at render)
+  const cantidadPuestos = parseFloat(carrera.cantidadPuestos) || 0;
+  const tiempoPorPuesto = parseFloat(carrera.tiempoPorPuesto) || 0;
+  const aidStationSec = cantidadPuestos * tiempoPorPuesto * 60;
 
   return {
     paceSec: adjustedPace,
     factors: {
       altitude: altFactor, temperature: tempFactor, humidity: humFactor,
       terrain: terrainFactor, terrainLabel: terrainEntry.label,
-      dPlusTotalSec: dPlusTotal, dPlusPerKm,
+      dPlusTotalSec: dPlusTotal * fatigueFact * experienceFactor,
+      dPlusEnergyFactor, dPlusPerKm,
       altDelta, refAlt, raceAlt, livingAlt, trainingAlt,
-      gpxLoaded: !!LOADED_GPX
+      gpxLoaded: !!LOADED_GPX,
+      fatigue: fatigueFact,
+      experience: experienceFactor,
+      aidStationSec
     },
     pctSlowdown: ((adjustedPace / basePaceSec) - 1) * 100
   };
@@ -2444,6 +2760,7 @@ function generarEstrategia() {
   syncLactateFromUI();
   syncNutritionFromUI();
   syncPRsFromUI();
+  syncPastRacesFromUI();
   const carrera = readCarreraFromUI();
 
   // Validate minimums
@@ -2451,30 +2768,82 @@ function generarEstrategia() {
   const hasThreshold = STORE.threshold.dist && STORE.threshold.fc;
   const hasAnyPR = ['5k','10k','21k','42k'].some(k => parseTimeToSeconds(STORE.prs[k]));
   const hasLT2 = parseTimeToSeconds(STORE.lactate?.lt2?.pace);
-  if (!hasThreshold && !hasAnyPR && !hasLT2) {
-    toast('Necesitamos test de threshold, lactato (LT2) o al menos un PR');
+  const hasPastRace = (STORE.pastRaces || []).some(r => parseTimeToSeconds(r.tiempo) && parseFloat(r.distancia));
+  if (!hasThreshold && !hasAnyPR && !hasLT2 && !hasPastRace) {
+    toast('Necesitamos test de threshold, lactato (LT2), un PR o una carrera previa');
     return;
   }
 
-  // Calculate
-  const base = basePaceFromInputs(
+  const targetDistKm = parseFloat(carrera.distancia);
+  const allPredictions = [];
+
+  // --- Path A: baseline (threshold/PR/lactate) → adjustments applied ---
+  const baseFlat = basePaceFromInputs(
     { dist: STORE.threshold.dist, fc: STORE.threshold.fc },
     STORE.prs,
     STORE.lactate,
-    parseFloat(carrera.distancia)
+    targetDistKm
   );
-  if (!base) { toast('No se pudo calcular el ritmo'); return; }
+  let adj = null;
+  if (baseFlat) {
+    adj = applyAdjustments(baseFlat.paceSec, carrera, STORE.athlete);
+    const adjTime = adj.paceSec * targetDistKm;
+    const ultraReduce = targetDistKm > 42 ? 0.5 : 1.0; // past races dominate for ultras
+    allPredictions.push({
+      source: 'baseline ajustado',
+      timeSec: adjTime,
+      weight: 1.5 * ultraReduce
+    });
+  }
 
-  const adj = applyAdjustments(base.paceSec, carrera, STORE.athlete);
+  // --- Path B: past races (already include real conditions — no further adjustment) ---
+  (STORE.pastRaces || []).forEach((race, idx) => {
+    const pred = predictFromPastRace(race, targetDistKm);
+    if (!pred) return;
+    const pastDist = parseFloat(race.distancia);
+    const distRatio = Math.max(pastDist, targetDistKm) / Math.min(pastDist, targetDistKm);
+    const similarity = 1 / Math.pow(distRatio, 0.35);
+    const recencyWeight = [1.5, 1.2, 1.0][idx] || 1.0;
+    const ultraBoost = targetDistKm > 42 ? 2.5 : 1.3;
+    allPredictions.push({
+      source: 'carrera previa ' + (idx + 1),
+      timeSec: pred.timeSec,
+      weight: similarity * recencyWeight * ultraBoost
+    });
+  });
+
+  if (allPredictions.length === 0) { toast('No se pudo calcular el ritmo'); return; }
+
+  // Weighted average across all prediction sources
+  const totalWeight = allPredictions.reduce((s, p) => s + p.weight, 0);
+  const runningTimeSec = allPredictions.reduce((s, p) => s + p.timeSec * p.weight, 0) / totalWeight;
+  const finalPaceSec = runningTimeSec / targetDistKm;
+
+  // For UI, build a synthetic adj if baseline path wasn't available (only past races)
+  if (!adj) {
+    adj = applyAdjustments(finalPaceSec, carrera, STORE.athlete);
+    // Override the pace back to the weighted value (avoid double-counting adjustments)
+    adj.paceSec = finalPaceSec;
+    adj.factors.dPlusTotalSec = 0; // already in past race time
+    adj.factors.gpxLoaded = !!LOADED_GPX;
+  }
+
   const fcRef = resolveFcUmbral(STORE.threshold, STORE.lactate);
   const fcUmbral = fcRef.fc;
-  const splits = generateSplits(adj.paceSec, fcUmbral, carrera);
-  const targetTime = adj.paceSec * parseFloat(carrera.distancia);
-  const scenarios = generateScenarios(adj.paceSec, targetTime, fcUmbral, carrera);
+  const splits = generateSplits(finalPaceSec, fcUmbral, carrera);
+
+  // Add aid station time (separate from running)
+  const aidSec = (adj.factors && adj.factors.aidStationSec) || 0;
+  const targetTime = runningTimeSec + aidSec;
+  const scenarios = generateScenarios(finalPaceSec, targetTime, fcUmbral, carrera);
   const nutrition = generateNutrition(targetTime, STORE.athlete, carrera, STORE.nutrition);
   const checklist = generateChecklist(carrera, targetTime, STORE.athlete);
 
-  const strategy = { base, adj, splits, targetTime, scenarios, nutrition, checklist, fcRef, generatedAt: new Date().toISOString() };
+  const strategy = {
+    base: { paceSec: finalPaceSec, timeSec: runningTimeSec, sources: allPredictions },
+    adj, splits, targetTime, scenarios, nutrition, checklist, fcRef,
+    generatedAt: new Date().toISOString()
+  };
 
   // Save race (with strategy + inputs snapshot)
   saveCurrentRace(carrera, strategy);
@@ -2529,7 +2898,19 @@ function renderStrategy(carrera, s) {
   if (f.humidity > 1.001) adjParts.push(`hum ${((f.humidity-1)*100).toFixed(1)}%`);
   if (f.terrain && f.terrain > 1.001) adjParts.push(`terreno ${f.terrainLabel} ${((f.terrain-1)*100).toFixed(0)}%`);
   if (f.gpxLoaded) adjParts.push('GPX cargado');
-  else if (f.dPlusTotalSec > 0) adjParts.push(`D+ ${Math.round(f.dPlusTotalSec)}s`);
+  else if (f.dPlusTotalSec > 0) {
+    const dPlusMin = Math.round(f.dPlusTotalSec / 60);
+    adjParts.push(dPlusMin >= 1 ? `D+ +${dPlusMin}min` : `D+ +${Math.round(f.dPlusTotalSec)}s`);
+  }
+  if (f.fatigue && f.fatigue > 1.001) adjParts.push(`fatiga ${((f.fatigue-1)*100).toFixed(0)}%`);
+  if (f.experience && Math.abs(f.experience - 1) > 0.005) {
+    const sign = f.experience > 1 ? '+' : '';
+    adjParts.push(`experiencia ${sign}${((f.experience-1)*100).toFixed(0)}%`);
+  }
+  if (f.aidStationSec && f.aidStationSec > 0) {
+    const aidMin = Math.round(f.aidStationSec / 60);
+    adjParts.push(`puestos +${aidMin}min`);
+  }
   document.getElementById('sAjusteSub').textContent = adjParts.length ? adjParts.join(' · ') : 'sin ajustes';
 
   // Escenarios ABC
@@ -2754,6 +3135,16 @@ function syncPRsFromUI() {
   };
   saveStore(STORE);
 }
+function syncPastRacesFromUI() {
+  STORE.pastRaces = [1, 2, 3].map(i => ({
+    name: document.getElementById(`r${i}Name`).value.trim(),
+    distancia: document.getElementById(`r${i}Dist`).value,
+    dPlus: document.getElementById(`r${i}Dplus`).value,
+    tiempo: document.getElementById(`r${i}Time`).value.trim(),
+    rating: document.getElementById(`r${i}Rating`).value
+  }));
+  saveStore(STORE);
+}
 function readCarreraFromUI() {
   return {
     nombre: document.getElementById('cNombre').value.trim(),
@@ -2766,7 +3157,12 @@ function readCarreraFromUI() {
     humedad: document.getElementById('cHumedad').value,
     terreno: document.getElementById('cTerreno').value,
     objetivo: document.getElementById('cObjetivo').value,
-    notas: document.getElementById('cNotas').value.trim()
+    notas: document.getElementById('cNotas').value.trim(),
+    // Ultra-only fields (used when distancia > 50)
+    vecesEstaDistancia: document.getElementById('cVecesEstaDist').value,
+    distanciaMaxima: document.getElementById('cDistanciaMaxima').value,
+    cantidadPuestos: document.getElementById('cCantidadPuestos').value,
+    tiempoPorPuesto: document.getElementById('cTiempoPorPuesto').value
   };
 }
 function fillCarreraInUI(c) {
@@ -2781,6 +3177,18 @@ function fillCarreraInUI(c) {
   document.getElementById('cTerreno').value = c.terreno || 'asfalto';
   document.getElementById('cObjetivo').value = c.objetivo || 'pb';
   document.getElementById('cNotas').value = c.notas || '';
+  document.getElementById('cVecesEstaDist').value = c.vecesEstaDistancia || '';
+  document.getElementById('cDistanciaMaxima').value = c.distanciaMaxima || '';
+  document.getElementById('cCantidadPuestos').value = c.cantidadPuestos || '';
+  document.getElementById('cTiempoPorPuesto').value = c.tiempoPorPuesto || '';
+  toggleUltraBlock();
+}
+
+// Show ultra-specific questions block only when distance > 50 km
+function toggleUltraBlock() {
+  const dist = parseFloat(document.getElementById('cDistancia').value) || 0;
+  const block = document.getElementById('ultraBlock');
+  if (block) block.style.display = dist > 50 ? 'block' : 'none';
 }
 
 function restoreUIFromStore() {
@@ -2822,6 +3230,16 @@ function restoreUIFromStore() {
   document.getElementById('pr21k').value = STORE.prs['21k'] || '';
   document.getElementById('pr42k').value = STORE.prs['42k'] || '';
   document.getElementById('prAnio').value = STORE.prs.anio || '';
+  // Past races
+  const pr = STORE.pastRaces || [];
+  [1, 2, 3].forEach(i => {
+    const race = pr[i - 1] || {};
+    document.getElementById(`r${i}Name`).value = race.name || '';
+    document.getElementById(`r${i}Dist`).value = race.distancia || '';
+    document.getElementById(`r${i}Dplus`).value = race.dPlus || '';
+    document.getElementById(`r${i}Time`).value = race.tiempo || '';
+    document.getElementById(`r${i}Rating`).value = race.rating || '';
+  });
 
   // Show saved indicator if anything stored
   const hasData = STORE.athlete.nombre || STORE.threshold.dist || Object.values(STORE.prs).some(Boolean) || Object.keys(STORE.races).length;
@@ -2946,6 +3364,19 @@ function wireInputAutoSave() {
     document.getElementById(id).addEventListener('change', syncPRsFromUI);
     document.getElementById(id).addEventListener('blur', syncPRsFromUI);
   });
+  // Past races
+  [1, 2, 3].forEach(i => {
+    ['Name', 'Dist', 'Dplus', 'Time', 'Rating'].forEach(f => {
+      const el = document.getElementById(`r${i}${f}`);
+      if (el) {
+        el.addEventListener('change', syncPastRacesFromUI);
+        el.addEventListener('blur', syncPastRacesFromUI);
+      }
+    });
+  });
+  // Toggle ultra block when distance changes
+  document.getElementById('cDistancia').addEventListener('input', toggleUltraBlock);
+  document.getElementById('cDistancia').addEventListener('change', toggleUltraBlock);
 }
 
 function toast(msg) {
