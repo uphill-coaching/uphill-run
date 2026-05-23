@@ -391,72 +391,267 @@
     .card p { font-size: 13.5px !important; }
   }
 
-  /* ========== PRINT STYLES (PDF) ========== */
+  /* ========== PRINT STYLES (PDF) ==========
+     Brand-aligned PDF following Uphill Coaching brand manual v1.0:
+     - Navy text (#16222E) on white background
+     - Red (#FF0000) accents only — eyebrows, headlines, borders, dividers
+     - Norwester for impact, League Spartan for eyebrows/labels, Poppins for body
+     - Each slide as its own page, with branded header strip + footer
+  */
   @media print {
-    @page { size: A4; margin: 14mm; }
+    @page {
+      size: A4;
+      margin: 18mm 14mm 18mm 14mm;
+    }
     html, body {
       background: #fff !important;
       color: #16222E !important;
       overflow: visible !important;
       height: auto !important;
       width: auto !important;
+      font-family: 'Poppins', system-ui, sans-serif !important;
       font-size: 10pt;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
+    /* Hide all interactive chrome */
     .logo-watermark, .storage-badge, .install-hint, .nav-dots,
     .nav-arrows, .slide-counter, .download-bar { display: none !important; }
     .presentation { position: static; height: auto; width: auto; overflow: visible; }
+
+    /* Slide = one page, with branded header + footer */
     .slide {
       position: static !important;
       opacity: 1 !important;
       pointer-events: auto !important;
       width: 100% !important;
       height: auto !important;
-      padding: 0 0 10mm 0 !important;
+      min-height: 0 !important;
+      padding: 0 !important;
       page-break-after: always;
-      page-break-inside: avoid;
+      page-break-inside: auto;
       background: #fff !important;
       color: #16222E !important;
-      display: block;
+      display: block !important;
     }
     .slide:last-child { page-break-after: auto; }
-    .slide h1, .slide h2, .slide h3, .slide h4 {
-      color: #16222E !important;
-      page-break-after: avoid;
+
+    /* Branded header on every page: "UPHILL COACHING" + red rule */
+    .slide::before {
+      content: "UPHILL COACHING";
+      display: block;
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 700;
+      font-size: 9pt;
+      letter-spacing: 0.35em;
+      color: #16222E;
+      padding-bottom: 4pt;
+      margin-bottom: 12pt;
+      border-bottom: 1.5pt solid #FF0000;
     }
-    .slide h1 { font-size: 32pt; line-height: 0.95; }
-    .slide h2 { font-size: 22pt; line-height: 0.95; margin-bottom: 10pt; }
-    .slide h3 { font-size: 14pt; }
-    .slide p, .slide li { color: #16222E !important; font-size: 10pt; line-height: 1.5; }
-    .slide span[style*="--red"], .slide h1 span, .slide h2 span { color: #FF0000 !important; }
-    .eyebrow { color: #FF0000 !important; }
+    /* Branded footer with tagline */
+    .slide::after {
+      content: "CONQUISTA TU CIMA  ·  CLUB DE LOS ENGASADOS  ·  MAYO 2026";
+      display: block;
+      font-family: 'League Spartan', sans-serif;
+      font-weight: 600;
+      font-size: 7.5pt;
+      letter-spacing: 0.3em;
+      color: #888;
+      text-align: center;
+      padding-top: 6pt;
+      margin-top: 18pt;
+      border-top: 0.5pt solid #d4d4d4;
+    }
+
+    /* Typography per brand manual: Norwester for h1/h2 (impact), Poppins body */
+    .slide h1, .slide h2, .slide h3, .slide h4 {
+      font-family: 'Norwester', 'League Spartan', sans-serif !important;
+      color: #16222E !important;
+      text-transform: uppercase;
+      page-break-after: avoid;
+      letter-spacing: 0.01em;
+    }
+    .slide h1 { font-size: 28pt; line-height: 0.92; margin-bottom: 8pt; }
+    .slide h2 { font-size: 20pt; line-height: 0.95; margin-bottom: 10pt; }
+    .slide h3 { font-size: 13pt; margin-bottom: 6pt; }
+    .slide h4 { font-size: 11pt; }
+    .slide p, .slide li {
+      color: #16222E !important;
+      font-family: 'Poppins', sans-serif !important;
+      font-size: 10pt;
+      line-height: 1.55;
+    }
+    /* Red accent: brand uses red on the second line of headlines + on inline highlights */
+    .slide span[style*="--red"], .slide span[style*="color: var(--red)"],
+    .slide h1 span, .slide h2 span,
+    .slide strong[style*="--red"] { color: #FF0000 !important; }
+
+    /* Eyebrow per brand: League Spartan 700, tracking 0.25em, red */
+    .eyebrow, .slide .eyebrow {
+      font-family: 'League Spartan', sans-serif !important;
+      font-weight: 700 !important;
+      font-size: 8.5pt !important;
+      letter-spacing: 0.25em !important;
+      text-transform: uppercase !important;
+      color: #FF0000 !important;
+      margin-bottom: 6pt !important;
+    }
+
+    /* Cards per brand: subtle gray bg, brand border */
     .card, .panel {
-      background: #f7f7f7 !important;
-      border: 1px solid #d4d4d4 !important;
+      background: #fafafa !important;
+      border: 0.5pt solid #d4d4d4 !important;
       color: #16222E !important;
       page-break-inside: avoid;
       box-shadow: none !important;
+      padding: 10pt !important;
     }
     .card p, .card h3, .card h4 { color: #16222E !important; }
-    .card strong { color: #16222E !important; }
+    .card strong { color: #16222E !important; font-weight: 600; }
+    /* Red-bordered emphasis cards (brand pattern) */
+    .card[style*="border-left"] { border-left: 2pt solid #FF0000 !important; }
+    /* Inverted red card (full red bg) */
+    .card[style*="background: var(--red)"], .card[style*="background:#FF0000"] {
+      background: #FF0000 !important;
+      color: #fff !important;
+    }
+    .card[style*="background: var(--red)"] p,
+    .card[style*="background:#FF0000"] p { color: #fff !important; }
+
+    /* Pacing table per brand */
     .data-table { font-size: 9pt; }
     .data-table th {
       background: #f0f0f0 !important;
       color: #16222E !important;
+      font-family: 'League Spartan', sans-serif !important;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 7.5pt;
       border-bottom: 1.5pt solid #FF0000 !important;
+      padding: 6pt 4pt;
     }
     .data-table td {
       color: #16222E !important;
-      border-bottom: 0.5pt solid #ddd !important;
+      border-bottom: 0.4pt solid #ddd !important;
+      padding: 5pt 4pt;
     }
-    .pacing-pace { font-size: 13pt; color: #16222E !important; }
-    .pacing-container { max-height: none !important; overflow: visible !important; border: none !important; }
-    .checklist li { color: #16222E !important; cursor: default; border-bottom: 0.5pt solid #ddd !important; }
-    .checklist li::before { background: #fff !important; border: 1pt solid #555 !important; }
-    .checklist li.checked::before { background: #FF0000 !important; border-color: #FF0000 !important; }
-    .hero-slide { background: #fff !important; min-height: 0 !important; padding-top: 0 !important; }
-    .red-line { background: #FF0000 !important; }
-    .subtitle { color: #555 !important; }
-    .accent-text { color: #555 !important; }
+    .pacing-pace {
+      font-family: 'Norwester', 'League Spartan', sans-serif !important;
+      font-size: 12pt;
+      color: #16222E !important;
+    }
+    .pacing-container {
+      max-height: none !important;
+      overflow: visible !important;
+      border: none !important;
+    }
+    /* Phase pills inside table — keep their brand color */
+    .data-table td span[style*="background"] {
+      background: #f0f0f0 !important;
+      color: #16222E !important;
+      font-family: 'League Spartan', sans-serif !important;
+      letter-spacing: 0.1em;
+    }
+
+    /* Checklist */
+    .checklist li {
+      color: #16222E !important;
+      cursor: default;
+      border-bottom: 0.4pt solid #ddd !important;
+      padding: 5pt 0 5pt 22pt;
+    }
+    .checklist li::before {
+      background: #fff !important;
+      border: 0.8pt solid #555 !important;
+      width: 11pt;
+      height: 11pt;
+    }
+    .checklist li.checked::before {
+      background: #FF0000 !important;
+      border-color: #FF0000 !important;
+    }
+    .checklist li.checked::after {
+      content: "✓";
+      color: #fff !important;
+    }
+
+    /* Hero slide special handling */
+    .hero-slide {
+      background: #fff !important;
+      min-height: 0 !important;
+      padding-top: 0 !important;
+      justify-content: flex-start !important;
+    }
+    .hero-slide h1 {
+      font-size: 44pt !important;
+      line-height: 0.88 !important;
+    }
+    .red-line { background: #FF0000 !important; height: 2pt; width: 50pt; }
+    .subtitle { color: #555 !important; font-size: 11pt; max-width: 130mm; }
+    .accent-text {
+      color: #555 !important;
+      font-family: 'League Spartan', sans-serif !important;
+      letter-spacing: 0.18em;
+    }
+
+    /* Inputs & buttons — flatten in print */
+    input, select, textarea, button { display: none !important; }
+    .input-group { display: none !important; }
+    /* Hide the entire form card on test slide (data is already in the results) */
+    .slide .card:has(.input-group) { display: none !important; }
+    /* Empty placeholder ("Completá el test...") is irrelevant in print */
+    #placeholderUmbral { display: none !important; }
+
+    /* Result boxes (ritmo umbral, FC, tiempo) — flip to light theme */
+    .result-box {
+      background: #fafafa !important;
+      border: 0.5pt solid #d4d4d4 !important;
+      border-left: 2.5pt solid #FF0000 !important;
+      padding: 8pt 12pt !important;
+      margin-top: 8pt !important;
+      page-break-inside: avoid;
+    }
+    #resultadosUmbral { display: block !important; }
+    .result-value {
+      color: #FF0000 !important;
+      font-family: 'Norwester', 'League Spartan', sans-serif !important;
+      font-size: 22pt !important;
+      line-height: 1 !important;
+    }
+    .result-label {
+      color: #555 !important;
+      font-family: 'League Spartan', sans-serif !important;
+      font-size: 8pt !important;
+      letter-spacing: 0.2em !important;
+      text-transform: uppercase !important;
+      margin-top: 4pt !important;
+    }
+
+    /* Pacing summary cards (RITMO OBJETIVO / TIEMPO PROYECTADO / FC UMBRAL) */
+    .pacing-summary > div {
+      background: #fafafa !important;
+      border: 0.5pt solid #d4d4d4 !important;
+      padding: 8pt 12pt !important;
+    }
+    .pacing-summary > div > div:first-child {
+      color: #555 !important;
+      font-family: 'League Spartan', sans-serif !important;
+    }
+    .display-value {
+      color: #16222E !important;
+      font-family: 'Norwester', 'League Spartan', sans-serif !important;
+    }
+    .display-value[style*="--red"], .display-value[style*="color:var(--red)"] {
+      color: #FF0000 !important;
+    }
+
+    /* Stat numbers (Análisis de ruta: 21.10, 274, 1300, 7:00) */
+    .stat-number {
+      color: #FF0000 !important;
+      font-family: 'Norwester', 'League Spartan', sans-serif !important;
+    }
   }
 
   /* Animations */
@@ -674,8 +869,7 @@
 </div>
 
 <div class="download-bar" id="downloadBar">
-  <button onclick="window.print()" title="Descargar como PDF">⤓ PDF</button>
-  <button class="secondary" onclick="downloadMarkdown()" title="Descargar como Markdown">⤓ MD</button>
+  <button onclick="window.print()" title="Descargar plan en PDF">⤓ DESCARGAR PDF</button>
 </div>
 
 <div class="install-hint" id="installHint">
@@ -1568,109 +1762,6 @@ calcularUmbral = function(silent) {
     tiempo21k: document.getElementById('tiempo21k').textContent
   });
 };
-
-// =====================================================================
-// MARKDOWN EXPORT
-// =====================================================================
-function downloadMarkdown() {
-  const state = loadState();
-  const ev = state.events[state.currentEvent] || {};
-  const test = ev.test || {};
-  const results = ev.results || {};
-  const fecha = new Date().toLocaleDateString('es-GT', { day:'numeric', month:'long', year:'numeric' });
-
-  let md = '';
-  md += '# Uphill Coaching — Estrategia Cobán 21K\n\n';
-  md += `**Club de los Engasados · Media Maratón Internacional de Cobán · Mayo 2026**\n\n`;
-  md += `_Generado: ${fecha}_\n\n`;
-  md += '---\n\n';
-
-  md += '## 1. Fundamentos\n\n';
-  md += '> "El running es un deporte mental. Ante la adversidad, la capacidad de decidir cómo te vas a sentir es lo que te lleva a cruzar la meta." — **Gabriel Bianchi**\n\n';
-  md += '- Altitud ~1,300 msnm. FC sube 5–10 lpm por mismo esfuerzo.\n';
-  md += '- 274 m de ascenso micrometrajeado — ondulación constante, no colina única.\n';
-  md += '- La fatiga viene del cambio de zancada, no de una sola colina.\n';
-  md += '- **Disciplina sobre motivación.**\n\n';
-
-  if (test.dist20 && test.fc20) {
-    md += '## 2. Tu Test de Threshold\n\n';
-    md += `| Métrica | Valor |\n|---|---|\n`;
-    md += `| Distancia en 20 min | ${test.dist20} km |\n`;
-    md += `| FC promedio | ${test.fc20} bpm |\n`;
-    if (test.peso) md += `| Peso | ${test.peso} kg |\n`;
-    md += '\n';
-    if (results.ritmo21k) {
-      md += '### Tu plan calculado\n\n';
-      md += `- **Ritmo objetivo:** ${results.ritmo21k} min/km\n`;
-      md += `- **Tiempo proyectado:** ${results.tiempo21k}\n`;
-      md += `- **FC umbral:** ${results.fcUmbral || test.fc20 + ' bpm'}\n\n`;
-    }
-  }
-
-  md += '## 3. Pacing km-a-km (ajustado al perfil real de Cobán)\n\n';
-  md += '| Km | Fase | Ritmo | FC | Pendiente | Estrategia |\n|---|---|---|---|---|---|\n';
-  const rows = document.querySelectorAll('#pacingBody tr');
-  rows.forEach(tr => {
-    const cells = tr.querySelectorAll('td');
-    if (cells.length === 5) {
-      const km = cells[0].textContent.trim();
-      const fase = cells[1].textContent.trim();
-      const ritmoRaw = cells[2].textContent.trim();
-      // Split ritmo + grade indicator
-      const m = ritmoRaw.match(/^(\S+)\s*(.*)$/);
-      const ritmo = m ? m[1] : ritmoRaw;
-      const grade = m && m[2] ? m[2].replace(/[↑↓]/g, '').trim() : '—';
-      const fc = cells[3].textContent.trim();
-      const estr = cells[4].textContent.trim();
-      md += `| ${km} | ${fase} | ${ritmo} | ${fc} | ${grade} | ${estr} |\n`;
-    }
-  });
-  md += '\n';
-
-  md += '## 4. Escenarios de Nutrición (por tiempo estimado)\n\n';
-  md += '- **A · sub 1:45h** — 50–70 g carbos/h (intensidad alta = más glucógeno), líquido 500–700 ml/h, sodio +\n';
-  md += '- **B · 1:45–2:15h** — 40–55 g carbos/h, líquido 500–700 ml/h\n';
-  md += '- **C · 2:15h+** — 30–45 g carbos/h efectivos, líquido 500–600 ml/h\n\n';
-  md += '> **Regla que no se negocia:** todo se prueba durante entrenamientos largos. Nunca por primera vez el día de la carrera.\n\n';
-
-  md += '## 5. Semana Previa\n\n';
-  md += '- **Carga 36–48h antes:** aumentá porción de carbohidratos complejos en cada comida.\n';
-  md += '- **Hidratación 3–4 días antes:** agua constante + sodio si entrenás o hace calor. Orina clara = control.\n';
-  md += '- **Noche previa:** cena familiar, alta en carbos, baja en grasa/fibra.\n';
-  md += '- **Desayuno (2-3h antes):** el mismo que ya hiciste antes de rodajes largos.\n\n';
-
-  md += '## 6. Día de Carrera\n\n';
-  md += '- **Nada nuevo.** Ni geles, ni marcas, ni recetas.\n';
-  md += '- **Desayuno probado** 2-3 h antes de la salida.\n';
-  md += '- **Llevá tus fuentes.** No dependas solo de los puestos oficiales.\n';
-  md += '- **Hidratado ≠ empachado.** Arrancá hidratado, no sobrehidratado.\n\n';
-
-  md += '## 7. Checklist\n\n';
-  ['l0', 'l1', 'l2'].forEach((listPrefix, idx) => {
-    const titles = ['72H ANTES', '24H ANTES', 'DÍA DE CARRERA'];
-    md += `### ${titles[idx]}\n\n`;
-    document.querySelectorAll(`.checklist li[data-key^="${listPrefix}-"]`).forEach(li => {
-      const checked = li.classList.contains('checked') ? '[x]' : '[ ]';
-      md += `- ${checked} ${li.textContent.trim()}\n`;
-    });
-    md += '\n';
-  });
-
-  md += '---\n\n';
-  md += '**Uphill Coaching · Conquista Tu Cima**\n\n';
-  md += '_Club de los Engasados · Media Maratón Internacional de Cobán · Mayo 2026_\n';
-
-  // Trigger download
-  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'uphill-estrategia-coban-21k.md';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
 
 // Checklist interactivity (with persistence)
 document.querySelectorAll('.checklist li').forEach(li => {
