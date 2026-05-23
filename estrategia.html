@@ -482,6 +482,42 @@
     color: var(--white);
   }
 
+  /* Advanced (optional) block — visually separated from required fields */
+  .advanced-block {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed rgba(255,255,255,0.12);
+  }
+  .advanced-block .advanced-header {
+    margin-bottom: 16px;
+  }
+  .advanced-block .advanced-eyebrow {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .advanced-block h4 {
+    font-family: var(--font-impact);
+    font-size: 16px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+    color: var(--white);
+  }
+  .advanced-block p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .advanced-block p em { color: var(--red); font-style: normal; font-weight: 600; }
+  .advanced-block p strong { color: var(--white); font-weight: 600; }
+
   /* File input (GPX upload) */
   .file-input-wrap {
     position: relative;
@@ -1347,24 +1383,6 @@
       </div>
       <div class="input-row">
         <div class="input-group">
-          <label>Tipo de terreno</label>
-          <select id="cTerreno">
-            <option value="asfalto">Asfalto (calle)</option>
-            <option value="mixto">Mixto · camino de tierra / gravel</option>
-            <option value="trail-suave">Trail suave · singletrack limpio</option>
-            <option value="trail-tecnico">Trail técnico · raíces, rocas, root garden</option>
-            <option value="trail-muy-tecnico">Trail muy técnico · montaña, scrambling</option>
-          </select>
-          <div class="micro" id="terrenoHint">Cada nivel ajusta tu ritmo objetivo: asfalto 1.00× · mixto 1.04× · suave 1.10× · técnico 1.20× · muy técnico 1.35×</div>
-        </div>
-        <div class="input-group file-input-wrap">
-          <label>Track GPS de la ruta (opcional · .gpx / .tcx)</label>
-          <input type="file" id="cGpx" accept=".gpx,.tcx,.xml" onchange="onGpxFileSelected(this)">
-          <div class="file-status" id="gpxStatus">Sin archivo. Sin GPX, calculo el ritmo con D+ promedio.</div>
-        </div>
-      </div>
-      <div class="input-row">
-        <div class="input-group">
           <label>Fecha</label>
           <input type="date" id="cFecha">
         </div>
@@ -1379,15 +1397,27 @@
           <input type="number" id="cAltitud" min="0" max="4500" placeholder="1300">
         </div>
         <div class="input-group">
-          <label>Elevación + (m)</label>
-          <input type="number" id="cDplus" min="0" max="3000" placeholder="274">
+          <label>Elevación + total (m D+)</label>
+          <input type="number" id="cDplus" min="0" max="5000" placeholder="274">
+          <div class="micro">Suma de las subidas de la ruta. +12s/km aprox. por cada 100m de D+.</div>
         </div>
+        <div class="input-group">
+          <label>Tipo de terreno</label>
+          <select id="cTerreno">
+            <option value="asfalto">Asfalto (calle)</option>
+            <option value="mixto">Mixto · gravel / camino de tierra</option>
+            <option value="trail-suave">Trail suave · singletrack limpio</option>
+            <option value="trail-tecnico">Trail técnico · raíces, rocas</option>
+            <option value="trail-muy-tecnico">Trail muy técnico · montaña</option>
+          </select>
+          <div class="micro">Multiplica ritmo: asfalto 1.00× · mixto 1.04× · suave 1.10× · técnico 1.20× · muy técnico 1.35×</div>
+        </div>
+      </div>
+      <div class="input-row triple">
         <div class="input-group">
           <label>Temp. esperada (°C)</label>
           <input type="number" id="cTemp" min="-5" max="45" placeholder="20">
         </div>
-      </div>
-      <div class="input-row">
         <div class="input-group">
           <label>Humedad esperada (%)</label>
           <input type="number" id="cHumedad" min="10" max="100" placeholder="75">
@@ -1406,6 +1436,25 @@
         <div class="input-group">
           <label>Notas de ruta (opcional)</label>
           <textarea id="cNotas" placeholder="Ej: Giro 180° en km 15. Cuesta empinada de 600m al km 18. Bebederos cada 3km..."></textarea>
+        </div>
+      </div>
+
+      <!-- Advanced (optional): GPX upload for per-km gradient analysis -->
+      <div class="advanced-block">
+        <div class="advanced-header">
+          <div class="advanced-eyebrow">Análisis avanzado · opcional</div>
+          <h4>SI TENÉS EL TRACK GPS DE LA RUTA</h4>
+          <p>
+            Los campos de arriba ya son suficientes para calcular tu estrategia personalizada.
+            Si <em>además</em> tenés el archivo GPS de un recorrido previo de la ruta (.gpx o .tcx),
+            te ajusto el pacing <strong>km por km según la pendiente real</strong> en cada tramo.
+            Sin GPX se usa D+ promedio distribuido por bloque.
+          </p>
+        </div>
+        <div class="input-group file-input-wrap">
+          <label>Archivo .gpx / .tcx</label>
+          <input type="file" id="cGpx" accept=".gpx,.tcx,.xml" onchange="onGpxFileSelected(this)">
+          <div class="file-status" id="gpxStatus">Sin archivo cargado. La estrategia se calcula con los campos de arriba.</div>
         </div>
       </div>
     </section>
