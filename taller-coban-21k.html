@@ -747,21 +747,24 @@
     color: var(--white);
   }
 
-  /* Download buttons (floating) */
+  /* Download buttons (floating) — hidden by default, .visible toggles via JS
+     Only shown on the Estrategia de Pacing slide AFTER the user has calculated their plan */
   .download-bar {
     position: fixed;
     bottom: 28px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 90;
-    display: flex;
+    display: none;
     gap: 8px;
     background: var(--navy-deep);
     padding: 8px;
     border-radius: 4px;
     border: 1px solid var(--border);
     box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    animation: fadeInUp 0.4s ease;
   }
+  .download-bar.visible { display: flex; }
   .download-bar button {
     background: var(--red);
     color: var(--white);
@@ -1433,6 +1436,19 @@ function updateSlides() {
   document.querySelectorAll('.nav-dot').forEach((d, i) => {
     d.classList.toggle('active', i === currentSlide);
   });
+  updateDownloadBarVisibility();
+}
+
+// Show download button only when:
+//  1. The pacing table has been generated (user clicked "Calcular mi estrategia")
+//  2. The user is currently on the Estrategia de Pacing slide (data-slide="3" = index 3)
+function updateDownloadBarVisibility() {
+  const bar = document.getElementById('downloadBar');
+  if (!bar) return;
+  const tbody = document.getElementById('pacingBody');
+  const hasStrategy = tbody && tbody.children.length > 0;
+  const onStrategySlide = currentSlide === 3;
+  bar.classList.toggle('visible', hasStrategy && onStrategySlide);
 }
 
 function nextSlide() {
@@ -1521,6 +1537,9 @@ function calcularUmbral() {
       <strong>Ritmo umbral:</strong> ${ritmoStr} min/km  →  <strong>Ritmo objetivo (con +5% altitud):</strong> ${ritmo21Str} min/km  →  <strong>Tiempo proyectado:</strong> ${tiempoStr}
     `;
   }
+
+  // Refresh download button visibility now that strategy exists
+  updateDownloadBarVisibility();
 }
 
 function descargarEstrategiaPDF() {
