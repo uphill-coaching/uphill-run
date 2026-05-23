@@ -482,6 +482,44 @@
     color: var(--white);
   }
 
+  /* Past races sub-blocks (one per race) */
+  .past-races { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+  .past-race {
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 14px 16px;
+  }
+  .past-race .pr-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .past-race .pr-label {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .past-race .pr-hint {
+    font-size: 11px;
+    color: var(--gray);
+  }
+  .past-race .input-row { margin-bottom: 8px; }
+  .past-race .input-row:last-child { margin-bottom: 0; }
+  .past-race .input-group label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+  }
+  .past-race .input-group input,
+  .past-race .input-group select {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
   /* Advanced (optional) block — visually separated from required fields */
   .advanced-block {
     margin-top: 28px;
