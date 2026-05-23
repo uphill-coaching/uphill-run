@@ -451,6 +451,190 @@
     color: var(--white);
   }
 
+  /* Distance preset buttons */
+  .preset-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .preset-row button {
+    flex: 1;
+    background: var(--navy-deep);
+    color: var(--gray-light);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .preset-row button:hover {
+    border-color: var(--red);
+    color: var(--white);
+  }
+  .preset-row button.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--white);
+  }
+
+  /* File input (GPX upload) */
+  .file-input-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .file-input-wrap input[type="file"] {
+    background: var(--navy-deep);
+    border: 1px dashed var(--border);
+    color: var(--gray-light);
+    padding: 12px 14px;
+    font-family: var(--font-primary);
+    font-size: 13px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .file-input-wrap input[type="file"]::-webkit-file-upload-button {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 6px 12px;
+    margin-right: 12px;
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .file-status {
+    font-size: 12px;
+    color: var(--gray);
+    padding: 6px 0;
+  }
+  .file-status.ok { color: #86EFAC; }
+  .file-status.err { color: #FCA5A5; }
+
+  /* Access gate (fullscreen) */
+  .access-gate {
+    position: fixed;
+    inset: 0;
+    background: var(--navy);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .access-gate.hidden { display: none; }
+  .access-gate .gate-card {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    padding: clamp(28px, 5vw, 56px);
+    max-width: 540px;
+    width: 100%;
+    border-radius: 4px;
+  }
+  .access-gate .eyebrow { margin-bottom: 18px; }
+  .access-gate h1 {
+    font-family: var(--font-impact);
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 0.92;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .access-gate h1 .red { color: var(--red); }
+  .access-gate p {
+    color: rgba(255,255,255,0.75);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .gate-input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .gate-input-row input {
+    flex: 1;
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 14px 16px;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    outline: none;
+  }
+  .gate-input-row input:focus { border-color: var(--red); }
+  .gate-input-row button {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 14px 28px;
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .gate-input-row button:hover {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--red);
+    color: var(--red);
+  }
+  .gate-error {
+    color: #FCA5A5;
+    font-size: 13px;
+    min-height: 20px;
+    margin-bottom: 14px;
+  }
+  .gate-help {
+    color: var(--gray);
+    font-size: 13px;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  .gate-help a { color: var(--red); text-decoration: underline; }
+  @media (max-width: 540px) {
+    .gate-input-row { flex-direction: column; }
+  }
+  /* Buyer name pill in header (replaces storage badge when activated) */
+  .buyer-pill {
+    position: fixed;
+    top: 24px;
+    right: clamp(20px, 4vw, 60px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+  .buyer-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
   /* Source chips (nutrition sources multi-select) */
   .source-chips {
     display: flex;
@@ -898,6 +1082,26 @@
 </head>
 <body>
 
+<!-- ACCESS GATE — covers entire app until user enters a valid code -->
+<div class="access-gate" id="accessGate">
+  <div class="gate-card">
+    <div class="eyebrow">Acceso al generador</div>
+    <h1>CONQUISTÁ <span class="red">TU CIMA.</span></h1>
+    <p>
+      Generador de estrategia de carrera personalizada de Uphill Coaching.
+      Ingresá el código de acceso que recibiste al comprar tu plan.
+    </p>
+    <form class="gate-input-row" onsubmit="event.preventDefault(); activarCodigo();">
+      <input type="text" id="codeInput" placeholder="UPHILL-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button type="submit">Activar</button>
+    </form>
+    <div class="gate-error" id="codeError"></div>
+    <p class="gate-help">
+      ¿No tenés código? <a href="https://wa.me/50230618908?text=Hola%20Uphill%2C%20quiero%20comprar%20un%20plan%20personalizado%20de%20carrera." target="_blank">Conseguilo por WhatsApp</a>.
+    </p>
+  </div>
+</div>
+
 <div class="logo-watermark">UPHILL COACHING</div>
 <div class="storage-badge" id="storageBadge">
   <span class="dot"></span>
@@ -1129,12 +1333,34 @@
           <input type="text" id="cNombre" placeholder="Media Maratón Cobán 21K">
         </div>
         <div class="input-group">
-          <label>Distancia</label>
-          <select id="cDistancia">
-            <option value="10">10K</option>
-            <option value="21.1" selected>21K (media)</option>
-            <option value="42.2">42K (maratón)</option>
+          <label>Distancia (km)</label>
+          <input type="number" id="cDistancia" min="1" max="200" step="0.1" placeholder="21.1" value="21.1">
+          <div class="preset-row">
+            <button type="button" onclick="setDistanciaPreset(this, '5')">5K</button>
+            <button type="button" onclick="setDistanciaPreset(this, '10')">10K</button>
+            <button type="button" onclick="setDistanciaPreset(this, '21.1')">21K</button>
+            <button type="button" onclick="setDistanciaPreset(this, '42.2')">42K</button>
+            <button type="button" onclick="setDistanciaPreset(this, '50')">50K</button>
+            <button type="button" onclick="setDistanciaPreset(this, '100')">100K</button>
+          </div>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Tipo de terreno</label>
+          <select id="cTerreno">
+            <option value="asfalto">Asfalto (calle)</option>
+            <option value="mixto">Mixto · camino de tierra / gravel</option>
+            <option value="trail-suave">Trail suave · singletrack limpio</option>
+            <option value="trail-tecnico">Trail técnico · raíces, rocas, root garden</option>
+            <option value="trail-muy-tecnico">Trail muy técnico · montaña, scrambling</option>
           </select>
+          <div class="micro" id="terrenoHint">Cada nivel ajusta tu ritmo objetivo: asfalto 1.00× · mixto 1.04× · suave 1.10× · técnico 1.20× · muy técnico 1.35×</div>
+        </div>
+        <div class="input-group file-input-wrap">
+          <label>Track GPS de la ruta (opcional · .gpx / .tcx)</label>
+          <input type="file" id="cGpx" accept=".gpx,.tcx,.xml" onchange="onGpxFileSelected(this)">
+          <div class="file-status" id="gpxStatus">Sin archivo. Sin GPX, calculo el ritmo con D+ promedio.</div>
         </div>
       </div>
       <div class="input-row">
@@ -1344,6 +1570,247 @@
 
 <script>
 // =====================================================================
+// ACCESS CODE GATE
+// =====================================================================
+// SHA-256 hashes (first 16 hex chars) of valid codes salted with 'uphill-2026-'.
+// To add new codes: open generador-codigos.html, generate, paste the snippet here.
+const VALID_CODES = {
+  '26776275902933dd': { name: 'Demo Uphill', code: 'UPHILL-DEMO-0001' },
+  '3042b4f974145011': { name: 'Gabriel Bianchi', code: 'UPHILL-GABO-0001' },
+  '7cfcdef091db4841': { name: 'Test Atleta', code: 'UPHILL-TEST-0001' }
+};
+const CODE_SALT = 'uphill-2026-';
+const ACCESS_KEY = 'uphill-access';
+
+async function hashCode(code) {
+  const data = new TextEncoder().encode(CODE_SALT + code.trim().toUpperCase());
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('').substring(0, 16);
+}
+
+async function activarCodigo() {
+  const input = document.getElementById('codeInput');
+  const errEl = document.getElementById('codeError');
+  const code = input.value.trim();
+  errEl.textContent = '';
+  if (!code) { errEl.textContent = 'Ingresá tu código.'; return; }
+  let hash;
+  try { hash = await hashCode(code); }
+  catch (e) { errEl.textContent = 'Error de validación. Refrescá la página.'; return; }
+  const buyer = VALID_CODES[hash];
+  if (!buyer) {
+    errEl.textContent = 'Código inválido. Verificá que esté correcto o contactá Uphill.';
+    return;
+  }
+  localStorage.setItem(ACCESS_KEY, JSON.stringify({
+    code: buyer.code, name: buyer.name, hash, activatedAt: new Date().toISOString()
+  }));
+  unlockApp(buyer);
+}
+
+function unlockApp(buyer) {
+  document.getElementById('accessGate').classList.add('hidden');
+  // Replace storage badge with buyer identity (deterrent watermark)
+  const badge = document.getElementById('storageBadge');
+  if (badge && buyer.name) {
+    badge.innerHTML = `<span class="dot" style="opacity:1;"></span> <span>${buyer.name.toUpperCase()}</span>`;
+    badge.classList.add('saved');
+  }
+}
+
+async function checkExistingAccess() {
+  const stored = localStorage.getItem(ACCESS_KEY);
+  if (!stored) return false;
+  try {
+    const access = JSON.parse(stored);
+    // Re-validate stored code (in case we revoked it server-side later)
+    const hash = await hashCode(access.code);
+    if (VALID_CODES[hash]) {
+      unlockApp(VALID_CODES[hash]);
+      return true;
+    }
+    // Revoked / unknown — clear
+    localStorage.removeItem(ACCESS_KEY);
+  } catch (e) {}
+  return false;
+}
+
+// =====================================================================
+// GPX / TCX PARSER + PER-KM GRADIENT FACTORS
+// =====================================================================
+let LOADED_GPX = null; // [{ km, grade, factor, altStart, altEnd }, ...]
+
+function onGpxFileSelected(input) {
+  const file = input.files[0];
+  const status = document.getElementById('gpxStatus');
+  if (!file) {
+    LOADED_GPX = null;
+    status.textContent = 'Sin archivo.';
+    status.className = 'file-status';
+    return;
+  }
+  status.textContent = 'Procesando ' + file.name + '…';
+  status.className = 'file-status';
+  parseGpxOrTcx(file).then(result => {
+    if (!result || result.length === 0) {
+      LOADED_GPX = null;
+      status.textContent = '❌ No se pudieron extraer puntos del archivo.';
+      status.className = 'file-status err';
+      return;
+    }
+    LOADED_GPX = result;
+    const totalKm = result[result.length - 1].km;
+    const ascent = result.reduce((s, p) => s + Math.max(0, p.altEnd - p.altStart), 0);
+    status.textContent = `✓ ${result.length} km procesados · ${totalKm.toFixed(2)} km total · ${Math.round(ascent)} m D+`;
+    status.className = 'file-status ok';
+    // Auto-fill distance + D+ if user hasn't set them
+    if (!document.getElementById('cDistancia').value || parseFloat(document.getElementById('cDistancia').value) === 21.1) {
+      document.getElementById('cDistancia').value = totalKm.toFixed(2);
+      document.getElementById('cDistancia').dispatchEvent(new Event('change'));
+    }
+    if (!document.getElementById('cDplus').value) {
+      document.getElementById('cDplus').value = Math.round(ascent);
+    }
+  }).catch(err => {
+    console.warn(err);
+    LOADED_GPX = null;
+    status.textContent = '❌ Error procesando archivo: ' + err.message;
+    status.className = 'file-status err';
+  });
+}
+
+async function parseGpxOrTcx(file) {
+  const text = await file.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, 'application/xml');
+  if (doc.querySelector('parsererror')) {
+    throw new Error('XML inválido');
+  }
+
+  // Extract raw points: [{distM, alt}, ...]
+  let raw = [];
+
+  // GPX format: <trkpt lat lon><ele/></trkpt>
+  const trkpts = doc.querySelectorAll('trkpt');
+  if (trkpts.length > 0) {
+    let cumDist = 0;
+    let prevLat = null, prevLon = null;
+    trkpts.forEach(pt => {
+      const lat = parseFloat(pt.getAttribute('lat'));
+      const lon = parseFloat(pt.getAttribute('lon'));
+      const eleEl = pt.querySelector('ele');
+      const ele = eleEl ? parseFloat(eleEl.textContent) : 0;
+      if (prevLat !== null) cumDist += haversine(prevLat, prevLon, lat, lon);
+      raw.push({ distM: cumDist, alt: ele });
+      prevLat = lat; prevLon = lon;
+    });
+  } else {
+    // TCX format: <Trackpoint><DistanceMeters/><AltitudeMeters/></Trackpoint>
+    const tps = doc.getElementsByTagName('Trackpoint');
+    for (let i = 0; i < tps.length; i++) {
+      const tp = tps[i];
+      const d = tp.getElementsByTagName('DistanceMeters')[0];
+      const a = tp.getElementsByTagName('AltitudeMeters')[0];
+      if (d && a) {
+        raw.push({ distM: parseFloat(d.textContent), alt: parseFloat(a.textContent) });
+      }
+    }
+  }
+
+  if (raw.length < 2) return [];
+
+  // Smooth altitudes (moving average) to reduce GPS noise
+  const window = Math.max(5, Math.floor(raw.length / 100));
+  const smoothed = raw.map((p, i) => {
+    const lo = Math.max(0, i - Math.floor(window / 2));
+    const hi = Math.min(raw.length, i + Math.floor(window / 2));
+    const slice = raw.slice(lo, hi);
+    const avgAlt = slice.reduce((s, x) => s + x.alt, 0) / slice.length;
+    return { distM: p.distM, alt: avgAlt };
+  });
+
+  // Helper: altitude at any distance
+  function altAt(targetM) {
+    for (let i = 0; i < smoothed.length; i++) {
+      if (smoothed[i].distM >= targetM) {
+        if (i === 0) return smoothed[0].alt;
+        const a = smoothed[i - 1], b = smoothed[i];
+        if (b.distM === a.distM) return a.alt;
+        const t = (targetM - a.distM) / (b.distM - a.distM);
+        return a.alt + t * (b.alt - a.alt);
+      }
+    }
+    return smoothed[smoothed.length - 1].alt;
+  }
+
+  const totalM = smoothed[smoothed.length - 1].distM;
+  const totalKm = totalM / 1000;
+  const nFullKm = Math.floor(totalKm);
+  const segments = [];
+  for (let km = 1; km <= nFullKm; km++) {
+    const startM = (km - 1) * 1000;
+    const endM = km * 1000;
+    const a0 = altAt(startM);
+    const a1 = altAt(endM);
+    const grade = ((a1 - a0) / 1000) * 100;
+    segments.push({ km, altStart: a0, altEnd: a1, grade });
+  }
+  // Last partial km
+  if (totalKm - nFullKm > 0.05) {
+    const startM = nFullKm * 1000;
+    const endM = totalM;
+    const a0 = altAt(startM);
+    const a1 = altAt(endM);
+    const segLen = endM - startM;
+    const grade = ((a1 - a0) / segLen) * 100;
+    segments.push({ km: totalKm, altStart: a0, altEnd: a1, grade, partial: true });
+  }
+
+  // Minetti energy cost (relative)
+  function minetti(i) {
+    return 155.4*i**5 - 30.4*i**4 - 43.3*i**3 + 46.3*i**2 + 19.5*i + 3.6;
+  }
+  const cFlat = minetti(0);
+  segments.forEach(s => { s.relativeCost = minetti(s.grade / 100) / cFlat; });
+  const meanCost = segments.reduce((sum, s) => sum + s.relativeCost, 0) / segments.length;
+  segments.forEach(s => { s.factor = s.relativeCost / meanCost; });
+
+  return segments;
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+// =====================================================================
+// TERRAIN FACTORS (trail running adjustment)
+// =====================================================================
+const TERRENO_FACTORS = {
+  'asfalto':           { factor: 1.00, label: 'asfalto' },
+  'mixto':             { factor: 1.04, label: 'mixto/gravel' },
+  'trail-suave':       { factor: 1.10, label: 'trail suave' },
+  'trail-tecnico':     { factor: 1.20, label: 'trail técnico' },
+  'trail-muy-tecnico': { factor: 1.35, label: 'trail muy técnico' }
+};
+
+// =====================================================================
+// PRESET BUTTONS (distance)
+// =====================================================================
+function setDistanciaPreset(btn, val) {
+  document.getElementById('cDistancia').value = val;
+  document.getElementById('cDistancia').dispatchEvent(new Event('change'));
+  document.querySelectorAll('.preset-row button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// =====================================================================
 // STORAGE
 // =====================================================================
 const STORAGE_KEY = 'uphill-estrategia-v1';
@@ -1552,18 +2019,28 @@ function applyAdjustments(basePaceSec, carrera, atleta) {
   // Humidity: above 70%, +0.5% per 10%
   const humFactor = (!isNaN(humedad) && humedad > 70) ? 1 + 0.005 * ((humedad - 70) / 10) : 1;
 
-  // Elevation gain: +12s per 100m D+, distributed per km
-  const dPlusTotal = (dPlus / 100) * 12;
+  // Terrain technicality (trail running)
+  const terrainKey = carrera.terreno || 'asfalto';
+  const terrainEntry = TERRENO_FACTORS[terrainKey] || TERRENO_FACTORS.asfalto;
+  const terrainFactor = terrainEntry.factor;
+
+  // Elevation gain: +12s per 100m D+ on smooth terrain. On trail, the effect compounds.
+  // If GPX is loaded, the per-km Minetti factors already account for grade, so we DON'T
+  // apply the D+ flat additive (would double-count). Without GPX, the additive is the
+  // only signal we have for elevation impact.
+  const dPlusTotal = LOADED_GPX ? 0 : (dPlus / 100) * 12 * (terrainFactor); // amplified by terrain
   const dPlusPerKm = dPlusTotal / distancia;
 
-  const adjustedPace = basePaceSec * altFactor * tempFactor * humFactor + dPlusPerKm;
+  const adjustedPace = basePaceSec * altFactor * tempFactor * humFactor * terrainFactor + dPlusPerKm;
 
   return {
     paceSec: adjustedPace,
     factors: {
       altitude: altFactor, temperature: tempFactor, humidity: humFactor,
+      terrain: terrainFactor, terrainLabel: terrainEntry.label,
       dPlusTotalSec: dPlusTotal, dPlusPerKm,
-      altDelta, refAlt, raceAlt, livingAlt, trainingAlt
+      altDelta, refAlt, raceAlt, livingAlt, trainingAlt,
+      gpxLoaded: !!LOADED_GPX
     },
     pctSlowdown: ((adjustedPace / basePaceSec) - 1) * 100
   };
@@ -1601,9 +2078,19 @@ function getPhases(distancia) {
 function generateSplits(targetPaceSec, fcUmbral, carrera) {
   const distancia = parseFloat(carrera.distancia);
   const phases = getPhases(distancia);
-  const blockSize = distancia <= 12 ? 2 : 5;
+  const blockSize = distancia <= 12 ? 2 : (distancia >= 50 ? 10 : 5);
   const splits = [];
   let cumulativeSec = 0;
+
+  // If GPX is loaded, compute average gradient factor per BLOCK from the per-km data
+  function blockGradientFactor(fromKm, toKm) {
+    if (!LOADED_GPX) return { factor: 1, gradeAvg: null };
+    const within = LOADED_GPX.filter(p => p.km > fromKm && p.km <= toKm + 0.01);
+    if (within.length === 0) return { factor: 1, gradeAvg: null };
+    const factor = within.reduce((s, p) => s + p.factor, 0) / within.length;
+    const gradeAvg = within.reduce((s, p) => s + p.grade, 0) / within.length;
+    return { factor, gradeAvg };
+  }
 
   let km = 0;
   while (km < distancia) {
@@ -1611,7 +2098,10 @@ function generateSplits(targetPaceSec, fcUmbral, carrera) {
     const blockMid = (km + blockEnd) / 2;
     const phase = phases.find(p => blockMid <= p.hasta);
     const blockKm = blockEnd - km;
-    const blockPaceSec = targetPaceSec * phase.factor;
+
+    // Combine phase factor + GPX gradient factor (normalized so average pace stays target)
+    const { factor: gpxFactor, gradeAvg } = blockGradientFactor(km, blockEnd);
+    const blockPaceSec = targetPaceSec * phase.factor * gpxFactor;
     const blockTimeSec = blockPaceSec * blockKm;
     cumulativeSec += blockTimeSec;
 
@@ -1632,7 +2122,8 @@ function generateSplits(targetPaceSec, fcUmbral, carrera) {
       cumulativeSec,
       phase: phase.name,
       note: phase.note,
-      fc: fcEst
+      fc: fcEst,
+      gradeAvg
     });
     km = blockEnd;
   }
@@ -1949,7 +2440,9 @@ function renderStrategy(carrera, s) {
   }
   if (f.temperature > 1.001) adjParts.push(`temp ${((f.temperature-1)*100).toFixed(1)}%`);
   if (f.humidity > 1.001) adjParts.push(`hum ${((f.humidity-1)*100).toFixed(1)}%`);
-  if (f.dPlusTotalSec > 0) adjParts.push(`D+ ${Math.round(f.dPlusTotalSec)}s`);
+  if (f.terrain && f.terrain > 1.001) adjParts.push(`terreno ${f.terrainLabel} ${((f.terrain-1)*100).toFixed(0)}%`);
+  if (f.gpxLoaded) adjParts.push('GPX cargado');
+  else if (f.dPlusTotalSec > 0) adjParts.push(`D+ ${Math.round(f.dPlusTotalSec)}s`);
   document.getElementById('sAjusteSub').textContent = adjParts.length ? adjParts.join(' · ') : 'sin ajustes';
 
   // Escenarios ABC
@@ -1998,15 +2491,23 @@ function renderStrategy(carrera, s) {
   });
 
   // Pacing
-  document.getElementById('pBlockNote').textContent = `Bloques de ${s.splits[0].to - s.splits[0].from} km`;
+  const blockSizeNum = s.splits[0].to - s.splits[0].from;
+  const gpxNote = s.adj.factors.gpxLoaded ? ' · ajustado por pendiente GPS real' : '';
+  document.getElementById('pBlockNote').textContent = `Bloques de ${blockSizeNum} km${gpxNote}`;
   const pBody = document.getElementById('pBody');
   pBody.innerHTML = '';
   s.splits.forEach(sp => {
+    let gradeIndicator = '';
+    if (sp.gradeAvg != null) {
+      if (sp.gradeAvg > 0.5) gradeIndicator = `<span style="color:#FCA5A5; font-size:11px; margin-left:6px;">↑ ${sp.gradeAvg.toFixed(1)}%</span>`;
+      else if (sp.gradeAvg < -0.5) gradeIndicator = `<span style="color:#86EFAC; font-size:11px; margin-left:6px;">↓ ${Math.abs(sp.gradeAvg).toFixed(1)}%</span>`;
+      else gradeIndicator = `<span style="color:rgba(255,255,255,0.4); font-size:11px; margin-left:6px;">~ ${sp.gradeAvg.toFixed(1)}%</span>`;
+    }
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><strong>${sp.from.toFixed(0)}–${sp.to.toFixed(sp.to % 1 === 0 ? 0 : 1)}</strong></td>
       <td><span class="phase-pill" data-phase="${sp.phase}">${sp.phase}</span></td>
-      <td class="pace">${secondsToMSPace(sp.paceSec)}</td>
+      <td class="pace">${secondsToMSPace(sp.paceSec)}${gradeIndicator}</td>
       <td>${sp.fc ? sp.fc + ' bpm' : '—'}</td>
       <td style="color:rgba(255,255,255,0.6);">${secondsToHMS(sp.cumulativeSec)}</td>
       <td style="font-size:12.5px; color:rgba(255,255,255,0.75);">${sp.note}</td>
@@ -2176,6 +2677,7 @@ function readCarreraFromUI() {
     dPlus: document.getElementById('cDplus').value,
     temp: document.getElementById('cTemp').value,
     humedad: document.getElementById('cHumedad').value,
+    terreno: document.getElementById('cTerreno').value,
     objetivo: document.getElementById('cObjetivo').value,
     notas: document.getElementById('cNotas').value.trim()
   };
@@ -2189,6 +2691,7 @@ function fillCarreraInUI(c) {
   document.getElementById('cDplus').value = c.dPlus || '';
   document.getElementById('cTemp').value = c.temp || '';
   document.getElementById('cHumedad').value = c.humedad || '';
+  document.getElementById('cTerreno').value = c.terreno || 'asfalto';
   document.getElementById('cObjetivo').value = c.objetivo || 'pb';
   document.getElementById('cNotas').value = c.notas || '';
 }
@@ -2376,9 +2879,15 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   restoreUIFromStore();
   wireInputAutoSave();
+  // Check if user already has a valid code in localStorage; if so, unlock immediately
+  const hasAccess = await checkExistingAccess();
+  if (!hasAccess) {
+    // Focus the code input so they can type
+    setTimeout(() => document.getElementById('codeInput').focus(), 100);
+  }
 });
 </script>
 
