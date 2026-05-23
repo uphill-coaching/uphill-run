@@ -391,6 +391,74 @@
     .card p { font-size: 13.5px !important; }
   }
 
+  /* ========== PRINT STYLES (PDF) ========== */
+  @media print {
+    @page { size: A4; margin: 14mm; }
+    html, body {
+      background: #fff !important;
+      color: #16222E !important;
+      overflow: visible !important;
+      height: auto !important;
+      width: auto !important;
+      font-size: 10pt;
+    }
+    .logo-watermark, .storage-badge, .install-hint, .nav-dots,
+    .nav-arrows, .slide-counter, .download-bar { display: none !important; }
+    .presentation { position: static; height: auto; width: auto; overflow: visible; }
+    .slide {
+      position: static !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      width: 100% !important;
+      height: auto !important;
+      padding: 0 0 10mm 0 !important;
+      page-break-after: always;
+      page-break-inside: avoid;
+      background: #fff !important;
+      color: #16222E !important;
+      display: block;
+    }
+    .slide:last-child { page-break-after: auto; }
+    .slide h1, .slide h2, .slide h3, .slide h4 {
+      color: #16222E !important;
+      page-break-after: avoid;
+    }
+    .slide h1 { font-size: 32pt; line-height: 0.95; }
+    .slide h2 { font-size: 22pt; line-height: 0.95; margin-bottom: 10pt; }
+    .slide h3 { font-size: 14pt; }
+    .slide p, .slide li { color: #16222E !important; font-size: 10pt; line-height: 1.5; }
+    .slide span[style*="--red"], .slide h1 span, .slide h2 span { color: #FF0000 !important; }
+    .eyebrow { color: #FF0000 !important; }
+    .card, .panel {
+      background: #f7f7f7 !important;
+      border: 1px solid #d4d4d4 !important;
+      color: #16222E !important;
+      page-break-inside: avoid;
+      box-shadow: none !important;
+    }
+    .card p, .card h3, .card h4 { color: #16222E !important; }
+    .card strong { color: #16222E !important; }
+    .data-table { font-size: 9pt; }
+    .data-table th {
+      background: #f0f0f0 !important;
+      color: #16222E !important;
+      border-bottom: 1.5pt solid #FF0000 !important;
+    }
+    .data-table td {
+      color: #16222E !important;
+      border-bottom: 0.5pt solid #ddd !important;
+    }
+    .pacing-pace { font-size: 13pt; color: #16222E !important; }
+    .pacing-container { max-height: none !important; overflow: visible !important; border: none !important; }
+    .checklist li { color: #16222E !important; cursor: default; border-bottom: 0.5pt solid #ddd !important; }
+    .checklist li::before { background: #fff !important; border: 1pt solid #555 !important; }
+    .checklist li.checked::before { background: #FF0000 !important; border-color: #FF0000 !important; }
+    .hero-slide { background: #fff !important; min-height: 0 !important; padding-top: 0 !important; }
+    .red-line { background: #FF0000 !important; }
+    .subtitle { color: #555 !important; }
+    .accent-text { color: #555 !important; }
+  }
+
   /* Animations */
   @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(20px); }
@@ -450,6 +518,53 @@
     transform: translateY(-50%);
     font-size: 12px;
     color: var(--white);
+  }
+
+  /* Download buttons (floating) */
+  .download-bar {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 90;
+    display: flex;
+    gap: 8px;
+    background: var(--navy-deep);
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .download-bar button {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 10px 16px;
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .download-bar button.secondary {
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    border: 1px solid var(--border);
+  }
+  .download-bar button:hover {
+    background: transparent;
+    color: var(--red);
+    box-shadow: inset 0 0 0 1px var(--red);
+  }
+  @media (max-width: 540px) {
+    .download-bar {
+      bottom: 80px;
+      padding: 6px;
+    }
+    .download-bar button { padding: 8px 12px; font-size: 10px; }
   }
 
   /* Display values in pacing summary */
@@ -556,6 +671,11 @@
   <span class="dot"></span>
   <span><span class="label-long">DATOS </span>GUARDADOS</span>
   <button class="reset" id="resetBtn" title="Borrar tus datos y empezar de cero">LIMPIAR</button>
+</div>
+
+<div class="download-bar" id="downloadBar">
+  <button onclick="window.print()" title="Descargar como PDF">⤓ PDF</button>
+  <button class="secondary" onclick="downloadMarkdown()" title="Descargar como Markdown">⤓ MD</button>
 </div>
 
 <div class="install-hint" id="installHint">
@@ -846,13 +966,13 @@
       </p>
       <div style="font-size:13px; line-height:1.7;">
         <div style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.08);">
-          <strong style="color:var(--red);">A · sub 1:45h</strong> — ~30 g carbos/h efectivos, líquido 500–600 ml/h
+          <strong style="color:var(--red);">A · sub 1:45h</strong> — 50–70 g carbos/h (intensidad alta = más glucógeno), líquido 500–700 ml/h, sodio +
         </div>
         <div style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.08);">
-          <strong style="color:var(--red);">B · 1:45 – 2:15h</strong> — 30–45 g carbos/h, líquido 500–700 ml/h
+          <strong style="color:var(--red);">B · 1:45 – 2:15h</strong> — 40–55 g carbos/h, líquido 500–700 ml/h
         </div>
         <div style="padding:8px 0;">
-          <strong style="color:var(--red);">C · 2:15h+</strong> — 40–60 g carbos/h (mezclá fuentes), 600–800 ml/h, sodio +
+          <strong style="color:var(--red);">C · 2:15h+</strong> — 30–45 g carbos/h efectivos, líquido 500–600 ml/h
         </div>
       </div>
     </div>
@@ -862,7 +982,7 @@
 <!-- SLIDE 7: FUENTES DE ENERGÍA + SEMANA PREVIA -->
 <div class="slide" data-slide="6">
   <div class="eyebrow">06 — Fuentes de Energía · Semana Previa</div>
-  <h2>QUÉ COMER, CÓMO CARGAR.<br><span style="color: var(--red);">PROBALO ANTES DEL DÍA D.</span></h2>
+  <h2>QUÉ COMER, CÓMO CARGAR.<br><span style="color: var(--red);">PROBALO EN ENTRENO.</span></h2>
 
   <div class="grid-2 mt-40">
     <div class="card animate-in">
@@ -906,7 +1026,7 @@
 <!-- SLIDE 8: DÍA DE CARRERA + CIERRE -->
 <div class="slide" data-slide="7">
   <div class="eyebrow">07 — Día de Carrera · Cierre</div>
-  <h2>EL DÍA D NO ES PARA EXPERIMENTAR.<br><span style="color: var(--red);">ES PARA EJECUTAR.</span></h2>
+  <h2>EL DÍA DE CARRERA NO ES PARA EXPERIMENTAR.<br><span style="color: var(--red);">ES PARA EJECUTAR.</span></h2>
 
   <div class="grid-4 mt-40" style="gap:16px;">
     <div class="card animate-in" style="padding:20px;">
@@ -1043,7 +1163,7 @@
       <div class="eyebrow" style="color:#fff; opacity:0.85; margin-bottom:10px;">Espacio abierto</div>
       <h3 style="margin-bottom:10px; font-size:22px;">PREGUNTAS Y COMENTARIOS</h3>
       <p style="font-size:13.5px; color:rgba(255,255,255,0.95);">
-        Dudas de pacing, dudas de nutrición, dudas del día D. Acá las resolvemos.
+        Dudas de pacing, dudas de nutrición, dudas de la carrera. Acá las resolvemos.
       </p>
     </div>
   </div>
@@ -1173,32 +1293,71 @@ function generarTablaPacing(ritmoMin, fcUmbral) {
     { hasta: 21.1, nombre: 'CIMA', color: '#F8D7DA' }
   ];
 
+  // Per-km grade-adjusted pace factors from real Cobán 21K GPS data
+  // (Minetti energy cost normalized to mean=1.0 across the route)
+  const RUTA_COBAN = [
+    { km: 1,  grade: 1.82,  factor: 1.095, alt: 1333 },
+    { km: 2,  grade: -2.43, factor: 0.870, alt: 1309 },
+    { km: 3,  grade: 0.78,  factor: 1.036, alt: 1317 },
+    { km: 4,  grade: -0.64, factor: 0.959, alt: 1310 },
+    { km: 5,  grade: -0.21, factor: 0.981, alt: 1308 },
+    { km: 6,  grade: -0.72, factor: 0.955, alt: 1301 },
+    { km: 7,  grade: -2.11, factor: 0.885, alt: 1280 },
+    { km: 8,  grade: 0.53,  factor: 1.022, alt: 1285 },
+    { km: 9,  grade: 0.12,  factor: 0.999, alt: 1286 },
+    { km: 10, grade: -0.69, factor: 0.956, alt: 1280 },
+    { km: 11, grade: 1.81,  factor: 1.094, alt: 1298 },
+    { km: 12, grade: 0.40,  factor: 1.015, alt: 1302 },
+    { km: 13, grade: 0.79,  factor: 1.036, alt: 1310 },
+    { km: 14, grade: 1.28,  factor: 1.064, alt: 1322 },
+    { km: 15, grade: -1.43, factor: 0.919, alt: 1308 },
+    { km: 16, grade: 1.25,  factor: 1.062, alt: 1321 },
+    { km: 17, grade: 0.28,  factor: 1.008, alt: 1323 },
+    { km: 18, grade: -1.38, factor: 0.921, alt: 1310 },
+    { km: 19, grade: 0.08,  factor: 0.997, alt: 1311 },
+    { km: 20, grade: 0.75,  factor: 1.034, alt: 1318 },
+    { km: 21, grade: 1.15,  factor: 1.056, alt: 1329 }
+  ];
+
   const estrategias = {
-    1: "5-10s más lento. Calentamiento activo. Control total.",
-    2: "Buscar ritmo. No te dejes llevar por el grupo.",
-    3: "Primera ondulación. Cadencia estable, zancada corta.",
-    4: "Ritmo objetivo estricto. Resistí acelerar en bajadas.",
-    5: "Falso plano. La tentación es acelerar. Disciplina.",
-    6: "Evaluá: ¿podés mantener conversación corta?",
-    7: "Micrometrajeado constante. No cambies zancada.",
-    8: "Acercándote al giro. Mentalidad: mitad de ida.",
-    9: "Último km de ida. Sostené. No adelantes nada.",
-    10: "Giro. Evaluación honesta. ¿Vas bien o te fuiste?",
-    11: "Mitad de la verdad. Acá se define la carrera.",
-    12: "El desierto. El cuerpo pregunta '¿por qué?'. Disciplina.",
-    13: "Sostené. No busques excusas en la ondulación.",
-    14: "Último km del desierto. Aguanta.",
-    15: "Giro 180°. Cambio de carga. Acortá 3-4 segundos.",
-    16: "Reencontrá ritmo. Técnica sobre velocidad.",
-    17: "Si el plan va bien, acá podés empezar a presionar.",
-    18: "Entrega progresiva. Mirada adelante, hombros abajo.",
-    19: "Empezá a vaciar el tanque. Todo lo que entrenaste.",
-    20: "No acelerés hasta ver la línea. Control final.",
-    21: "Último 100m. Entregá todo. Cruzá con la cabeza alta."
+    1: "Subida real +1.8%. NO arrancar rápido. Calentamiento activo.",
+    2: "Bajada -2.4% hacia Carchá. Resistí acelerar. Cadencia estable.",
+    3: "Falso plano subiendo. Ritmo medido.",
+    4: "Leve descenso. Ritmo objetivo estricto.",
+    5: "Plano. Buscá tu ritmo. ¿Mantenés conversación corta?",
+    6: "Bajada leve. No te dejes llevar.",
+    7: "Bajada -2.1% en Carchá. Acortá zancada, no aceleres.",
+    8: "Plano. Acercándote al giro. Mentalidad: mitad de ida.",
+    9: "Plano. Sostené. No adelantes nada.",
+    10: "Giro en Carchá. Evaluación honesta. ¿Vas bien?",
+    11: "Subida +1.8%. Acá empieza el retorno. Cadencia, no zancada.",
+    12: "Pequeño falso plano. Mitad de la verdad.",
+    13: "Subida leve. Disciplina sobre motivación.",
+    14: "Subida +1.3%. El desierto. Aguantá técnica.",
+    15: "Bajada -1.4%. Aprovechá pero no te embales.",
+    16: "Subida +1.3%. Si vas bien, presioná aquí progresivamente.",
+    17: "Plano. Reencontrá ritmo. Técnica sobre velocidad.",
+    18: "Bajada -1.4%. Última ventana para recuperar.",
+    19: "Plano. Vaciá el tanque. Todo lo que entrenaste.",
+    20: "Subida leve. No acelerés hasta ver la línea.",
+    21: "Subida final +1.2%. Entregá todo. Cabeza alta."
   };
 
-  for (let km = 1; km <= 21; km++) {
+  // Cumulative time accumulator
+  let cumulativeSec = 0;
+  const baseSec = ritmoMin * 60; // base per-km pace in seconds
+
+  RUTA_COBAN.forEach((p) => {
+    const km = p.km;
     const fase = fases.find(f => km <= f.hasta);
+
+    // Adjusted pace using grade factor
+    const kmPaceSec = baseSec * p.factor;
+    cumulativeSec += kmPaceSec;
+
+    const pMin = Math.floor(kmPaceSec / 60);
+    const pSec = Math.round(kmPaceSec % 60);
+    const ritmoStr = pMin + ':' + String(pSec).padStart(2, '0');
 
     // FC estimada por fase
     let fcPct = 0.82;
@@ -1208,23 +1367,31 @@ function generarTablaPacing(ritmoMin, fcUmbral) {
     else if (km <= 15) fcPct = 0.95;
     else if (km <= 18) fcPct = 0.97;
     else fcPct = 1.00;
-
     const fcEst = Math.round(fcUmbral * fcPct);
 
-    const rMin = Math.floor(ritmoMin);
-    const rSec = Math.round((ritmoMin - rMin) * 60);
-    const ritmoStr = rMin + ':' + String(rSec).padStart(2, '0');
+    // Grade indicator
+    let gradeIndicator = '';
+    if (p.grade > 0.5) gradeIndicator = `<span style="color:#FCA5A5; font-size:11px; margin-left:6px;">↑ ${p.grade.toFixed(1)}%</span>`;
+    else if (p.grade < -0.5) gradeIndicator = `<span style="color:#86EFAC; font-size:11px; margin-left:6px;">↓ ${Math.abs(p.grade).toFixed(1)}%</span>`;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td style="font-weight:600;">${km}</td>
       <td><span style="display:inline-block; padding:4px 10px; border-radius:2px; font-size:11px; font-family:'League Spartan'; letter-spacing:0.1em; background:${fase.color}; color:#16222E;">${fase.nombre}</span></td>
-      <td class="pacing-pace">${ritmoStr}</td>
+      <td class="pacing-pace">${ritmoStr}${gradeIndicator}</td>
       <td>${fcEst} bpm</td>
       <td style="font-size:13px; color:rgba(255,255,255,0.7);">${estrategias[km] || ''}</td>
     `;
     tbody.appendChild(tr);
-  }
+  });
+
+  // Final partial km (last 0.11 km to meta)
+  const finalKmSec = baseSec * 1.035 * 0.11;
+  cumulativeSec += finalKmSec;
+  const tH = Math.floor(cumulativeSec / 3600);
+  const tM = Math.floor((cumulativeSec % 3600) / 60);
+  const tS = Math.round(cumulativeSec % 60);
+  const tiempoTotal = (tH > 0 ? tH + ':' + String(tM).padStart(2,'0') : tM) + ':' + String(tS).padStart(2,'0');
 
   // Fila meta
   const trMeta = document.createElement('tr');
@@ -1232,9 +1399,9 @@ function generarTablaPacing(ritmoMin, fcUmbral) {
   trMeta.innerHTML = `
     <td style="font-weight:600;">21.1</td>
     <td><span style="display:inline-block; padding:4px 10px; border-radius:2px; font-size:11px; font-family:'League Spartan'; letter-spacing:0.1em; background:#F8D7DA; color:#16222E;">META</span></td>
-    <td class="pacing-pace" style="color:var(--red);">${Math.floor(ritmoMin) + ':' + String(Math.round((ritmoMin - Math.floor(ritmoMin)) * 60)).padStart(2, '0')}</td>
+    <td class="pacing-pace" style="color:var(--red);">${tiempoTotal}</td>
     <td>—</td>
-    <td style="font-size:13px; color:var(--red); font-weight:600;">Conquistaste tu cima.</td>
+    <td style="font-size:13px; color:var(--red); font-weight:600;">Conquistaste tu cima. Total: ${tiempoTotal}.</td>
   `;
   tbody.appendChild(trMeta);
 }
@@ -1401,6 +1568,109 @@ calcularUmbral = function(silent) {
     tiempo21k: document.getElementById('tiempo21k').textContent
   });
 };
+
+// =====================================================================
+// MARKDOWN EXPORT
+// =====================================================================
+function downloadMarkdown() {
+  const state = loadState();
+  const ev = state.events[state.currentEvent] || {};
+  const test = ev.test || {};
+  const results = ev.results || {};
+  const fecha = new Date().toLocaleDateString('es-GT', { day:'numeric', month:'long', year:'numeric' });
+
+  let md = '';
+  md += '# Uphill Coaching — Estrategia Cobán 21K\n\n';
+  md += `**Club de los Engasados · Media Maratón Internacional de Cobán · Mayo 2026**\n\n`;
+  md += `_Generado: ${fecha}_\n\n`;
+  md += '---\n\n';
+
+  md += '## 1. Fundamentos\n\n';
+  md += '> "El running es un deporte mental. Ante la adversidad, la capacidad de decidir cómo te vas a sentir es lo que te lleva a cruzar la meta." — **Gabriel Bianchi**\n\n';
+  md += '- Altitud ~1,300 msnm. FC sube 5–10 lpm por mismo esfuerzo.\n';
+  md += '- 274 m de ascenso micrometrajeado — ondulación constante, no colina única.\n';
+  md += '- La fatiga viene del cambio de zancada, no de una sola colina.\n';
+  md += '- **Disciplina sobre motivación.**\n\n';
+
+  if (test.dist20 && test.fc20) {
+    md += '## 2. Tu Test de Threshold\n\n';
+    md += `| Métrica | Valor |\n|---|---|\n`;
+    md += `| Distancia en 20 min | ${test.dist20} km |\n`;
+    md += `| FC promedio | ${test.fc20} bpm |\n`;
+    if (test.peso) md += `| Peso | ${test.peso} kg |\n`;
+    md += '\n';
+    if (results.ritmo21k) {
+      md += '### Tu plan calculado\n\n';
+      md += `- **Ritmo objetivo:** ${results.ritmo21k} min/km\n`;
+      md += `- **Tiempo proyectado:** ${results.tiempo21k}\n`;
+      md += `- **FC umbral:** ${results.fcUmbral || test.fc20 + ' bpm'}\n\n`;
+    }
+  }
+
+  md += '## 3. Pacing km-a-km (ajustado al perfil real de Cobán)\n\n';
+  md += '| Km | Fase | Ritmo | FC | Pendiente | Estrategia |\n|---|---|---|---|---|---|\n';
+  const rows = document.querySelectorAll('#pacingBody tr');
+  rows.forEach(tr => {
+    const cells = tr.querySelectorAll('td');
+    if (cells.length === 5) {
+      const km = cells[0].textContent.trim();
+      const fase = cells[1].textContent.trim();
+      const ritmoRaw = cells[2].textContent.trim();
+      // Split ritmo + grade indicator
+      const m = ritmoRaw.match(/^(\S+)\s*(.*)$/);
+      const ritmo = m ? m[1] : ritmoRaw;
+      const grade = m && m[2] ? m[2].replace(/[↑↓]/g, '').trim() : '—';
+      const fc = cells[3].textContent.trim();
+      const estr = cells[4].textContent.trim();
+      md += `| ${km} | ${fase} | ${ritmo} | ${fc} | ${grade} | ${estr} |\n`;
+    }
+  });
+  md += '\n';
+
+  md += '## 4. Escenarios de Nutrición (por tiempo estimado)\n\n';
+  md += '- **A · sub 1:45h** — 50–70 g carbos/h (intensidad alta = más glucógeno), líquido 500–700 ml/h, sodio +\n';
+  md += '- **B · 1:45–2:15h** — 40–55 g carbos/h, líquido 500–700 ml/h\n';
+  md += '- **C · 2:15h+** — 30–45 g carbos/h efectivos, líquido 500–600 ml/h\n\n';
+  md += '> **Regla que no se negocia:** todo se prueba durante entrenamientos largos. Nunca por primera vez el día de la carrera.\n\n';
+
+  md += '## 5. Semana Previa\n\n';
+  md += '- **Carga 36–48h antes:** aumentá porción de carbohidratos complejos en cada comida.\n';
+  md += '- **Hidratación 3–4 días antes:** agua constante + sodio si entrenás o hace calor. Orina clara = control.\n';
+  md += '- **Noche previa:** cena familiar, alta en carbos, baja en grasa/fibra.\n';
+  md += '- **Desayuno (2-3h antes):** el mismo que ya hiciste antes de rodajes largos.\n\n';
+
+  md += '## 6. Día de Carrera\n\n';
+  md += '- **Nada nuevo.** Ni geles, ni marcas, ni recetas.\n';
+  md += '- **Desayuno probado** 2-3 h antes de la salida.\n';
+  md += '- **Llevá tus fuentes.** No dependas solo de los puestos oficiales.\n';
+  md += '- **Hidratado ≠ empachado.** Arrancá hidratado, no sobrehidratado.\n\n';
+
+  md += '## 7. Checklist\n\n';
+  ['l0', 'l1', 'l2'].forEach((listPrefix, idx) => {
+    const titles = ['72H ANTES', '24H ANTES', 'DÍA DE CARRERA'];
+    md += `### ${titles[idx]}\n\n`;
+    document.querySelectorAll(`.checklist li[data-key^="${listPrefix}-"]`).forEach(li => {
+      const checked = li.classList.contains('checked') ? '[x]' : '[ ]';
+      md += `- ${checked} ${li.textContent.trim()}\n`;
+    });
+    md += '\n';
+  });
+
+  md += '---\n\n';
+  md += '**Uphill Coaching · Conquista Tu Cima**\n\n';
+  md += '_Club de los Engasados · Media Maratón Internacional de Cobán · Mayo 2026_\n';
+
+  // Trigger download
+  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'uphill-estrategia-coban-21k.md';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 // Checklist interactivity (with persistence)
 document.querySelectorAll('.checklist li').forEach(li => {
