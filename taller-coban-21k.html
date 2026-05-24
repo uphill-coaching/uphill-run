@@ -1003,7 +1003,7 @@
         </div>
         <div class="result-box">
           <div class="result-value" id="ritmo21k">—</div>
-          <div class="result-label">Ritmo Objetivo 21K (+5% altitud)</div>
+          <div class="result-label">Ritmo Objetivo 21K</div>
         </div>
         <div class="result-box">
           <div class="result-value" id="tiempo21k">—</div>
@@ -1490,8 +1490,10 @@ function calcularUmbral() {
   const ritmoSec = Math.round((ritmoMin - ritmoMinInt) * 60);
   const ritmoStr = ritmoMinInt + ':' + String(ritmoSec).padStart(2, '0');
 
-  // Ritmo 21K con ajuste +5% por altitud/duración
-  const ritmo21 = ritmoMin * 1.05;
+  // Ritmo 21K: el test se hace en terreno similar a Cobán, así que el ritmo
+  // del threshold ya refleja el costo del terreno/altitud. No aplicamos
+  // ajustes extra — tu ritmo del test es tu ritmo objetivo promedio de carrera.
+  const ritmo21 = ritmoMin;
   const r21Min = Math.floor(ritmo21);
   const r21Sec = Math.round((ritmo21 - r21Min) * 60);
   const ritmo21Str = r21Min + ':' + String(r21Sec).padStart(2, '0');
@@ -1534,7 +1536,7 @@ function calcularUmbral() {
       <div class="pts-eyebrow">Tu plan personalizado</div>
       <strong>Generado:</strong> ${fechaStr}<br>
       <strong>Tu test:</strong> ${dist} km en 20 min · FC ${Math.round(fc)} bpm${pesoTxt}<br>
-      <strong>Ritmo umbral:</strong> ${ritmoStr} min/km  →  <strong>Ritmo objetivo (con +5% altitud):</strong> ${ritmo21Str} min/km  →  <strong>Tiempo proyectado:</strong> ${tiempoStr}
+      <strong>Ritmo umbral:</strong> ${ritmoStr} min/km  →  <strong>Ritmo objetivo de carrera:</strong> ${ritmo21Str} min/km  →  <strong>Tiempo proyectado:</strong> ${tiempoStr}
     `;
   }
 
