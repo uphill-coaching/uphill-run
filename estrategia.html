@@ -1828,7 +1828,18 @@
 // =====================================================================
 // SHA-256 hashes (first 16 hex chars) of valid codes salted with 'uphill-2026-'.
 // To add new codes: open generador-codigos.html, generate, paste the snippet here.
+//
+// CÓDIGOS MASTER DE PRODUCCIÓN (compartir con compradores hasta migrar a backend):
+//   UPHILL-VIP-2026      → código principal de venta
+//   CONQUISTA-TU-CIMA    → código alternativo / promociones puntuales
+//
+// Códigos demo (uso interno / testing — eliminar antes de producción si querés):
+//   UPHILL-DEMO-0001  ·  UPHILL-GABO-0001  ·  UPHILL-TEST-0001
 const VALID_CODES = {
+  // Producción
+  'd3eb7f3fbde36c46': { name: 'Atleta Uphill', code: 'UPHILL-VIP-2026' },
+  'eb0b99021c47fc30': { name: 'Atleta Uphill', code: 'CONQUISTA-TU-CIMA' },
+  // Demo / testing
   '26776275902933dd': { name: 'Demo Uphill', code: 'UPHILL-DEMO-0001' },
   '3042b4f974145011': { name: 'Gabriel Bianchi', code: 'UPHILL-GABO-0001' },
   '7cfcdef091db4841': { name: 'Test Atleta', code: 'UPHILL-TEST-0001' }
