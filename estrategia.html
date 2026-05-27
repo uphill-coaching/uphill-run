@@ -1364,8 +1364,8 @@
     <!-- PRs -->
     <section class="form-section">
       <div class="section-num">05</div>
-      <h3>PRs PREVIOS</h3>
-      <p class="hint">Opcional pero recomendado. Mejora la precisión del cálculo cuando hay PR reciente. Formato hh:mm:ss.</p>
+      <h3>PRs PREVIOS <span style="font-size:11px; color:var(--gray); letter-spacing:0.1em; font-family:var(--font-secondary);">(COMPLEMENTO · NO DOMINA)</span></h3>
+      <p class="hint">Sus PRs son <strong>complemento</strong>, no la fuente principal. Sin contexto se cuentan poco. Con contexto (altitud, clima, condición vs hoy) suman precisión.</p>
 
       <div class="input-row">
         <div class="input-group">
@@ -1387,10 +1387,61 @@
           <input type="text" id="pr42k" placeholder="03:30:00" class="pace-input">
         </div>
       </div>
-      <div class="input-row single">
-        <div class="input-group">
-          <label>Año del PR más reciente</label>
-          <input type="number" id="prAnio" min="2000" max="2030" placeholder="2025">
+
+      <!-- PR context block -->
+      <div class="advanced-block" style="margin-top: 20px;">
+        <div class="advanced-header">
+          <div class="advanced-eyebrow">Contexto de tus PRs · opcional</div>
+          <h4>¿EN QUÉ CONDICIONES CORRISTE ESOS PRs?</h4>
+          <p>
+            Si tus PRs fueron en condiciones <em>diferentes</em> a tu carrera objetivo
+            (más altitud, más calor, otra estación) y nos lo decís, te <strong>normalizamos</strong>
+            el tiempo a condiciones equivalentes. Sin contexto, el PR cuenta poco.
+          </p>
+        </div>
+
+        <div class="input-row triple">
+          <div class="input-group">
+            <label>Año del PR más reciente</label>
+            <input type="number" id="prAnio" min="2000" max="2030" placeholder="2025">
+          </div>
+          <div class="input-group">
+            <label>Altitud donde corriste (msnm)</label>
+            <input type="number" id="prAltitud" min="0" max="4500" placeholder="1900">
+            <div class="micro">Si fue a altitud, removemos esa penalización al normalizar.</div>
+          </div>
+          <div class="input-group">
+            <label>Temperatura del PR (°C)</label>
+            <input type="number" id="prTemp" min="-5" max="45" placeholder="20">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Rendimiento subjetivo de ese PR (1-10)</label>
+            <select id="prRating">
+              <option value="">—</option>
+              <option value="10">10 · día perfecto</option>
+              <option value="9">9 · excelente</option>
+              <option value="8">8 · muy bien</option>
+              <option value="7">7 · bien (default)</option>
+              <option value="6">6 · ok</option>
+              <option value="5">5 · regular</option>
+              <option value="4">4 · flojo</option>
+              <option value="3">3 · malo</option>
+              <option value="2">2 · muy malo</option>
+              <option value="1">1 · terrible</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Tu forma actual vs ese PR</label>
+            <select id="prCondicion">
+              <option value="">—</option>
+              <option value="mejor">Mejor — más entreno / volumen / consistencia</option>
+              <option value="igual">Igual — forma similar a la del PR</option>
+              <option value="peor">Peor — menos entreno / lesiones / regresando</option>
+            </select>
+            <div class="micro">"Mejor" sube tu predicción ~3%. "Peor" la baja ~4% y reduce el peso del PR.</div>
+          </div>
         </div>
       </div>
     </section>
@@ -2141,7 +2192,7 @@ function defaultStore() {
       sources: [],
       otroText: ''
     },
-    prs: { '5k': '', '10k': '', '21k': '', '42k': '', anio: '' },
+    prs: { '5k': '', '10k': '', '21k': '', '42k': '', anio: '', altitud: '', temp: '', rating: '', condicion: '' },
     pastRaces: [
       { name: '', distancia: '', dPlus: '', tiempo: '', rating: '' },
       { name: '', distancia: '', dPlus: '', tiempo: '', rating: '' },
@@ -2232,13 +2283,16 @@ function predictFromPastRace(race, targetDistKm) {
   return { timeSec: scaledTime, paceSec: scaledTime / targetDistKm };
 }
 
-// Returns BASELINE flat-road pace (sec/km) from LT2 / PRs / threshold.
-// This is the "ideal flat road" prediction — applyAdjustments will then add
-// terrain/D+/altitude/climate/fatigue. Past races are handled separately.
-function basePaceFromInputs(threshold, prs, lactate, targetDistKm) {
+// Returns BASELINE flat-road pace (sec/km) from LT2 / threshold / PRs.
+// Recent data (LT2, threshold) dominates. PRs are a COMPLEMENT — with context
+// they normalize and contribute meaningfully; without context, they count little.
+// applyAdjustments will then add terrain/D+/altitude/climate/fatigue.
+// Past races are handled separately in generarEstrategia.
+function basePaceFromInputs(threshold, prs, lactate, targetDistKm, raceCarrera) {
   const candidates = [];
   const isUltraTarget = targetDistKm > 42;
 
+  // LT2 — precise threshold reference (no change in weight)
   const lt2PaceSec = parseTimeToSeconds(lactate?.lt2?.pace);
   if (lt2PaceSec) {
     const lt2Dist = 3600 / lt2PaceSec;
@@ -2247,34 +2301,98 @@ function basePaceFromInputs(threshold, prs, lactate, targetDistKm) {
     candidates.push({ source: 'Lactato LT2', predicted, weight: w, fromDist: lt2Dist });
   }
 
-  const prMap = { '5k': 5, '10k': 10, '21k': 21.1, '42k': 42.2 };
-  for (const [k, d] of Object.entries(prMap)) {
-    const sec = parseTimeToSeconds(prs[k]);
-    if (sec && sec > 0) {
-      const distRatio = Math.max(d, targetDistKm) / Math.min(d, targetDistKm);
-      let weight;
-      // A PR at the EXACT same distance is the gold standard — dominate the prediction.
-      if (distRatio < 1.05) {
-        weight = isUltraTarget ? 2.5 : 4.0; // PR within ±5% of target → dominant
-      } else if (distRatio < 1.5) {
-        weight = isUltraTarget ? 1.5 : 2.5; // close-range PR
-      } else {
-        weight = 1.2 / Math.pow(distRatio, 0.5);
-        if (isUltraTarget) weight *= 0.7;
-      }
-      const predicted = riegelPredictVar(sec, d, targetDistKm);
-      candidates.push({ source: 'PR ' + k, predicted, weight, fromDist: d });
-    }
-  }
-
+  // Threshold 20-min test — most direct recent signal (BOOSTED weight)
   if (threshold.dist && threshold.fc) {
     const sec = 20 * 60;
     const d = parseFloat(threshold.dist);
     if (d > 0) {
       const predicted = riegelPredictVar(sec, d, targetDistKm);
-      const w = isUltraTarget ? 0.5 : 1.0;
+      const w = isUltraTarget ? 1.0 : 2.0;
       candidates.push({ source: 'Threshold 20min', predicted, weight: w, fromDist: d });
     }
+  }
+
+  // PRs — now a COMPLEMENT, not the dominant source.
+  // Base weight is 1.0 (was 4.0). Context can adjust both the predicted time
+  // (normalizing for altitude/conditions/condition) and the weight itself.
+  const prMap = { '5k': 5, '10k': 10, '21k': 21.1, '42k': 42.2 };
+  const prCtx = {
+    altitud: parseFloat(prs.altitud) || null,
+    temp: parseFloat(prs.temp) || null,
+    rating: parseFloat(prs.rating) || null,
+    condicion: prs.condicion || ''
+  };
+  const hasContext = prCtx.altitud || prCtx.temp || prCtx.rating || prCtx.condicion;
+
+  for (const [k, d] of Object.entries(prMap)) {
+    const sec = parseTimeToSeconds(prs[k]);
+    if (!sec || sec <= 0) continue;
+
+    const distRatio = Math.max(d, targetDistKm) / Math.min(d, targetDistKm);
+    let weight;
+    if (distRatio < 1.05) weight = 1.0;        // PR at the target distance
+    else if (distRatio < 1.5) weight = 0.8;    // PR close in range
+    else weight = 0.5 / Math.pow(distRatio, 0.5);
+    if (isUltraTarget) weight *= 0.6;
+
+    // Without context, PRs have HALF weight — we can't trust them blindly.
+    if (!hasContext) weight *= 0.5;
+
+    let predicted = riegelPredictVar(sec, d, targetDistKm);
+    const sourceLabel = ['PR ' + k];
+
+    // --- Context corrections ---
+
+    // 1. Altitude normalization: if PR was at higher altitude than race, the PR
+    //    time has an implicit altitude penalty baked in. Remove it so the
+    //    prediction reflects sea-level (or race-altitude) equivalent.
+    if (prCtx.altitud && raceCarrera && raceCarrera.altitud) {
+      const prAlt = prCtx.altitud;
+      const raceAlt = parseFloat(raceCarrera.altitud) || 0;
+      const altDeltaPR = prAlt - raceAlt; // positive = PR was higher
+      if (Math.abs(altDeltaPR) > 100) {
+        // Apply same altitude formula: 0.3% per 100m above 100m delta, capped logic
+        let prAltCorrection = 1;
+        if (altDeltaPR > 100) {
+          // PR was at higher altitude — remove its penalty (race is faster)
+          prAltCorrection = (altDeltaPR <= 2000)
+            ? 1 - 0.003 * (altDeltaPR / 100)
+            : 1 - (0.003 * 20 + 0.005 * ((altDeltaPR - 2000) / 100));
+          sourceLabel.push(`altitud −${Math.round(altDeltaPR)}m`);
+        } else {
+          // PR was at lower altitude — add penalty (race is harder)
+          const absDelta = -altDeltaPR;
+          prAltCorrection = (absDelta <= 2000)
+            ? 1 + 0.003 * (absDelta / 100)
+            : 1 + 0.003 * 20 + 0.005 * ((absDelta - 2000) / 100);
+          sourceLabel.push(`altitud +${Math.round(absDelta)}m`);
+        }
+        predicted *= prAltCorrection;
+      }
+    }
+
+    // 2. Subjective rating: PR rated <10 wasn't optimal, project to potential
+    if (prCtx.rating) {
+      const correction = 1 - ((10 - prCtx.rating) * 0.012);
+      predicted *= correction;
+      if (prCtx.rating < 9) sourceLabel.push(`rating ${prCtx.rating}/10`);
+    }
+
+    // 3. Condition vs today
+    if (prCtx.condicion === 'mejor') {
+      predicted *= 0.97;     // you're 3% fitter now → predict faster
+      weight *= 0.7;         // but reduce confidence (it's based on old fitness)
+      sourceLabel.push('forma mejor hoy');
+    } else if (prCtx.condicion === 'peor') {
+      predicted *= 1.04;     // you're 4% less fit now → predict slower
+      weight *= 0.4;         // and reduce weight significantly
+      sourceLabel.push('forma peor hoy');
+    }
+
+    candidates.push({
+      source: sourceLabel.join(' · '),
+      predicted, weight, fromDist: d
+    });
   }
 
   if (candidates.length === 0) return null;
@@ -2807,7 +2925,8 @@ function generarEstrategia() {
     { dist: STORE.threshold.dist, fc: STORE.threshold.fc },
     STORE.prs,
     STORE.lactate,
-    targetDistKm
+    targetDistKm,
+    carrera  // for PR context altitude comparison
   );
   let adj = null;
   if (baseFlat) {
@@ -3173,7 +3292,11 @@ function syncPRsFromUI() {
     '10k': document.getElementById('pr10k').value.trim(),
     '21k': document.getElementById('pr21k').value.trim(),
     '42k': document.getElementById('pr42k').value.trim(),
-    anio: document.getElementById('prAnio').value
+    anio: document.getElementById('prAnio').value,
+    altitud: document.getElementById('prAltitud').value,
+    temp: document.getElementById('prTemp').value,
+    rating: document.getElementById('prRating').value,
+    condicion: document.getElementById('prCondicion').value
   };
   saveStore(STORE);
 }
@@ -3272,6 +3395,10 @@ function restoreUIFromStore() {
   document.getElementById('pr21k').value = STORE.prs['21k'] || '';
   document.getElementById('pr42k').value = STORE.prs['42k'] || '';
   document.getElementById('prAnio').value = STORE.prs.anio || '';
+  document.getElementById('prAltitud').value = STORE.prs.altitud || '';
+  document.getElementById('prTemp').value = STORE.prs.temp || '';
+  document.getElementById('prRating').value = STORE.prs.rating || '';
+  document.getElementById('prCondicion').value = STORE.prs.condicion || '';
   // Past races
   const pr = STORE.pastRaces || [];
   [1, 2, 3].forEach(i => {
@@ -3401,8 +3528,8 @@ function wireInputAutoSave() {
       syncNutritionFromUI();
     });
   });
-  // PRs
-  ['pr5k','pr10k','pr21k','pr42k','prAnio'].forEach(id => {
+  // PRs (incl. context)
+  ['pr5k','pr10k','pr21k','pr42k','prAnio','prAltitud','prTemp','prRating','prCondicion'].forEach(id => {
     document.getElementById(id).addEventListener('change', syncPRsFromUI);
     document.getElementById(id).addEventListener('blur', syncPRsFromUI);
   });
