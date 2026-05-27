@@ -1707,6 +1707,12 @@
       </div>
     </div>
 
+    <!-- Source breakdown (transparency) -->
+    <div id="sSources" style="padding:14px 18px; background:var(--navy-deep); border-left:3px solid var(--red); border-radius:2px; margin-bottom:32px; font-size:13px; line-height:1.7; color:rgba(255,255,255,0.75); display:none;">
+      <div class="eyebrow" style="margin-bottom:8px;">Cálculo basado en</div>
+      <div id="sSourcesList">—</div>
+    </div>
+
     <!-- Escenarios ABC -->
     <div class="panel">
       <div class="panel-head">
@@ -2246,8 +2252,16 @@ function basePaceFromInputs(threshold, prs, lactate, targetDistKm) {
     const sec = parseTimeToSeconds(prs[k]);
     if (sec && sec > 0) {
       const distRatio = Math.max(d, targetDistKm) / Math.min(d, targetDistKm);
-      let weight = 1.2 / Math.pow(distRatio, 0.5);
-      if (isUltraTarget) weight *= 0.7;
+      let weight;
+      // A PR at the EXACT same distance is the gold standard — dominate the prediction.
+      if (distRatio < 1.05) {
+        weight = isUltraTarget ? 2.5 : 4.0; // PR within ±5% of target → dominant
+      } else if (distRatio < 1.5) {
+        weight = isUltraTarget ? 1.5 : 2.5; // close-range PR
+      } else {
+        weight = 1.2 / Math.pow(distRatio, 0.5);
+        if (isUltraTarget) weight *= 0.7;
+      }
       const predicted = riegelPredictVar(sec, d, targetDistKm);
       candidates.push({ source: 'PR ' + k, predicted, weight, fromDist: d });
     }
@@ -2877,10 +2891,27 @@ function renderStrategy(carrera, s) {
   document.getElementById('sMeta').textContent =
     `${ath} · ${carrera.distancia} km · ${fecha} · Salida ${carrera.hora || '—'} · ${carrera.altitud || '—'} msnm`;
 
-  // Summary
+  // Summary — use the WEIGHTED final pace (s.base.paceSec) so display matches
+  // the projected time and the scenarios. Previously sRitmo used s.adj.paceSec
+  // (baseline path only) while sTiempo used the weighted average → mismatch.
   document.getElementById('sTiempo').textContent = secondsToHMS(s.targetTime);
-  document.getElementById('sTiempoSub').textContent = `${carrera.distancia} km · ritmo promedio ${secondsToMSPace(s.adj.paceSec)} min/km`;
-  document.getElementById('sRitmo').textContent = secondsToMSPace(s.adj.paceSec);
+  document.getElementById('sTiempoSub').textContent = `${carrera.distancia} km · ritmo promedio ${secondsToMSPace(s.base.paceSec)} min/km`;
+  document.getElementById('sRitmo').textContent = secondsToMSPace(s.base.paceSec);
+
+  // Sources breakdown — transparency on what inputs drove the prediction
+  if (s.base && s.base.sources && s.base.sources.length) {
+    const sourceLines = s.base.sources
+      .sort((a, b) => b.weight - a.weight)
+      .map(src => {
+        const pct = ((src.weight / s.base.sources.reduce((sum, x) => sum + x.weight, 0)) * 100).toFixed(0);
+        const tStr = secondsToHMS(src.timeSec);
+        return `<div><strong style="color:var(--white);">${src.source}</strong> → ${tStr} <span style="color:rgba(255,255,255,0.45);">· peso ${pct}%</span></div>`;
+      }).join('');
+    document.getElementById('sSourcesList').innerHTML = sourceLines;
+    document.getElementById('sSources').style.display = 'block';
+  } else {
+    document.getElementById('sSources').style.display = 'none';
+  }
   const fcU = s.fcRef && s.fcRef.fc;
   document.getElementById('sFc').textContent = fcU ? Math.round(fcU * 0.94) + '–' + Math.round(fcU * 0.98) : '—';
   document.getElementById('sFcSub').textContent = fcU ? `bpm · umbral ${fcU} (${s.fcRef.source})` : 'sin datos de FC';
