@@ -3215,20 +3215,37 @@ body.modal-open {
 
 .event-week-cta {
   margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-family: var(--font-secondary);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--red);
-  padding-top: 16px;
-  border-top: 1px solid var(--gray-500);
-  transition: var(--transition-base);
+  color: var(--white);
+  background: #25D366;
+  padding: 14px 18px;
+  border-radius: 2px;
+  transition: all 260ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.15);
+}
+
+.event-week-cta::before {
+  content: "";
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M20.52 3.449C12.831-3.984.106 1.407.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c7.905 4.266 17.661-1.4 17.665-10.446 0-3.181-1.24-6.17-3.495-8.42L20.52 3.449Zm-8.643 18.297a9.874 9.874 0 0 1-5.032-1.378l-.361-.214-3.741.982.998-3.648-.235-.375a9.861 9.861 0 0 1-1.51-5.27c.003-8.759 10.701-13.144 16.884-6.958 6.196 6.117 1.847 16.86-6.99 16.86l-.013.001Zm5.42-7.403c-.29-.145-1.71-.842-1.974-.938-.264-.098-.457-.146-.65.144-.194.291-.75.937-.918 1.128-.168.192-.34.216-.63.072-1.712-.855-2.836-1.526-3.965-3.462-.3-.516.3-.48.855-1.598.096-.191.048-.36-.024-.504-.072-.144-.65-1.565-.89-2.143-.234-.563-.472-.486-.65-.496a12.09 12.09 0 0 0-.552-.01c-.192 0-.505.072-.77.36-.264.288-1.006.984-1.006 2.4 0 1.416 1.03 2.784 1.173 2.976.145.19 2.024 3.093 4.906 4.34 1.828.79 2.545.856 3.457.72.554-.084 1.71-.7 1.951-1.376.24-.677.24-1.256.168-1.377-.072-.12-.264-.192-.552-.336Z'/></svg>") no-repeat center / contain;
+  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M20.52 3.449C12.831-3.984.106 1.407.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c7.905 4.266 17.661-1.4 17.665-10.446 0-3.181-1.24-6.17-3.495-8.42L20.52 3.449Zm-8.643 18.297a9.874 9.874 0 0 1-5.032-1.378l-.361-.214-3.741.982.998-3.648-.235-.375a9.861 9.861 0 0 1-1.51-5.27c.003-8.759 10.701-13.144 16.884-6.958 6.196 6.117 1.847 16.86-6.99 16.86l-.013.001Zm5.42-7.403c-.29-.145-1.71-.842-1.974-.938-.264-.098-.457-.146-.65.144-.194.291-.75.937-.918 1.128-.168.192-.34.216-.63.072-1.712-.855-2.836-1.526-3.965-3.462-.3-.516.3-.48.855-1.598.096-.191.048-.36-.024-.504-.072-.144-.65-1.565-.89-2.143-.234-.563-.472-.486-.65-.496a12.09 12.09 0 0 0-.552-.01c-.192 0-.505.072-.77.36-.264.288-1.006.984-1.006 2.4 0 1.416 1.03 2.784 1.173 2.976.145.19 2.024 3.093 4.906 4.34 1.828.79 2.545.856 3.457.72.554-.084 1.71-.7 1.951-1.376.24-.677.24-1.256.168-1.377-.072-.12-.264-.192-.552-.336Z'/></svg>") no-repeat center / contain;
 }
 
 .event-week-card:hover .event-week-cta {
-  color: var(--white);
-  letter-spacing: 0.22em;
+  background: #1DA851;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px 0 rgba(37, 211, 102, 0.25);
 }
 
 /* ============== EVENTOS EXTRA (Entre Montañas + Calendario) ============== */
@@ -3914,7 +3931,7 @@ body.modal-open {
         <li><a href="#iniciar">Cómo iniciar</a></li>
         <li><a href="#coaches">Coaches</a></li>
         <li><a href="clubs.html">Clubs</a></li>
-        <li><a href="eventos.html">Eventos</a></li>
+        <li><a href="#eventos">Eventos</a></li>
       </ul>
       <a href="https://wa.me/50230618908?text=Hola%20Uphill%2C%20vi%20su%20sitio%20web%20y%20me%20interesa%20agendar%20una%20entrevista%20inicial%20con%20un%20coach." target="_blank" rel="noopener" class="nav-cta">WhatsApp <span>→</span></a>
       <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
@@ -3930,7 +3947,7 @@ body.modal-open {
     <a href="#iniciar">Cómo iniciar</a>
     <a href="#coaches">Coaches</a>
     <a href="clubs.html">Clubs</a>
-    <a href="eventos.html">Eventos</a>
+    <a href="#eventos">Eventos</a>
     <a href="https://wa.me/50230618908?text=Hola%20Uphill%2C%20vi%20su%20sitio%20web%20y%20me%20interesa%20agendar%20una%20entrevista%20inicial%20con%20un%20coach." target="_blank" rel="noopener" class="cta">WhatsApp →</a>
   </div>
 </header>
@@ -4744,13 +4761,13 @@ body.modal-open {
       </div>
 
       <div class="events-extra-card events-extra-card-alt">
-        <div class="events-extra-eyebrow">Carreras y especiales</div>
-        <div class="events-extra-title">Calendario completo</div>
+        <div class="events-extra-eyebrow">Conocé el equipo</div>
+        <div class="events-extra-title">Detalle de los clubs</div>
         <p class="events-extra-text">
-          Carreras propias, competencias externas donde estamos preparando atletas y eventos especiales de la comunidad. Todo en un solo lugar.
+          Dinámica de cada club, coach que lo lidera y equipo completo de guías. Todo lo que necesitás saber para sumarte al que mejor te quede.
         </p>
-        <a href="eventos.html" class="events-extra-cta">
-          Ver todos los eventos →
+        <a href="clubs.html" class="events-extra-cta">
+          Ver detalle de clubs →
         </a>
       </div>
     </div>
@@ -4967,7 +4984,7 @@ body.modal-open {
           <li><a href="#iniciar">Cómo iniciar</a></li>
           <li><a href="#coaches">Coaches</a></li>
           <li><a href="#mapa">Comunidad</a></li>
-          <li><a href="eventos.html">Eventos</a></li>
+          <li><a href="#eventos">Eventos</a></li>
           <li><a href="#testimonios">Testimonios</a></li>
         </ul>
       </div>
