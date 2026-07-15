@@ -3116,6 +3116,200 @@ body.modal-open {
   }
 }
 
+/* ============== EVENTOS SEMANALES RECURRENTES ============== */
+.events-weekly-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 640px) {
+  .events-weekly-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .events-weekly-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+.event-week-card {
+  position: relative;
+  background: var(--navy);
+  border: 1px solid var(--gray-500);
+  padding: 32px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  transition: var(--transition-base);
+  min-height: 200px;
+}
+
+.event-week-card:hover {
+  background: var(--navy-light);
+  border-color: var(--red);
+  transform: translateY(-3px);
+}
+
+.event-week-card.featured {
+  border-color: var(--red);
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-deep) 100%);
+}
+
+.event-week-card.featured::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--red);
+}
+
+.event-week-badge {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  background: var(--red);
+  color: var(--white);
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+}
+
+.event-week-day {
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 14px;
+}
+
+.event-week-name {
+  font-family: var(--font-impact);
+  font-size: clamp(20px, 2.5vw, 26px);
+  line-height: 1.05;
+  color: var(--white);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.event-week-meta {
+  font-family: var(--font-primary);
+  font-size: 13px;
+  color: var(--gray-200);
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.event-week-cta {
+  margin-top: auto;
+  font-family: var(--font-secondary);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  padding-top: 16px;
+  border-top: 1px solid var(--gray-500);
+  transition: var(--transition-base);
+}
+
+.event-week-card:hover .event-week-cta {
+  color: var(--white);
+  letter-spacing: 0.22em;
+}
+
+/* ============== EVENTOS EXTRA (Entre Montañas + Calendario) ============== */
+.events-extra {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .events-extra {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+.events-extra-card {
+  background: var(--navy-deep);
+  border: 1px solid var(--gray-500);
+  padding: 36px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-base);
+}
+
+.events-extra-card:hover {
+  border-color: var(--red);
+}
+
+.events-extra-card-alt {
+  background: var(--navy);
+}
+
+.events-extra-eyebrow {
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 14px;
+}
+
+.events-extra-title {
+  font-family: var(--font-impact);
+  font-size: clamp(28px, 3.5vw, 38px);
+  line-height: 1;
+  color: var(--white);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.events-extra-text {
+  font-family: var(--font-primary);
+  font-weight: 300;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--gray-100);
+  margin-bottom: 24px;
+  flex: 1;
+}
+
+.events-extra-cta {
+  align-self: flex-start;
+  font-family: var(--font-secondary);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-decoration: none;
+  padding: 14px 24px;
+  border: 1px solid var(--white);
+  transition: var(--transition-base);
+}
+
+.events-extra-cta:hover {
+  background: var(--red);
+  border-color: var(--red);
+}
+
 .event-card {
   padding: 32px 28px;
   background: var(--navy-deep);
@@ -3719,8 +3913,8 @@ body.modal-open {
         <li><a href="#planes">Planes</a></li>
         <li><a href="#iniciar">Cómo iniciar</a></li>
         <li><a href="#coaches">Coaches</a></li>
-        <li><a href="#proyectos">Comunidad</a></li>
-        <li><a href="#eventos">Eventos</a></li>
+        <li><a href="clubs.html">Clubs</a></li>
+        <li><a href="eventos.html">Eventos</a></li>
       </ul>
       <a href="https://wa.me/50230618908?text=Hola%20Uphill%2C%20vi%20su%20sitio%20web%20y%20me%20interesa%20agendar%20una%20entrevista%20inicial%20con%20un%20coach." target="_blank" rel="noopener" class="nav-cta">WhatsApp <span>→</span></a>
       <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">
@@ -3735,8 +3929,8 @@ body.modal-open {
     <a href="#planes">Planes</a>
     <a href="#iniciar">Cómo iniciar</a>
     <a href="#coaches">Coaches</a>
-    <a href="#proyectos">Comunidad</a>
-    <a href="#eventos">Eventos</a>
+    <a href="clubs.html">Clubs</a>
+    <a href="eventos.html">Eventos</a>
     <a href="https://wa.me/50230618908?text=Hola%20Uphill%2C%20vi%20su%20sitio%20web%20y%20me%20interesa%20agendar%20una%20entrevista%20inicial%20con%20un%20coach." target="_blank" rel="noopener" class="cta">WhatsApp →</a>
   </div>
 </header>
@@ -4479,41 +4673,88 @@ body.modal-open {
     <div class="events-header">
       <div class="reveal">
         <div class="eyebrow">Calendario</div>
-        <h2 class="section-title">Próximos<br><span class="highlight">eventos.</span></h2>
+        <h2 class="section-title">Nos <span class="highlight">encontramos</span><br>toda la semana.</h2>
       </div>
       <p class="section-subtitle reveal reveal-delay-1" style="margin-bottom: 0;">
-        Encuentros, entrenos especiales, retos e inmersiones. Algunos abiertos a todos, otros exclusivos para atletas Uphill.
+        Cuatro entrenos grupales fijos, cada semana. Sin costo. Coaches formados por Uphill guían cada sesión por niveles.
       </p>
     </div>
 
-    <!-- Estado vacío (mostrar mientras no haya eventos) -->
-    <div class="events-empty reveal reveal-delay-2">
-      <div class="events-empty-text">Pronto anunciaremos<br>los próximos eventos.</div>
-      <p class="events-empty-sub">
-        Seguinos en Instagram para enterarte primero de cada entrenamiento, reto e inmersión que organicemos.
-      </p>
-      <a href="https://www.instagram.com/uphill.coaching/" target="_blank" rel="noopener" class="events-empty-cta">
-        Seguinos en Instagram <span>→</span>
-      </a>
-    </div>
+    <!-- Grid de eventos semanales recurrentes -->
+    <div class="events-weekly-grid reveal reveal-delay-2">
 
-    <!--
-      Cuando tengas eventos confirmados, reemplazá el div .events-empty por este bloque:
-
-      <div class="events-grid">
-        <div class="event-card">
-          <div class="event-date">
-            <span class="event-date-day">15</span>
-            <span class="event-date-month">May 2026</span>
-          </div>
-          <span class="event-tag">Gratuito · Trail</span>
-          <h3 class="event-name">Nombre del evento</h3>
-          <p class="event-desc">Descripción breve del evento.</p>
-          <a href="#" class="coach-cta">Más información →</a>
+      <a href="https://chat.whatsapp.com/Esj2PYJk6XO8H1yZU2LrTV" target="_blank" rel="noopener" class="event-week-card">
+        <div class="event-week-day">Martes</div>
+        <div class="event-week-name">Garmin Runners</div>
+        <div class="event-week-meta">
+          <span>6:30 PM</span>
+          <span>·</span>
+          <span>Garmin Cayalá</span>
         </div>
-        ... más cards
+        <div class="event-week-cta">Unirme al grupo →</div>
+      </a>
+
+      <a href="https://chat.whatsapp.com/ELsg41YxoDWJrctQ3ru6Va" target="_blank" rel="noopener" class="event-week-card">
+        <div class="event-week-day">Miércoles</div>
+        <div class="event-week-name">Moonlight Runners</div>
+        <div class="event-week-meta">
+          <span>6:30 PM</span>
+          <span>·</span>
+          <span>Fontabella</span>
+        </div>
+        <div class="event-week-cta">Unirme al grupo →</div>
+      </a>
+
+      <a href="https://chat.whatsapp.com/GjEN6vk87zAHcZn1BhE4LQ" target="_blank" rel="noopener" class="event-week-card featured">
+        <div class="event-week-badge">Insignia</div>
+        <div class="event-week-day">Jueves</div>
+        <div class="event-week-name">Uphill Runners</div>
+        <div class="event-week-meta">
+          <span>6:30 PM</span>
+          <span>·</span>
+          <span>Elemento, Plaza Berlín</span>
+        </div>
+        <div class="event-week-cta">Unirme al grupo →</div>
+      </a>
+
+      <a href="https://chat.whatsapp.com/ELsg41YxoDWJrctQ3ru6Va" target="_blank" rel="noopener" class="event-week-card">
+        <div class="event-week-day">Sábado</div>
+        <div class="event-week-name">Moonlight Long Run</div>
+        <div class="event-week-meta">
+          <span>6:00 AM</span>
+          <span>·</span>
+          <span>Fontabella</span>
+        </div>
+        <div class="event-week-cta">Unirme al grupo →</div>
+      </a>
+
+    </div>
+
+    <!-- Entre Montañas + link al calendario completo -->
+    <div class="events-extra reveal reveal-delay-3">
+      <div class="events-extra-card">
+        <div class="events-extra-eyebrow">Un domingo al mes</div>
+        <div class="events-extra-title">Entre Montañas</div>
+        <p class="events-extra-text">
+          Nuestra salida mensual a trail. Lugar, hora y dinámica varían — se anuncia con anticipación en la web, redes y el grupo de WhatsApp.
+        </p>
+        <a href="https://chat.whatsapp.com/FczkOtUcZVfJUYwVBINPjy" target="_blank" rel="noopener" class="events-extra-cta">
+          Unirme a Entre Montañas →
+        </a>
       </div>
-    -->
+
+      <div class="events-extra-card events-extra-card-alt">
+        <div class="events-extra-eyebrow">Carreras y especiales</div>
+        <div class="events-extra-title">Calendario completo</div>
+        <p class="events-extra-text">
+          Carreras propias, competencias externas donde estamos preparando atletas y eventos especiales de la comunidad. Todo en un solo lugar.
+        </p>
+        <a href="eventos.html" class="events-extra-cta">
+          Ver todos los eventos →
+        </a>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -4726,7 +4967,7 @@ body.modal-open {
           <li><a href="#iniciar">Cómo iniciar</a></li>
           <li><a href="#coaches">Coaches</a></li>
           <li><a href="#mapa">Comunidad</a></li>
-          <li><a href="#eventos">Eventos</a></li>
+          <li><a href="eventos.html">Eventos</a></li>
           <li><a href="#testimonios">Testimonios</a></li>
         </ul>
       </div>
@@ -4736,8 +4977,8 @@ body.modal-open {
         <ul class="footer-list">
           <li><a href="https://www.instagram.com/moonlight.runners/" target="_blank" rel="noopener">Moonlight Runners</a></li>
           <li><a href="https://www.instagram.com/entre.montanas/" target="_blank" rel="noopener">Entre Montañas</a></li>
-          <li><a href="#proyectos">Garmin Runners</a></li>
-          <li><a href="#proyectos">Uphill Runners</a></li>
+          <li><a href="clubs.html">Garmin Runners</a></li>
+          <li><a href="clubs.html">Uphill Runners</a></li>
           <li><a href="#coaches">Uphill Nutrition</a></li>
         </ul>
       </div>
