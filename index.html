@@ -15,11 +15,11 @@
 </script>
 
 <title>Uphill Coaching — Conquista Tu Cima</title>
-<meta name="description" content="La academia de coaching de running más grande de Centroamérica. Más de 130 atletas en planes personalizados, en 7 países. Trail, road y ultra distancia." />
+<meta name="description" content="La academia de coaching de running más grande de Centroamérica. Más de 150 atletas en planes personalizados, en 7 países. Trail, road y ultra distancia." />
 
 <!-- Open Graph -->
 <meta property="og:title" content="Uphill Coaching — Conquista Tu Cima" />
-<meta property="og:description" content="Coaching profesional de running para quienes se toman el deporte en serio. +130 atletas en 7 países." />
+<meta property="og:description" content="Coaching profesional de running para quienes se toman el deporte en serio. +150 atletas en 7 países." />
 <meta property="og:type" content="website" />
 
 <!-- Fonts: Poppins (principal), League Spartan (secundaria), Norwester se carga vía @font-face desde CDN alternativo -->
@@ -3912,6 +3912,37 @@ body.modal-open {
 .reveal-delay-3 { transition-delay: 300ms; }
 .reveal-delay-4 { transition-delay: 400ms; }
 
+
+  /* ===== FAQ ===== */
+  .faq-section { padding: 100px 24px; background: var(--navy-deep); border-top: 1px solid var(--gray-500); }
+  .faq-container { max-width: 860px; margin: 0 auto; }
+  .faq-header { margin-bottom: 48px; }
+  .faq-eyebrow { font-family: var(--font-secondary); font-weight: 700; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red); margin-bottom: 16px; }
+  .faq-title { font-family: var(--font-impact); font-size: clamp(32px, 5vw, 56px); text-transform: uppercase; line-height: 1; color: var(--white); margin-bottom: 16px; }
+  .faq-intro { font-family: var(--font-primary); font-size: 15px; line-height: 1.7; color: var(--gray-200); }
+  .faq-item { border-bottom: 1px solid var(--gray-500); }
+  .faq-item summary {
+    list-style: none; cursor: pointer; padding: 22px 44px 22px 0; position: relative;
+    font-family: var(--font-primary); font-weight: 500; font-size: 16px; line-height: 1.4;
+    color: var(--white); transition: var(--transition-base);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { color: var(--red); }
+  .faq-item summary::after {
+    content: ""; position: absolute; right: 8px; top: 50%; width: 12px; height: 12px;
+    border-right: 2px solid var(--red); border-bottom: 2px solid var(--red);
+    transform: translateY(-70%) rotate(45deg); transition: var(--transition-base);
+  }
+  .faq-item[open] summary::after { transform: translateY(-30%) rotate(-135deg); }
+  .faq-item[open] summary { color: var(--red); }
+  .faq-answer {
+    padding: 0 44px 26px 0; font-family: var(--font-primary); font-weight: 300;
+    font-size: 15px; line-height: 1.75; color: var(--gray-100);
+  }
+  .faq-answer a { color: var(--red); text-decoration: underline; text-underline-offset: 3px; }
+  .faq-foot { margin-top: 40px; font-family: var(--font-primary); font-size: 14px; color: var(--gray-200); }
+  .faq-foot a { color: var(--red); text-decoration: none; font-weight: 600; }
+  .faq-foot a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -3965,7 +3996,7 @@ body.modal-open {
           <span class="line-2">Tu Cima</span>
         </h1>
         <p class="hero-subtitle">
-          Coaching profesional para corredores que se toman el deporte en serio. <strong>Más de 130 atletas en planes personalizados, en 7 países.</strong>
+          Coaching profesional para corredores que se toman el deporte en serio. <strong>Más de 150 atletas en planes personalizados, en 7 países.</strong>
         </p>
         <div class="hero-ctas">
           <a href="https://wa.me/50230618908?text=Hola%20Uphill%2C%20vi%20su%20sitio%20web%20y%20me%20interesa%20agendar%20una%20entrevista%20inicial%20con%20un%20coach." target="_blank" rel="noopener" class="btn btn-primary">
@@ -3977,7 +4008,7 @@ body.modal-open {
         </div>
         <div class="hero-meta">
           <div class="hero-meta-item">
-            <span class="hero-meta-number" data-counter="130" data-suffix="+">0+</span>
+            <span class="hero-meta-number" data-counter="150" data-suffix="+">0+</span>
             <span class="hero-meta-label">Atletas activos</span>
           </div>
           <div class="hero-meta-item">
@@ -4063,7 +4094,7 @@ body.modal-open {
       <div class="about-content">
         <div class="about-text reveal reveal-delay-1">
           <p>Uphill nació en 2020 con una idea simple: que cualquier persona con compromiso real pueda entrenar como un atleta profesional, sin importar su nivel.</p>
-          <p>Hoy somos un equipo de coaches certificados que entrena a más de 130 atletas en Guatemala, Panamá, Costa Rica, El Salvador, México, España y Estados Unidos. Trabajamos trail, road, ultra distancia y triatlón con la misma autoridad técnica, porque el corredor real no se encasilla.</p>
+          <p>Hoy somos un equipo de coaches certificados que entrena a más de 150 atletas en Guatemala, Panamá, Costa Rica, El Salvador, México, España y Estados Unidos. Trabajamos trail, road, ultra distancia y triatlón con la misma autoridad técnica, porque el corredor real no se encasilla.</p>
           <p>Lo que nos hace distintos: <strong>nuestros coaches no se contratan, se forman.</strong> Cada uno fue primero alumno de Uphill, destacó por disciplina y resultados, y se certificó bajo la misma metodología que enseña hoy.</p>
         </div>
         <div class="about-pillars reveal reveal-delay-2" style="margin-top: 48px;">
@@ -4377,6 +4408,56 @@ body.modal-open {
 </section>
 
 <!-- ==========================================================================
+     FAQ
+     ========================================================================== -->
+<section class="faq-section" id="faq">
+  <div class="faq-container">
+    <div class="faq-header">
+      <div class="faq-eyebrow">PREGUNTAS FRECUENTES</div>
+      <h2 class="faq-title">Antes de<br />arrancar</h2>
+      <p class="faq-intro">Lo que más nos preguntan sobre los planes. Si te queda una duda que no está acá, escribinos y te la resolvemos.</p>
+    </div>
+      <details class="faq-item">
+        <summary>¿Cómo empiezo?</summary>
+        <div class="faq-answer">Escribinos por WhatsApp y agendamos tu entrevista inicial: 30–60 minutos por Zoom. Ahí revisamos tus objetivos, tu historial de entreno y de lesiones, tu disponibilidad y las herramientas que tenés. Salís con dos respuestas claras: dónde estás hoy y hacia dónde vamos. Después de eso arranca tu plan.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Cuánto cuesta?</summary>
+        <div class="faq-answer">Basic Q450, Pro Q600 y Elite Q900 al mes ($60, $80 y $115 USD si estás fuera de Guatemala). Si te comprometés a tu temporada completa, el semestral te da 6 meses pagando 5, y el anual 12 meses pagando 10, más camisa Uphill personalizada.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Qué diferencia hay entre Basic, Pro y Elite?</summary>
+        <div class="faq-answer">Basic te da calendarización mensual en PDF, periodización semanal, entrenos de fuerza y seguimiento por WhatsApp una vez al mes. Pro suma TrainingPeaks, integración con tu reloj GPS y análisis profundo de cada sesión. Elite suma WhatsApp constante, Zoom mensual con tu coach y sesión técnica trimestral con análisis biomecánico en PDF.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Hay contrato o permanencia mínima?</summary>
+        <div class="faq-answer">No. El plan mensual es mes a mes, sin permanencia. El semestral y el anual sí son un compromiso de temporada completa — por eso te salen hasta 2 meses gratis.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Cómo se paga?</summary>
+        <div class="faq-answer">Podés pagar por transferencia o con tarjeta mediante link de pago. Lo coordinamos por WhatsApp cuando definimos tu plan.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Necesito un reloj GPS?</summary>
+        <div class="faq-answer">Para Pro y Elite sí: tu plan se integra con tu reloj y todo el análisis de cada sesión sale de esa data. Para Basic no hace falta — la calendarización te llega en PDF.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Los entrenos son presenciales?</summary>
+        <div class="faq-answer">Los planes son virtuales: entrenás donde estés y tu coach revisa tus sesiones cada semana. Los running clubs sí son presenciales, en Ciudad de Guatemala, y son gratis y abiertos a cualquiera — <a href="clubs.html">mirá los horarios acá</a>.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Puedo entrenar si no vivo en Guatemala?</summary>
+        <div class="faq-answer">Sí. Más de 150 atletas entrenan con Uphill desde 7 países: Guatemala, Panamá, Costa Rica, El Salvador, México, España y Estados Unidos.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Qué pasa si me lesiono?</summary>
+        <div class="faq-answer">No se detiene nada. Ajustamos tu plan a un bloque de rehabilitación y seguís entrenando lo que sí podés hacer. Escribile a tu coach apenas sentís algo raro — mientras antes lo hablemos, menos tiempo perdés.</div>
+      </details>
+    <p class="faq-foot">¿Tu pregunta no está acá? <a href="https://wa.me/50230618908?text=Hola%2C%20tengo%20una%20pregunta%20sobre%20los%20planes%20de%20Uphill." target="_blank" rel="noopener">Escribinos por WhatsApp →</a></p>
+  </div>
+</section>
+
+<!-- ==========================================================================
      MAPA DE ATLETAS
      ========================================================================== -->
 <section class="section map-section" id="mapa">
@@ -4386,7 +4467,7 @@ body.modal-open {
         <div class="eyebrow">Comunidad regional</div>
         <h2 class="section-title">Una comunidad<br>que cruza<br><span class="highlight">fronteras.</span></h2>
         <p class="section-subtitle">
-          Más de 130 atletas activos entrenan con Uphill desde 7 países. Esto es lo que pasa cuando una comunidad real se construye con propósito.
+          Más de 150 atletas activos entrenan con Uphill desde 7 países. Esto es lo que pasa cuando una comunidad real se construye con propósito.
         </p>
         <div class="countries-list">
           <div class="country base"><span class="country-flag">🇬🇹</span> Guatemala</div>
@@ -4473,7 +4554,7 @@ body.modal-open {
 
         <div class="map-stats">
           <div class="map-stat">
-            <div class="map-stat-number" data-counter="130" data-suffix="+">0+</div>
+            <div class="map-stat-number" data-counter="150" data-suffix="+">0+</div>
             <div class="map-stat-label">Atletas activos</div>
           </div>
           <div class="map-stat">
