@@ -3943,6 +3943,42 @@ body.modal-open {
   .faq-foot { margin-top: 40px; font-family: var(--font-primary); font-size: 14px; color: var(--gray-200); }
   .faq-foot a { color: var(--red); text-decoration: none; font-weight: 600; }
   .faq-foot a:hover { text-decoration: underline; }
+
+  /* ===== TESTIMONIOS EN VIDEO ===== */
+  .vtest-section { padding: 100px 24px; background: var(--navy); border-top: 1px solid var(--gray-500); }
+  .vtest-container { max-width: 1180px; margin: 0 auto; }
+  .vtest-header { margin-bottom: 56px; max-width: 720px; }
+  .vtest-eyebrow { font-family: var(--font-secondary); font-weight: 700; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red); margin-bottom: 16px; }
+  .vtest-title { font-family: var(--font-impact); font-size: clamp(32px, 5vw, 56px); text-transform: uppercase; line-height: 1; color: var(--white); margin-bottom: 16px; }
+  .vtest-intro { font-family: var(--font-primary); font-size: 15px; line-height: 1.7; color: var(--gray-200); }
+  .vtest-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  @media (min-width: 700px) { .vtest-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .vtest-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .vtest-card { border: 1px solid var(--gray-500); overflow: hidden; transition: var(--transition-base); }
+  .vtest-card:hover { border-color: var(--red); transform: translateY(-4px); }
+
+  .vtest-player {
+    position: relative; aspect-ratio: 16/9; cursor: pointer; overflow: hidden;
+    background: linear-gradient(155deg, #1B2B3A 0%, #0D1620 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    padding: 24px; text-align: center; transition: var(--transition-base);
+  }
+  .vtest-card:hover .vtest-player { background: linear-gradient(155deg, #22374A 0%, #0D1620 100%); }
+  .vtest-player iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+  .vtest-play {
+    width: 58px; height: 58px; border-radius: 50%; background: var(--red);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: var(--transition-base); box-shadow: 0 4px 20px rgba(255,0,0,0.28);
+  }
+  .vtest-card:hover .vtest-play { transform: scale(1.12); box-shadow: 0 6px 28px rgba(255,0,0,0.45); }
+  .vtest-play::after { content: ""; margin-left: 4px; border-style: solid; border-width: 10px 0 10px 17px; border-color: transparent transparent transparent #fff; }
+
+  .vtest-name { font-family: var(--font-primary); font-weight: 600; font-size: 17px; color: var(--white); line-height: 1.3; letter-spacing: -0.01em; }
+  .vtest-cue { font-family: var(--font-secondary); font-weight: 700; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-200); margin-top: 6px; transition: var(--transition-base); }
+  .vtest-card:hover .vtest-cue { color: var(--red); }
+
 </style>
 </head>
 <body>
@@ -4403,6 +4439,68 @@ body.modal-open {
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     TESTIMONIOS EN VIDEO
+     ========================================================================== -->
+<section class="vtest-section" id="testimonios-video">
+  <div class="vtest-container">
+    <div class="vtest-header">
+      <div class="vtest-eyebrow">EN SUS PROPIAS PALABRAS</div>
+      <h2 class="vtest-title">Escuchalos<br />a ellos</h2>
+      <p class="vtest-intro">
+        Atletas de Uphill contando su proceso — sin guion y sin filtro.
+      </p>
+    </div>
+    <div class="vtest-grid">
+        <div class="vtest-card">
+          <div class="vtest-player" data-video="gaQLq_e8FB4" role="button" tabindex="0" aria-label="Reproducir testimonio de Natalia Gomez-Cuevas">
+            <div class="vtest-play"></div>
+            <div>
+              <div class="vtest-name">Natalia Gomez-Cuevas</div>
+              <div class="vtest-cue">Ver testimonio</div>
+            </div>
+          </div>
+        </div>
+        <div class="vtest-card">
+          <div class="vtest-player" data-video="weITg-hOlmA" role="button" tabindex="0" aria-label="Reproducir testimonio de Luis Quiñonez">
+            <div class="vtest-play"></div>
+            <div>
+              <div class="vtest-name">Luis Quiñonez</div>
+              <div class="vtest-cue">Ver testimonio</div>
+            </div>
+          </div>
+        </div>
+        <div class="vtest-card">
+          <div class="vtest-player" data-video="yjIlnNnR33c" role="button" tabindex="0" aria-label="Reproducir testimonio de Josué David Culum">
+            <div class="vtest-play"></div>
+            <div>
+              <div class="vtest-name">Josué David Culum</div>
+              <div class="vtest-cue">Ver testimonio</div>
+            </div>
+          </div>
+        </div>
+        <div class="vtest-card">
+          <div class="vtest-player" data-video="yL5cVo3uoxg" role="button" tabindex="0" aria-label="Reproducir testimonio de Favian Diaz">
+            <div class="vtest-play"></div>
+            <div>
+              <div class="vtest-name">Favian Diaz</div>
+              <div class="vtest-cue">Ver testimonio</div>
+            </div>
+          </div>
+        </div>
+        <div class="vtest-card">
+          <div class="vtest-player" data-video="MOFG0PZJjpU" role="button" tabindex="0" aria-label="Reproducir testimonio de Fernando Gaetani">
+            <div class="vtest-play"></div>
+            <div>
+              <div class="vtest-name">Fernando Gaetani</div>
+              <div class="vtest-cue">Ver testimonio</div>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 </section>
@@ -5725,6 +5823,32 @@ body.modal-open {
       if (e.key === 'Escape' && overlay.classList.contains('open')) {
         closeModal();
       }
+    });
+  })();
+</script>
+
+
+<script>
+  // Testimonios en video: carga diferida del iframe (solo al hacer clic)
+  (function () {
+    function loadVideo(el) {
+      if (el.dataset.loaded) return;
+      el.dataset.loaded = '1';
+      var id = el.getAttribute('data-video');
+      var f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1';
+      f.title = el.getAttribute('aria-label') || 'Testimonio';
+      f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      f.allowFullscreen = true;
+      el.innerHTML = '';
+      el.appendChild(f);
+      el.style.cursor = 'default';
+    }
+    document.querySelectorAll('.vtest-player').forEach(function (el) {
+      el.addEventListener('click', function () { loadVideo(el); });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadVideo(el); }
+      });
     });
   })();
 </script>
