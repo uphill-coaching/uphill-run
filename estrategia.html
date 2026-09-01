@@ -1,0 +1,3582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Uphill — Estrategia de Carrera Personalizada</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16222E">
+<meta name="description" content="Generador de estrategia de carrera personalizada de Uphill Coaching. Ingresá tu threshold y PRs, recibí tu plan ajustado a la ruta.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Uphill Estrategia">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="shortcut icon" href="icons/favicon.ico">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=League+Spartan:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  @font-face {
+    font-family: 'Norwester';
+    src: url('https://cdn.jsdelivr.net/gh/theleagueof/norwester-fontface@master/norwester.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --navy: #16222E;
+    --navy-deep: #0d1620;
+    --navy-light: #1f2f3f;
+    --red: #FF0000;
+    --white: #FFFFFF;
+    --black: #000000;
+    --gray: #8A8A8A;
+    --gray-light: #C5C5C5;
+    --border: rgba(255,255,255,0.08);
+    --font-primary: 'Poppins', system-ui, sans-serif;
+    --font-secondary: 'League Spartan', sans-serif;
+    --font-impact: 'Norwester', 'League Spartan', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    font-family: var(--font-primary);
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Typography */
+  h1, h2, h3, h4 { font-family: var(--font-impact); text-transform: uppercase; letter-spacing: 0.02em; }
+  h1 { font-size: clamp(40px, 7vw, 84px); line-height: 0.92; }
+  h2 { font-size: clamp(28px, 4vw, 48px); line-height: 0.95; }
+  h3 { font-size: clamp(20px, 2.4vw, 28px); line-height: 1.1; }
+  h4 { font-size: clamp(16px, 1.6vw, 20px); line-height: 1.2; }
+  p, li, label, input, select, textarea, button { font-family: var(--font-primary); }
+  .eyebrow {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 12px;
+  }
+  .accent {
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+
+  /* App shell */
+  .app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: max(40px, env(safe-area-inset-top, 0px) + 24px) clamp(20px, 4vw, 60px) 80px;
+  }
+  .app-header {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .app-header h1 { margin: 18px 0 14px; }
+  .app-header .subtitle {
+    font-weight: 300;
+    font-size: clamp(16px, 1.6vw, 19px);
+    color: rgba(255,255,255,0.7);
+    line-height: 1.55;
+    max-width: 720px;
+  }
+
+  /* Race selector */
+  .race-bar {
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .race-bar select {
+    flex: 1;
+    min-width: 200px;
+    max-width: 400px;
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 12px 16px;
+    font-family: var(--font-primary);
+    font-size: 14px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .race-bar select:focus { outline: 1px solid var(--red); }
+  .btn-tertiary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 12px 18px;
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn-tertiary:hover { border-color: var(--red); color: var(--red); }
+
+  /* Form sections */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .form-section.full-width { grid-column: 1 / -1; }
+  .form-section {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+  }
+  .form-section .section-num {
+    font-family: var(--font-impact);
+    font-size: 13px;
+    color: var(--red);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .form-section h3 { margin-bottom: 8px; }
+  .form-section .hint {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .input-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .input-row.single { grid-template-columns: 1fr; }
+  .input-row.triple { grid-template-columns: repeat(3, 1fr); }
+  .input-group { display: flex; flex-direction: column; }
+  .input-group label {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 6px;
+  }
+  .input-group input,
+  .input-group select,
+  .input-group textarea {
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 12px 14px;
+    font-family: var(--font-primary);
+    font-size: 15px;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .input-group input:focus,
+  .input-group select:focus,
+  .input-group textarea:focus { border-color: var(--red); }
+  .input-group textarea { resize: vertical; min-height: 80px; }
+  .input-group .micro {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+
+  /* Pacing time inputs (mm:ss) */
+  .pace-input { font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+
+  /* CTA */
+  .generate-cta {
+    text-align: center;
+    padding: 40px 0;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 18px 48px;
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--red);
+    color: var(--red);
+    transform: translateY(-2px);
+  }
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .generate-cta .hint {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 14px;
+  }
+
+  /* Strategy output */
+  .strategy {
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .strategy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .strategy-header h2 { margin-bottom: 8px; }
+  .strategy-header .race-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.04em;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .summary-card {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    padding: 22px;
+    border-radius: 4px;
+  }
+  .summary-card.feature { border-left: 3px solid var(--red); }
+  .summary-card .label {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 10px;
+  }
+  .summary-card .value {
+    font-family: var(--font-impact);
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1;
+    color: var(--red);
+  }
+  .summary-card .sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 6px;
+  }
+
+  /* Strategy panels */
+  .panel {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .panel-head .eyebrow { margin-bottom: 4px; }
+  .panel-head h3 { color: var(--white); }
+  .panel-head .right-note {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* Pacing table */
+  .pacing-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .pacing-table th {
+    background: var(--navy-deep);
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 2px solid var(--red);
+  }
+  .pacing-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pacing-table td.pace { font-family: var(--font-impact); font-size: 18px; }
+  .phase-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--navy-deep);
+    color: var(--gray-light);
+  }
+  .phase-pill[data-phase="ALINEACIÓN"], .phase-pill[data-phase="PACIENCIA"], .phase-pill[data-phase="CALENTAR"]
+  { background: #1E3A8A33; color: #93C5FD; }
+  .phase-pill[data-phase="ANCLAJE"], .phase-pill[data-phase="RITMO"]
+  { background: #16653433; color: #86EFAC; }
+  .phase-pill[data-phase="PUNTO MUERTO"], .phase-pill[data-phase="CONCENTRACIÓN"]
+  { background: #92400E33; color: #FCD34D; }
+  .phase-pill[data-phase="ENCENDIDO"], .phase-pill[data-phase="EMPUJÁ"], .phase-pill[data-phase="EL MURO"]
+  { background: #9A341233; color: #FDBA74; }
+  .phase-pill[data-phase="CIMA"]
+  { background: #B91C1C33; color: #FCA5A5; }
+
+  /* Nutrition grid */
+  .nutr-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .nutr-stat {
+    background: var(--navy-deep);
+    padding: 18px;
+    border-radius: 4px;
+    border-left: 2px solid var(--red);
+  }
+  .nutr-stat .lbl {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .nutr-stat .val {
+    font-family: var(--font-impact);
+    font-size: 28px;
+    color: var(--red);
+    line-height: 1;
+  }
+  .nutr-stat .unit {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 4px;
+  }
+  .timeline {
+    list-style: none;
+    padding: 0;
+  }
+  .timeline li {
+    padding: 12px 0 12px 32px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .timeline li::before {
+    content: "▸";
+    color: var(--red);
+    position: absolute;
+    left: 8px;
+    top: 12px;
+  }
+  .timeline li strong { color: var(--white); }
+
+  /* Checklist */
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .checklist-col h4 { margin-bottom: 14px; font-size: 18px; }
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+  .checklist li {
+    padding: 10px 0 10px 30px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .checklist li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 13px;
+    width: 16px;
+    height: 16px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 2px;
+  }
+  .checklist li.checked { color: rgba(255,255,255,0.45); text-decoration: line-through; }
+  .checklist li.checked::before {
+    background: var(--red);
+    border-color: var(--red);
+  }
+  .checklist li.checked::after {
+    content: "✓";
+    position: absolute;
+    left: 3px;
+    top: 8px;
+    font-size: 11px;
+    color: var(--white);
+  }
+
+  /* Distance preset buttons */
+  .preset-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .preset-row button {
+    flex: 1;
+    background: var(--navy-deep);
+    color: var(--gray-light);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .preset-row button:hover {
+    border-color: var(--red);
+    color: var(--white);
+  }
+  .preset-row button.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--white);
+  }
+
+  /* Past races sub-blocks (one per race) */
+  .past-races { display: flex; flex-direction: column; gap: 14px; margin-top: 4px; }
+  .past-race {
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 14px 16px;
+  }
+  .past-race .pr-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .past-race .pr-label {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .past-race .pr-hint {
+    font-size: 11px;
+    color: var(--gray);
+  }
+  .past-race .input-row { margin-bottom: 8px; }
+  .past-race .input-row:last-child { margin-bottom: 0; }
+  .past-race .input-group label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+  }
+  .past-race .input-group input,
+  .past-race .input-group select {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  /* Advanced (optional) block — visually separated from required fields */
+  .advanced-block {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed rgba(255,255,255,0.12);
+  }
+  .advanced-block .advanced-header {
+    margin-bottom: 16px;
+  }
+  .advanced-block .advanced-eyebrow {
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+  .advanced-block h4 {
+    font-family: var(--font-impact);
+    font-size: 16px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+    color: var(--white);
+  }
+  .advanced-block p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .advanced-block p em { color: var(--red); font-style: normal; font-weight: 600; }
+  .advanced-block p strong { color: var(--white); font-weight: 600; }
+
+  /* File input (GPX upload) */
+  .file-input-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .file-input-wrap input[type="file"] {
+    background: var(--navy-deep);
+    border: 1px dashed var(--border);
+    color: var(--gray-light);
+    padding: 12px 14px;
+    font-family: var(--font-primary);
+    font-size: 13px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .file-input-wrap input[type="file"]::-webkit-file-upload-button {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 6px 12px;
+    margin-right: 12px;
+    font-family: var(--font-secondary);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .file-status {
+    font-size: 12px;
+    color: var(--gray);
+    padding: 6px 0;
+  }
+  .file-status.ok { color: #86EFAC; }
+  .file-status.err { color: #FCA5A5; }
+
+  /* Access gate (fullscreen) */
+  .access-gate {
+    position: fixed;
+    inset: 0;
+    background: var(--navy);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .access-gate.hidden { display: none; }
+  .access-gate .gate-card {
+    background: var(--navy-light);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    padding: clamp(28px, 5vw, 56px);
+    max-width: 540px;
+    width: 100%;
+    border-radius: 4px;
+  }
+  .access-gate .eyebrow { margin-bottom: 18px; }
+  .access-gate h1 {
+    font-family: var(--font-impact);
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 0.92;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .access-gate h1 .red { color: var(--red); }
+  .access-gate p {
+    color: rgba(255,255,255,0.75);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .gate-input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .gate-input-row input {
+    flex: 1;
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    color: var(--white);
+    padding: 14px 16px;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    outline: none;
+  }
+  .gate-input-row input:focus { border-color: var(--red); }
+  .gate-input-row button {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 14px 28px;
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .gate-input-row button:hover {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--red);
+    color: var(--red);
+  }
+  .gate-error {
+    color: #FCA5A5;
+    font-size: 13px;
+    min-height: 20px;
+    margin-bottom: 14px;
+  }
+  .gate-help {
+    color: var(--gray);
+    font-size: 13px;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  .gate-help a { color: var(--red); text-decoration: underline; }
+  @media (max-width: 540px) {
+    .gate-input-row { flex-direction: column; }
+  }
+  /* Buyer name pill in header (replaces storage badge when activated) */
+  .buyer-pill {
+    position: fixed;
+    top: 24px;
+    right: clamp(20px, 4vw, 60px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+  .buyer-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
+  /* Source chips (nutrition sources multi-select) */
+  .source-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .source-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 14px;
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--gray-light);
+    user-select: none;
+    transition: all 0.2s;
+  }
+  .source-chip input { display: none; }
+  .source-chip.checked, .source-chip:has(input:checked) {
+    background: var(--red);
+    border-color: var(--red);
+    color: var(--white);
+  }
+  .source-chip:hover { border-color: var(--red); }
+
+  /* Nutrition strategy tiers */
+  .nutr-tiers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .nutr-tier {
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--gray);
+    border-radius: 4px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+  }
+  .nutr-tier[data-tier="CONSERVADOR"] { border-top-color: #86EFAC; }
+  .nutr-tier[data-tier="REALISTA"]    { border-top-color: var(--red); }
+  .nutr-tier[data-tier="AGRESIVO"]    { border-top-color: #FDBA74; }
+  .nutr-tier[data-tier="REALISTA"]::before {
+    content: "RECOMENDADO";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--red);
+    color: var(--white);
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+  .nutr-tier .tier-head { display: flex; align-items: baseline; justify-content: space-between; }
+  .nutr-tier .tier-name { font-family: var(--font-impact); font-size: 24px; line-height: 1; }
+  .nutr-tier[data-tier="CONSERVADOR"] .tier-name { color: #86EFAC; }
+  .nutr-tier[data-tier="REALISTA"]    .tier-name { color: var(--red); }
+  .nutr-tier[data-tier="AGRESIVO"]    .tier-name { color: #FDBA74; }
+  .nutr-tier .tier-freq {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+  .nutr-tier .tier-when {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.45;
+    font-style: italic;
+  }
+  .nutr-tier .tier-numbers {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .nutr-tier .num { text-align: center; }
+  .nutr-tier .num .v { font-family: var(--font-impact); font-size: 22px; color: var(--white); line-height: 1; }
+  .nutr-tier .num .l {
+    font-family: var(--font-secondary);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 4px;
+  }
+  .nutr-tier .num .t {
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 2px;
+  }
+  .nutr-tier .recipe {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+  }
+  .nutr-tier .recipe strong { color: var(--white); }
+  .nutr-tier .recipe ul {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 0;
+  }
+  .nutr-tier .recipe li {
+    padding: 4px 0 4px 16px;
+    position: relative;
+    font-size: 12.5px;
+  }
+  .nutr-tier .recipe li::before {
+    content: "•";
+    color: var(--red);
+    position: absolute;
+    left: 4px;
+  }
+  .nutr-tier .warning {
+    font-size: 11.5px;
+    color: #FCA5A5;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(252,165,165,0.3);
+    line-height: 1.45;
+  }
+  .nutr-tier .warning strong { color: #FCA5A5; }
+
+  /* Escenarios ABC */
+  .scenarios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .scenario {
+    background: var(--navy-deep);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--gray);
+    border-radius: 4px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .scenario[data-tier="A"] { border-top-color: #86EFAC; }
+  .scenario[data-tier="B"] { border-top-color: var(--red); }
+  .scenario[data-tier="C"] { border-top-color: #FDBA74; }
+  .scenario .tier {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .scenario .tier-letter {
+    font-family: var(--font-impact);
+    font-size: 42px;
+    line-height: 1;
+  }
+  .scenario[data-tier="A"] .tier-letter { color: #86EFAC; }
+  .scenario[data-tier="B"] .tier-letter { color: var(--red); }
+  .scenario[data-tier="C"] .tier-letter { color: #FDBA74; }
+  .scenario .tier-label {
+    font-family: var(--font-secondary);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+  .scenario h4 {
+    font-size: 17px;
+    line-height: 1.15;
+  }
+  .scenario .scenario-stats {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .scenario .scenario-stat { flex: 1; }
+  .scenario .scenario-stat .lbl {
+    font-family: var(--font-secondary);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 4px;
+  }
+  .scenario .scenario-stat .val {
+    font-family: var(--font-impact);
+    font-size: 20px;
+    color: var(--white);
+  }
+  .scenario .block .block-title {
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 6px;
+  }
+  .scenario .block p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.55;
+  }
+
+  /* Notes panel */
+  .notes-display {
+    background: var(--navy-deep);
+    padding: 18px 22px;
+    border-left: 3px solid var(--red);
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.85);
+    white-space: pre-wrap;
+  }
+  .notes-display em { color: var(--gray); font-style: italic; }
+
+  /* Logo watermark + badge */
+  .logo-watermark {
+    position: fixed;
+    top: 24px;
+    left: clamp(20px, 4vw, 60px);
+    z-index: 100;
+    font-family: var(--font-secondary);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.3);
+  }
+  .storage-badge {
+    position: fixed;
+    top: 24px;
+    right: clamp(20px, 4vw, 60px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-secondary);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+  .storage-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    opacity: 0;
+  }
+  .storage-badge.saved .dot { opacity: 1; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 80px 24px;
+    color: rgba(255,255,255,0.4);
+    font-size: 14px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: var(--red);
+    color: var(--white);
+    padding: 14px 24px;
+    border-radius: 2px;
+    font-family: var(--font-secondary);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    z-index: 200;
+    transition: transform 0.4s ease;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .form-grid { grid-template-columns: 1fr; gap: 16px; }
+    .input-row, .input-row.triple { grid-template-columns: 1fr; }
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    .nutr-stats { grid-template-columns: 1fr; }
+    .checklist-grid { grid-template-columns: 1fr; gap: 16px; }
+    .scenarios-grid { grid-template-columns: 1fr; gap: 14px; }
+    .nutr-tiers { grid-template-columns: 1fr; gap: 22px; }
+    .nutr-tier[data-tier="REALISTA"] { margin-top: 8px; }
+    .logo-watermark { display: none; }
+    .app { padding-top: 64px; }
+    .form-section, .panel { padding: 20px; }
+    .strategy-header { flex-direction: column; align-items: flex-start; }
+    .pacing-table { font-size: 13px; }
+    .pacing-table th, .pacing-table td { padding: 10px 6px; }
+    .pacing-table td:nth-child(5) { font-size: 12px; }
+  }
+  @media (max-width: 540px) {
+    .summary-grid { grid-template-columns: 1fr; }
+    h1 { font-size: clamp(36px, 12vw, 56px); }
+  }
+
+  /* ========== PRINT STYLES (PDF) ========== */
+  @media print {
+    @page { size: A4; margin: 16mm 14mm; }
+    html, body {
+      background: #fff !important;
+      color: #16222E !important;
+      font-size: 11pt;
+    }
+    .logo-watermark, .storage-badge, .race-bar,
+    .form-grid, .generate-cta, .btn-primary,
+    .strategy-header .btn-tertiary,
+    .toast {
+      display: none !important;
+    }
+    .app, .app-header {
+      max-width: none;
+      padding: 0;
+      border: none;
+    }
+    .app-header { margin-bottom: 18mm; padding: 0; }
+    .app-header h1 {
+      color: #16222E !important;
+      font-size: 34pt;
+      line-height: 0.95;
+    }
+    .app-header h1 .red, .app-header h1 span[style*="--red"] { color: #FF0000 !important; }
+    .app-header .subtitle { color: #555 !important; font-size: 11pt; }
+    .strategy {
+      border-top: none;
+      padding-top: 0;
+    }
+    .strategy-header h2 {
+      color: #16222E !important;
+      font-size: 22pt;
+    }
+    .strategy-header .race-meta { color: #555 !important; }
+    .panel {
+      background: #fff !important;
+      border: 1px solid #d4d4d4 !important;
+      color: #16222E !important;
+      padding: 14pt;
+      margin-bottom: 12pt;
+      page-break-inside: avoid;
+    }
+    .panel h3, .panel-head h3 { color: #16222E !important; }
+    .panel-head .right-note { color: #777 !important; }
+    .eyebrow { color: #FF0000 !important; }
+    .summary-grid { gap: 8pt; margin-bottom: 14pt; }
+    .summary-card {
+      background: #f5f5f5 !important;
+      border: 1px solid #d4d4d4 !important;
+      color: #16222E !important;
+      padding: 10pt;
+    }
+    .summary-card .label { color: #555 !important; }
+    .summary-card .value { color: #FF0000 !important; font-size: 22pt; }
+    .summary-card .sub { color: #777 !important; }
+    .nutr-stat {
+      background: #f5f5f5 !important;
+      color: #16222E !important;
+      border-left: 2pt solid #FF0000 !important;
+    }
+    .nutr-stat .lbl { color: #555 !important; }
+    .nutr-stat .val { color: #FF0000 !important; font-size: 18pt; }
+    .nutr-stat .unit { color: #777 !important; }
+    .pacing-table { font-size: 9pt; }
+    .pacing-table th {
+      background: #f0f0f0 !important;
+      color: #16222E !important;
+      border-bottom: 1.5pt solid #FF0000 !important;
+    }
+    .pacing-table td {
+      border-bottom: 0.5pt solid #ddd !important;
+      color: #16222E !important;
+    }
+    .pacing-table td.pace { font-size: 13pt; color: #16222E !important; }
+    .phase-pill { background: #f0f0f0 !important; color: #16222E !important; }
+    .checklist li {
+      color: #16222E !important;
+      border-bottom: 0.5pt solid #ddd !important;
+      cursor: default;
+    }
+    .checklist li::before {
+      border: 1pt solid #555 !important;
+      background: #fff !important;
+    }
+    .checklist li.checked { color: #777 !important; }
+    .checklist li.checked::before { background: #FF0000 !important; border-color: #FF0000 !important; }
+    .scenarios-grid { gap: 6pt; }
+    .scenario {
+      background: #fafafa !important;
+      border: 1px solid #d4d4d4 !important;
+      color: #16222E !important;
+    }
+    .scenario .tier-letter { color: #FF0000 !important; }
+    .scenario .scenario-stat .lbl, .scenario .tier-label { color: #555 !important; }
+    .scenario .scenario-stat .val { color: #16222E !important; }
+    .scenario .block .block-title { color: #FF0000 !important; }
+    .scenario .block p { color: #16222E !important; }
+    .scenario h4 { color: #16222E !important; }
+    .nutr-tiers { gap: 6pt; }
+    .nutr-tier {
+      background: #fafafa !important;
+      border: 1px solid #d4d4d4 !important;
+      color: #16222E !important;
+    }
+    .nutr-tier .tier-name { color: #16222E !important; }
+    .nutr-tier .tier-freq, .nutr-tier .tier-when { color: #555 !important; }
+    .nutr-tier .num .v { color: #16222E !important; }
+    .nutr-tier .num .l, .nutr-tier .num .t { color: #555 !important; }
+    .nutr-tier .recipe { color: #16222E !important; }
+    .nutr-tier .recipe strong { color: #16222E !important; }
+    .nutr-tier[data-tier="REALISTA"]::before {
+      background: #FF0000 !important;
+      color: #fff !important;
+    }
+    .nutr-tier .warning {
+      color: #B91C1C !important;
+      border-top: 1px dashed #B91C1C !important;
+    }
+    .timeline li { color: #16222E !important; border-bottom: 0.5pt solid #ddd !important; }
+    .timeline li::before { color: #FF0000 !important; }
+    .timeline li strong { color: #16222E !important; }
+    .notes-display {
+      background: #f9f9f9 !important;
+      color: #16222E !important;
+      border-left: 3pt solid #FF0000 !important;
+    }
+    .panel { page-break-inside: avoid; }
+    .checklist-grid { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ACCESS GATE — covers entire app until user enters a valid code -->
+<div class="access-gate" id="accessGate">
+  <div class="gate-card">
+    <div class="eyebrow">Acceso al generador</div>
+    <h1>CONQUISTÁ <span class="red">TU CIMA.</span></h1>
+    <p>
+      Generador de estrategia de carrera personalizada de Uphill Coaching.
+      Ingresá el código de acceso que recibiste al comprar tu plan.
+    </p>
+    <form class="gate-input-row" onsubmit="event.preventDefault(); activarCodigo();">
+      <input type="text" id="codeInput" placeholder="UPHILL-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button type="submit">Activar</button>
+    </form>
+    <div class="gate-error" id="codeError"></div>
+    <p class="gate-help">
+      ¿No tenés código? <a href="https://wa.me/50230618908?text=Hola%20Uphill%2C%20quiero%20comprar%20un%20plan%20personalizado%20de%20carrera." target="_blank">Conseguilo por WhatsApp</a>.
+    </p>
+  </div>
+</div>
+
+<div class="logo-watermark">UPHILL COACHING</div>
+<div class="storage-badge" id="storageBadge">
+  <span class="dot"></span>
+  <span>DATOS GUARDADOS</span>
+</div>
+
+<main class="app">
+
+  <header class="app-header">
+    <div class="eyebrow">Generador de estrategia personalizada</div>
+    <h1>CONQUISTÁ <span style="color:var(--red);">TU CIMA.</span></h1>
+    <p class="subtitle">
+      Ingresá tu test de threshold, tus PRs y los datos de tu carrera. Recibí tu ritmo objetivo,
+      pacing km a km, nutrición e hidratación calculadas, y checklist 72h previas.
+      <strong>Disciplina sobre motivación.</strong>
+    </p>
+
+    <div class="race-bar no-print">
+      <select id="raceSelect" onchange="onRaceSelect()">
+        <option value="">— Nueva carrera —</option>
+      </select>
+      <button class="btn-tertiary" onclick="nuevaCarrera()">+ Nueva carrera</button>
+      <button class="btn-tertiary" id="deleteRaceBtn" onclick="borrarCarreraActual()" style="display:none;">Borrar carrera</button>
+    </div>
+  </header>
+
+  <!-- ==================== FORM ==================== -->
+  <div class="form-grid no-print">
+
+    <!-- Atleta -->
+    <section class="form-section">
+      <div class="section-num">01</div>
+      <h3>TU PERFIL</h3>
+      <p class="hint">Datos generales del atleta. Se reusan en todas tus carreras.</p>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Nombre completo</label>
+          <input type="text" id="aNombre" placeholder="Ej: Gabriel Bianchi">
+        </div>
+        <div class="input-group">
+          <label>Edad</label>
+          <input type="number" id="aEdad" min="14" max="90" placeholder="35">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Peso (kg)</label>
+          <input type="number" id="aPeso" min="35" max="160" step="0.1" placeholder="70">
+        </div>
+        <div class="input-group">
+          <label>Sexo</label>
+          <select id="aSexo">
+            <option value="">—</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Altitud donde vivís (msnm)</label>
+          <input type="number" id="aLiveAlt" min="0" max="4500" step="50" placeholder="1500">
+          <div class="micro">Donde dormís la mayoría de noches. Define tu adaptación base.</div>
+        </div>
+        <div class="input-group">
+          <label>Altitud donde entrenás (msnm)</label>
+          <input type="number" id="aTrainAlt" min="0" max="4500" step="50" placeholder="igual que vivís">
+          <div class="micro">Solo si entrenás significativamente más alto que tu casa.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Threshold -->
+    <section class="form-section">
+      <div class="section-num">02</div>
+      <h3>TEST DE THRESHOLD</h3>
+      <p class="hint">20 minutos al máximo sostenible, en ruta similar a tu carrera objetivo. Idealmente 7-14 días antes.</p>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Distancia en 20 min (km)</label>
+          <input type="number" id="tDist" step="0.01" min="2" max="8" placeholder="5.20">
+        </div>
+        <div class="input-group">
+          <label>FC promedio (bpm)</label>
+          <input type="number" id="tFc" min="100" max="220" placeholder="170">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Fecha del test</label>
+          <input type="date" id="tFecha">
+        </div>
+        <div class="input-group">
+          <label>FC máxima (opcional)</label>
+          <input type="number" id="tFcMax" min="140" max="230" placeholder="185">
+        </div>
+      </div>
+    </section>
+
+    <!-- Lactato -->
+    <section class="form-section">
+      <div class="section-num">03</div>
+      <h3>TEST DE LACTATO <span style="font-size:11px; color:var(--gray); letter-spacing:0.1em; font-family:var(--font-secondary);">(OPCIONAL)</span></h3>
+      <p class="hint">Si tenés prueba de lactato en pista, ingresá LT1 y LT2 (pace + mmol + FC). Reemplaza al test de threshold para mayor precisión.</p>
+
+      <div style="font-family:var(--font-secondary); font-size:10px; letter-spacing:0.2em; color:var(--gray); text-transform:uppercase; margin-bottom:8px;">LT1 · Umbral Aeróbico</div>
+      <div class="input-row triple">
+        <div class="input-group">
+          <label>Pace (min/km)</label>
+          <input type="text" id="lt1Pace" placeholder="5:10" class="pace-input">
+        </div>
+        <div class="input-group">
+          <label>Lactato (mmol/L)</label>
+          <input type="number" id="lt1Mmol" step="0.1" min="0.5" max="6" placeholder="2.0">
+        </div>
+        <div class="input-group">
+          <label>FC (bpm)</label>
+          <input type="number" id="lt1Fc" min="80" max="200" placeholder="148">
+        </div>
+      </div>
+
+      <div style="font-family:var(--font-secondary); font-size:10px; letter-spacing:0.2em; color:var(--gray); text-transform:uppercase; margin:14px 0 8px;">LT2 · Umbral Anaeróbico</div>
+      <div class="input-row triple">
+        <div class="input-group">
+          <label>Pace (min/km)</label>
+          <input type="text" id="lt2Pace" placeholder="4:15" class="pace-input">
+        </div>
+        <div class="input-group">
+          <label>Lactato (mmol/L)</label>
+          <input type="number" id="lt2Mmol" step="0.1" min="2" max="8" placeholder="4.0">
+        </div>
+        <div class="input-group">
+          <label>FC (bpm)</label>
+          <input type="number" id="lt2Fc" min="100" max="220" placeholder="172">
+        </div>
+      </div>
+
+      <div class="input-row single">
+        <div class="input-group">
+          <label>Fecha del test</label>
+          <input type="date" id="ltFecha">
+        </div>
+      </div>
+    </section>
+
+    <!-- Nutrición personalizada -->
+    <section class="form-section">
+      <div class="section-num">04</div>
+      <h3>NUTRICIÓN PERSONALIZADA <span style="font-size:11px; color:var(--gray); letter-spacing:0.1em; font-family:var(--font-secondary);">(OPCIONAL)</span></h3>
+      <p class="hint">Para atletas experimentados que conocen su tolerancia. Si lo dejás vacío, calculamos desde baseline general.</p>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Tasa de sudoración (ml/h)</label>
+          <input type="number" id="nSweatRate" min="200" max="1500" step="50" placeholder="600">
+          <div class="micro">Medilo: peso antes − peso después del entreno + líquido tomado.</div>
+        </div>
+        <div class="input-group">
+          <label>Carbos máximos tolerados (g/h)</label>
+          <input type="number" id="nCarbsMax" min="20" max="120" step="5" placeholder="60">
+          <div class="micro">El máximo que aguantaste en un entreno largo sin malestar.</div>
+        </div>
+      </div>
+
+      <div class="input-group" style="margin-top:14px;">
+        <label>Fuentes de carbohidratos que usás</label>
+        <div class="source-chips" id="nSources">
+          <label class="source-chip"><input type="checkbox" name="src" value="geles"> Geles</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="isotonico"> Carb mix / Isotónico</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="miel"> Miel</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="frutos"> Frutos (banano / dátiles)</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="barras"> Galletas / barras</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="solida"> Comida sólida</label>
+          <label class="source-chip"><input type="checkbox" name="src" value="otro"> Otro</label>
+        </div>
+      </div>
+
+      <div class="input-group" id="nOtroWrap" style="display:none; margin-top:10px;">
+        <label>Especificá "Otro"</label>
+        <input type="text" id="nOtroText" placeholder="Ej: papilla de avena casera, jugo de mango...">
+      </div>
+    </section>
+
+    <!-- PRs -->
+    <section class="form-section">
+      <div class="section-num">05</div>
+      <h3>PRs PREVIOS <span style="font-size:11px; color:var(--gray); letter-spacing:0.1em; font-family:var(--font-secondary);">(COMPLEMENTO · NO DOMINA)</span></h3>
+      <p class="hint">Sus PRs son <strong>complemento</strong>, no la fuente principal. Sin contexto se cuentan poco. Con contexto (altitud, clima, condición vs hoy) suman precisión.</p>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>5K · mejor marca</label>
+          <input type="text" id="pr5k" placeholder="00:22:30" class="pace-input">
+        </div>
+        <div class="input-group">
+          <label>10K · mejor marca</label>
+          <input type="text" id="pr10k" placeholder="00:47:30" class="pace-input">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>21K · mejor marca</label>
+          <input type="text" id="pr21k" placeholder="01:42:00" class="pace-input">
+        </div>
+        <div class="input-group">
+          <label>42K · mejor marca</label>
+          <input type="text" id="pr42k" placeholder="03:30:00" class="pace-input">
+        </div>
+      </div>
+
+      <!-- PR context block -->
+      <div class="advanced-block" style="margin-top: 20px;">
+        <div class="advanced-header">
+          <div class="advanced-eyebrow">Contexto de tus PRs · opcional</div>
+          <h4>¿EN QUÉ CONDICIONES CORRISTE ESOS PRs?</h4>
+          <p>
+            Si tus PRs fueron en condiciones <em>diferentes</em> a tu carrera objetivo
+            (más altitud, más calor, otra estación) y nos lo decís, te <strong>normalizamos</strong>
+            el tiempo a condiciones equivalentes. Sin contexto, el PR cuenta poco.
+          </p>
+        </div>
+
+        <div class="input-row triple">
+          <div class="input-group">
+            <label>Año del PR más reciente</label>
+            <input type="number" id="prAnio" min="2000" max="2030" placeholder="2025">
+          </div>
+          <div class="input-group">
+            <label>Altitud donde corriste (msnm)</label>
+            <input type="number" id="prAltitud" min="0" max="4500" placeholder="1900">
+            <div class="micro">Si fue a altitud, removemos esa penalización al normalizar.</div>
+          </div>
+          <div class="input-group">
+            <label>Temperatura del PR (°C)</label>
+            <input type="number" id="prTemp" min="-5" max="45" placeholder="20">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Rendimiento subjetivo de ese PR (1-10)</label>
+            <select id="prRating">
+              <option value="">—</option>
+              <option value="10">10 · día perfecto</option>
+              <option value="9">9 · excelente</option>
+              <option value="8">8 · muy bien</option>
+              <option value="7">7 · bien (default)</option>
+              <option value="6">6 · ok</option>
+              <option value="5">5 · regular</option>
+              <option value="4">4 · flojo</option>
+              <option value="3">3 · malo</option>
+              <option value="2">2 · muy malo</option>
+              <option value="1">1 · terrible</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Tu forma actual vs ese PR</label>
+            <select id="prCondicion">
+              <option value="">—</option>
+              <option value="mejor">Mejor — más entreno / volumen / consistencia</option>
+              <option value="igual">Igual — forma similar a la del PR</option>
+              <option value="peor">Peor — menos entreno / lesiones / regresando</option>
+            </select>
+            <div class="micro">"Mejor" sube tu predicción ~3%. "Peor" la baja ~4% y reduce el peso del PR.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Últimas 3 carreras -->
+    <section class="form-section">
+      <div class="section-num">06</div>
+      <h3>TUS ÚLTIMAS CARRERAS <span style="font-size:11px; color:var(--gray); letter-spacing:0.1em; font-family:var(--font-secondary);">(OPCIONAL · ESENCIAL PARA ULTRAS)</span></h3>
+      <p class="hint">Para ultras, el test de threshold no captura tu capacidad de larga duración. Ingresá hasta 3 carreras recientes — son el mejor predictor real.</p>
+
+      <div class="past-races">
+        <div class="past-race">
+          <div class="pr-head">
+            <span class="pr-label">Carrera 1 · más reciente</span>
+          </div>
+          <div class="input-row">
+            <div class="input-group">
+              <label>Nombre (opcional)</label>
+              <input type="text" id="r1Name" placeholder="Ej: Acatenango Trail 50K">
+            </div>
+            <div class="input-group">
+              <label>Distancia (km)</label>
+              <input type="number" id="r1Dist" step="0.1" min="1" max="500" placeholder="50">
+            </div>
+          </div>
+          <div class="input-row triple">
+            <div class="input-group">
+              <label>D+ (m)</label>
+              <input type="number" id="r1Dplus" min="0" max="15000" placeholder="2400">
+            </div>
+            <div class="input-group">
+              <label>Tiempo total</label>
+              <input type="text" id="r1Time" placeholder="08:45:00" class="pace-input">
+            </div>
+            <div class="input-group">
+              <label>Rendimiento (1-10)</label>
+              <select id="r1Rating">
+                <option value="">—</option>
+                <option value="10">10 · día perfecto</option>
+                <option value="9">9 · excelente</option>
+                <option value="8">8 · muy bien</option>
+                <option value="7">7 · bien</option>
+                <option value="6">6 · ok</option>
+                <option value="5">5 · regular</option>
+                <option value="4">4 · flojo</option>
+                <option value="3">3 · malo</option>
+                <option value="2">2 · muy malo</option>
+                <option value="1">1 · terrible</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="past-race">
+          <div class="pr-head"><span class="pr-label">Carrera 2</span></div>
+          <div class="input-row">
+            <div class="input-group">
+              <label>Nombre (opcional)</label>
+              <input type="text" id="r2Name" placeholder="Ej: Media Maratón Antigua">
+            </div>
+            <div class="input-group">
+              <label>Distancia (km)</label>
+              <input type="number" id="r2Dist" step="0.1" min="1" max="500" placeholder="21.1">
+            </div>
+          </div>
+          <div class="input-row triple">
+            <div class="input-group">
+              <label>D+ (m)</label>
+              <input type="number" id="r2Dplus" min="0" max="15000" placeholder="350">
+            </div>
+            <div class="input-group">
+              <label>Tiempo total</label>
+              <input type="text" id="r2Time" placeholder="01:45:00" class="pace-input">
+            </div>
+            <div class="input-group">
+              <label>Rendimiento (1-10)</label>
+              <select id="r2Rating">
+                <option value="">—</option>
+                <option value="10">10 · día perfecto</option>
+                <option value="9">9 · excelente</option>
+                <option value="8">8 · muy bien</option>
+                <option value="7">7 · bien</option>
+                <option value="6">6 · ok</option>
+                <option value="5">5 · regular</option>
+                <option value="4">4 · flojo</option>
+                <option value="3">3 · malo</option>
+                <option value="2">2 · muy malo</option>
+                <option value="1">1 · terrible</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="past-race">
+          <div class="pr-head"><span class="pr-label">Carrera 3</span></div>
+          <div class="input-row">
+            <div class="input-group">
+              <label>Nombre (opcional)</label>
+              <input type="text" id="r3Name" placeholder="Ej: Ultra Atitlán 80K">
+            </div>
+            <div class="input-group">
+              <label>Distancia (km)</label>
+              <input type="number" id="r3Dist" step="0.1" min="1" max="500" placeholder="80">
+            </div>
+          </div>
+          <div class="input-row triple">
+            <div class="input-group">
+              <label>D+ (m)</label>
+              <input type="number" id="r3Dplus" min="0" max="15000" placeholder="4200">
+            </div>
+            <div class="input-group">
+              <label>Tiempo total</label>
+              <input type="text" id="r3Time" placeholder="14:20:00" class="pace-input">
+            </div>
+            <div class="input-group">
+              <label>Rendimiento (1-10)</label>
+              <select id="r3Rating">
+                <option value="">—</option>
+                <option value="10">10 · día perfecto</option>
+                <option value="9">9 · excelente</option>
+                <option value="8">8 · muy bien</option>
+                <option value="7">7 · bien</option>
+                <option value="6">6 · ok</option>
+                <option value="5">5 · regular</option>
+                <option value="4">4 · flojo</option>
+                <option value="3">3 · malo</option>
+                <option value="2">2 · muy malo</option>
+                <option value="1">1 · terrible</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Carrera -->
+    <section class="form-section full-width">
+      <div class="section-num">07</div>
+      <h3>TU CARRERA OBJETIVO</h3>
+      <p class="hint">Datos de la carrera para ajustar pacing y nutrición a las condiciones reales.</p>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label>Nombre de la carrera</label>
+          <input type="text" id="cNombre" placeholder="Media Maratón Cobán 21K">
+        </div>
+        <div class="input-group">
+          <label>Distancia (km)</label>
+          <input type="number" id="cDistancia" min="1" max="200" step="0.1" placeholder="21.1" value="21.1">
+          <div class="preset-row">
+            <button type="button" onclick="setDistanciaPreset(this, '5')">5K</button>
+            <button type="button" onclick="setDistanciaPreset(this, '10')">10K</button>
+            <button type="button" onclick="setDistanciaPreset(this, '21.1')">21K</button>
+            <button type="button" onclick="setDistanciaPreset(this, '42.2')">42K</button>
+            <button type="button" onclick="setDistanciaPreset(this, '50')">50K</button>
+            <button type="button" onclick="setDistanciaPreset(this, '100')">100K</button>
+          </div>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>Fecha</label>
+          <input type="date" id="cFecha">
+        </div>
+        <div class="input-group">
+          <label>Hora de salida</label>
+          <input type="time" id="cHora" value="07:00">
+        </div>
+      </div>
+      <div class="input-row triple">
+        <div class="input-group">
+          <label>Altitud promedio (msnm)</label>
+          <input type="number" id="cAltitud" min="0" max="4500" placeholder="1300">
+        </div>
+        <div class="input-group">
+          <label>Elevación + total (m D+)</label>
+          <input type="number" id="cDplus" min="0" max="5000" placeholder="274">
+          <div class="micro">Suma de las subidas de la ruta. +12s/km aprox. por cada 100m de D+.</div>
+        </div>
+        <div class="input-group">
+          <label>Tipo de terreno</label>
+          <select id="cTerreno">
+            <option value="asfalto">Asfalto (calle)</option>
+            <option value="mixto">Mixto · gravel / camino de tierra</option>
+            <option value="trail-suave">Trail suave · singletrack limpio</option>
+            <option value="trail-tecnico">Trail técnico · raíces, rocas</option>
+            <option value="trail-muy-tecnico">Trail muy técnico · montaña</option>
+          </select>
+          <div class="micro">Multiplica ritmo: asfalto 1.00× · mixto 1.04× · suave 1.10× · técnico 1.20× · muy técnico 1.35×</div>
+        </div>
+      </div>
+      <div class="input-row triple">
+        <div class="input-group">
+          <label>Temp. esperada (°C)</label>
+          <input type="number" id="cTemp" min="-5" max="45" placeholder="20">
+        </div>
+        <div class="input-group">
+          <label>Humedad esperada (%)</label>
+          <input type="number" id="cHumedad" min="10" max="100" placeholder="75">
+        </div>
+        <div class="input-group">
+          <label>Objetivo</label>
+          <select id="cObjetivo">
+            <option value="finish">Terminar bien</option>
+            <option value="pb" selected>Bajar mi PB</option>
+            <option value="time">Tiempo objetivo específico</option>
+            <option value="podio">Pelear podio / grupo edad</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-row single">
+        <div class="input-group">
+          <label>Notas de ruta (opcional)</label>
+          <textarea id="cNotas" placeholder="Ej: Giro 180° en km 15. Cuesta empinada de 600m al km 18. Bebederos cada 3km..."></textarea>
+        </div>
+      </div>
+
+      <!-- Ultra-specific questions: shown only when distance > 50 km -->
+      <div class="advanced-block" id="ultraBlock" style="display:none;">
+        <div class="advanced-header">
+          <div class="advanced-eyebrow">Ultra · datos para distancias +50K</div>
+          <h4>EXPERIENCIA Y LOGÍSTICA DE LA ULTRA</h4>
+          <p>
+            En ultras la experiencia y los puestos de abastecimiento son tan determinantes
+            como el ritmo. Estos campos ajustan tu predicción y suman el tiempo realista
+            que vas a parar en puestos.
+          </p>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>¿Cuántas veces hiciste esta distancia?</label>
+            <input type="number" id="cVecesEstaDist" min="0" max="50" placeholder="0">
+            <div class="micro">0 = primera vez (estimación más conservadora). 3+ = predicción más optimista.</div>
+          </div>
+          <div class="input-group">
+            <label>Distancia más larga corrida (km)</label>
+            <input type="number" id="cDistanciaMaxima" min="0" max="500" placeholder="50">
+            <div class="micro">Si esta carrera es más larga, agregamos un margen de "territorio desconocido".</div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group">
+            <label>Cantidad de puestos de abastecimiento</label>
+            <input type="number" id="cCantidadPuestos" min="0" max="50" placeholder="8">
+          </div>
+          <div class="input-group">
+            <label>Tiempo promedio en cada puesto (min)</label>
+            <input type="number" id="cTiempoPorPuesto" min="0" max="60" step="0.5" placeholder="3">
+            <div class="micro">Conservador: 2-3 min/puesto. Si te sentás a comer/descansar: 5-10 min.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced (optional): GPX upload for per-km gradient analysis -->
+      <div class="advanced-block">
+        <div class="advanced-header">
+          <div class="advanced-eyebrow">Análisis avanzado · opcional</div>
+          <h4>SI TENÉS EL TRACK GPS DE LA RUTA</h4>
+          <p>
+            Los campos de arriba ya son suficientes para calcular tu estrategia personalizada.
+            Si <em>además</em> tenés el archivo GPS de un recorrido previo de la ruta (.gpx o .tcx),
+            te ajusto el pacing <strong>km por km según la pendiente real</strong> en cada tramo.
+            Sin GPX se usa D+ promedio distribuido por bloque.
+          </p>
+        </div>
+        <div class="input-group file-input-wrap">
+          <label>Archivo .gpx / .tcx</label>
+          <input type="file" id="cGpx" accept=".gpx,.tcx,.xml" onchange="onGpxFileSelected(this)">
+          <div class="file-status" id="gpxStatus">Sin archivo cargado. La estrategia se calcula con los campos de arriba.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="generate-cta no-print">
+    <button class="btn-primary" onclick="generarEstrategia()">Generar mi estrategia</button>
+    <p class="hint">Necesitamos al menos test de threshold + carrera para calcular.</p>
+  </div>
+
+  <!-- ==================== STRATEGY OUTPUT ==================== -->
+  <section class="strategy" id="strategy" style="display:none;">
+
+    <div class="strategy-header">
+      <div>
+        <div class="eyebrow">Plan de carrera personalizado</div>
+        <h2 id="sTitulo">—</h2>
+        <div class="race-meta" id="sMeta">—</div>
+      </div>
+      <button class="btn-tertiary no-print" onclick="window.print()">⤓ Descargar plan en PDF</button>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-grid">
+      <div class="summary-card feature">
+        <div class="label">Tiempo proyectado</div>
+        <div class="value" id="sTiempo">—</div>
+        <div class="sub" id="sTiempoSub">—</div>
+      </div>
+      <div class="summary-card feature">
+        <div class="label">Ritmo objetivo</div>
+        <div class="value" id="sRitmo">—</div>
+        <div class="sub">min/km promedio</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">FC objetivo</div>
+        <div class="value" id="sFc">—</div>
+        <div class="sub" id="sFcSub">bpm</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Ajuste vs. tu base</div>
+        <div class="value" id="sAjuste">—</div>
+        <div class="sub" id="sAjusteSub">altitud + temp + D+</div>
+      </div>
+    </div>
+
+    <!-- Source breakdown (transparency) -->
+    <div id="sSources" style="padding:14px 18px; background:var(--navy-deep); border-left:3px solid var(--red); border-radius:2px; margin-bottom:32px; font-size:13px; line-height:1.7; color:rgba(255,255,255,0.75); display:none;">
+      <div class="eyebrow" style="margin-bottom:8px;">Cálculo basado en</div>
+      <div id="sSourcesList">—</div>
+    </div>
+
+    <!-- Escenarios ABC -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">01 · Escenarios A · B · C</div>
+          <h3>Cómo se siente y cómo se ve cada día</h3>
+        </div>
+        <div class="right-note">No vas a saber cuál te toca hasta el km 10. Reconocelo y respondé.</div>
+      </div>
+      <div class="scenarios-grid" id="sScenarios"></div>
+    </div>
+
+    <!-- Pacing -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">02 · Pacing</div>
+          <h3>Bloque por bloque</h3>
+        </div>
+        <div class="right-note" id="pBlockNote">—</div>
+      </div>
+      <table class="pacing-table">
+        <thead>
+          <tr>
+            <th>Km</th>
+            <th>Fase</th>
+            <th>Ritmo</th>
+            <th>FC</th>
+            <th>Acumulado</th>
+            <th>Estrategia</th>
+          </tr>
+        </thead>
+        <tbody id="pBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Nutrition: 3 strategies -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">03 · Nutrición e Hidratación</div>
+          <h3>Tres estrategias · elegí según tu día</h3>
+        </div>
+        <div class="right-note" id="nDurationNote">—</div>
+      </div>
+      <div class="nutr-tiers" id="nTiers"></div>
+    </div>
+
+    <!-- Pre-race nutrition -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">04 · Semana Previa</div>
+          <h3>Carga + hidratación</h3>
+        </div>
+      </div>
+      <ul class="timeline" id="nPreRace"></ul>
+    </div>
+
+    <!-- Checklist -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">05 · Checklist</div>
+          <h3>72H antes · 24H antes · Día D</h3>
+        </div>
+        <div class="right-note">Tocá para marcar</div>
+      </div>
+      <div class="checklist-grid">
+        <div class="checklist-col">
+          <h4>72H ANTES</h4>
+          <ul class="checklist" id="ck72"></ul>
+        </div>
+        <div class="checklist-col">
+          <h4>24H ANTES</h4>
+          <ul class="checklist" id="ck24"></ul>
+        </div>
+        <div class="checklist-col">
+          <h4>DÍA DE CARRERA</h4>
+          <ul class="checklist" id="ckD"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Route notes -->
+    <div class="panel" id="notesPanel" style="display:none;">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">06 · Notas de Ruta</div>
+          <h3>Tus observaciones</h3>
+        </div>
+      </div>
+      <div class="notes-display" id="notesDisplay">—</div>
+    </div>
+
+    <!-- Closing -->
+    <div class="panel" style="border-left: 3px solid var(--red); background: var(--navy-deep);">
+      <div class="eyebrow">El cierre</div>
+      <h3 style="margin-bottom: 12px;">EL RENDIMIENTO ES CONSTANCIA.</h3>
+      <p style="font-size:14px; color:rgba(255,255,255,0.8); line-height:1.7;">
+        Esta estrategia no garantiza nada por sí sola. La carrera se corre con los meses de trabajo
+        que ya hiciste. Ejecutá lo que entrenaste. <strong>Un paso a la vez. Conquistá tu cima.</strong>
+      </p>
+    </div>
+
+  </section>
+
+  <div id="emptyHint" class="empty-state">
+    Completá los formularios y tocá <strong>"Generar mi estrategia"</strong> para ver tu plan personalizado.
+  </div>
+
+</main>
+
+<div class="toast" id="toast">—</div>
+
+<script>
+// =====================================================================
+// ACCESS CODE GATE
+// =====================================================================
+// SHA-256 hashes (first 16 hex chars) of valid codes salted with 'uphill-2026-'.
+// To add new codes: open generador-codigos.html, generate, paste the snippet here.
+//
+// CÓDIGOS MASTER DE PRODUCCIÓN (compartir con compradores hasta migrar a backend):
+//   UPHILL-VIP-2026      → código principal de venta
+//   CONQUISTA-TU-CIMA    → código alternativo / promociones puntuales
+//
+// Códigos demo (uso interno / testing — eliminar antes de producción si querés):
+//   UPHILL-DEMO-0001  ·  UPHILL-GABO-0001  ·  UPHILL-TEST-0001
+const VALID_CODES = {
+  // Producción
+  'd3eb7f3fbde36c46': { name: 'Atleta Uphill', code: 'UPHILL-VIP-2026' },
+  'eb0b99021c47fc30': { name: 'Atleta Uphill', code: 'CONQUISTA-TU-CIMA' },
+  // Demo / testing
+  '26776275902933dd': { name: 'Demo Uphill', code: 'UPHILL-DEMO-0001' },
+  '3042b4f974145011': { name: 'Gabriel Bianchi', code: 'UPHILL-GABO-0001' },
+  '7cfcdef091db4841': { name: 'Test Atleta', code: 'UPHILL-TEST-0001' }
+};
+const CODE_SALT = 'uphill-2026-';
+const ACCESS_KEY = 'uphill-access';
+
+async function hashCode(code) {
+  const data = new TextEncoder().encode(CODE_SALT + code.trim().toUpperCase());
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('').substring(0, 16);
+}
+
+async function activarCodigo() {
+  const input = document.getElementById('codeInput');
+  const errEl = document.getElementById('codeError');
+  const code = input.value.trim();
+  errEl.textContent = '';
+  if (!code) { errEl.textContent = 'Ingresá tu código.'; return; }
+  let hash;
+  try { hash = await hashCode(code); }
+  catch (e) { errEl.textContent = 'Error de validación. Refrescá la página.'; return; }
+  const buyer = VALID_CODES[hash];
+  if (!buyer) {
+    errEl.textContent = 'Código inválido. Verificá que esté correcto o contactá Uphill.';
+    return;
+  }
+  localStorage.setItem(ACCESS_KEY, JSON.stringify({
+    code: buyer.code, name: buyer.name, hash, activatedAt: new Date().toISOString()
+  }));
+  unlockApp(buyer);
+}
+
+function unlockApp(buyer) {
+  document.getElementById('accessGate').classList.add('hidden');
+  // Replace storage badge with buyer identity (deterrent watermark)
+  const badge = document.getElementById('storageBadge');
+  if (badge && buyer.name) {
+    badge.innerHTML = `<span class="dot" style="opacity:1;"></span> <span>${buyer.name.toUpperCase()}</span>`;
+    badge.classList.add('saved');
+  }
+}
+
+async function checkExistingAccess() {
+  const stored = localStorage.getItem(ACCESS_KEY);
+  if (!stored) return false;
+  try {
+    const access = JSON.parse(stored);
+    // Re-validate stored code (in case we revoked it server-side later)
+    const hash = await hashCode(access.code);
+    if (VALID_CODES[hash]) {
+      unlockApp(VALID_CODES[hash]);
+      return true;
+    }
+    // Revoked / unknown — clear
+    localStorage.removeItem(ACCESS_KEY);
+  } catch (e) {}
+  return false;
+}
+
+// =====================================================================
+// GPX / TCX PARSER + PER-KM GRADIENT FACTORS
+// =====================================================================
+let LOADED_GPX = null; // [{ km, grade, factor, altStart, altEnd }, ...]
+
+function onGpxFileSelected(input) {
+  const file = input.files[0];
+  const status = document.getElementById('gpxStatus');
+  if (!file) {
+    LOADED_GPX = null;
+    status.textContent = 'Sin archivo.';
+    status.className = 'file-status';
+    return;
+  }
+  status.textContent = 'Procesando ' + file.name + '…';
+  status.className = 'file-status';
+  parseGpxOrTcx(file).then(result => {
+    if (!result || result.length === 0) {
+      LOADED_GPX = null;
+      status.textContent = '❌ No se pudieron extraer puntos del archivo.';
+      status.className = 'file-status err';
+      return;
+    }
+    LOADED_GPX = result;
+    const totalKm = result[result.length - 1].km;
+    const ascent = result.reduce((s, p) => s + Math.max(0, p.altEnd - p.altStart), 0);
+    status.textContent = `✓ ${result.length} km procesados · ${totalKm.toFixed(2)} km total · ${Math.round(ascent)} m D+`;
+    status.className = 'file-status ok';
+    // Auto-fill distance + D+ if user hasn't set them
+    if (!document.getElementById('cDistancia').value || parseFloat(document.getElementById('cDistancia').value) === 21.1) {
+      document.getElementById('cDistancia').value = totalKm.toFixed(2);
+      document.getElementById('cDistancia').dispatchEvent(new Event('change'));
+    }
+    if (!document.getElementById('cDplus').value) {
+      document.getElementById('cDplus').value = Math.round(ascent);
+    }
+  }).catch(err => {
+    console.warn(err);
+    LOADED_GPX = null;
+    status.textContent = '❌ Error procesando archivo: ' + err.message;
+    status.className = 'file-status err';
+  });
+}
+
+async function parseGpxOrTcx(file) {
+  const text = await file.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, 'application/xml');
+  if (doc.querySelector('parsererror')) {
+    throw new Error('XML inválido');
+  }
+
+  // Extract raw points: [{distM, alt}, ...]
+  let raw = [];
+
+  // GPX format: <trkpt lat lon><ele/></trkpt>
+  const trkpts = doc.querySelectorAll('trkpt');
+  if (trkpts.length > 0) {
+    let cumDist = 0;
+    let prevLat = null, prevLon = null;
+    trkpts.forEach(pt => {
+      const lat = parseFloat(pt.getAttribute('lat'));
+      const lon = parseFloat(pt.getAttribute('lon'));
+      const eleEl = pt.querySelector('ele');
+      const ele = eleEl ? parseFloat(eleEl.textContent) : 0;
+      if (prevLat !== null) cumDist += haversine(prevLat, prevLon, lat, lon);
+      raw.push({ distM: cumDist, alt: ele });
+      prevLat = lat; prevLon = lon;
+    });
+  } else {
+    // TCX format: <Trackpoint><DistanceMeters/><AltitudeMeters/></Trackpoint>
+    const tps = doc.getElementsByTagName('Trackpoint');
+    for (let i = 0; i < tps.length; i++) {
+      const tp = tps[i];
+      const d = tp.getElementsByTagName('DistanceMeters')[0];
+      const a = tp.getElementsByTagName('AltitudeMeters')[0];
+      if (d && a) {
+        raw.push({ distM: parseFloat(d.textContent), alt: parseFloat(a.textContent) });
+      }
+    }
+  }
+
+  if (raw.length < 2) return [];
+
+  // Smooth altitudes (moving average) to reduce GPS noise
+  const window = Math.max(5, Math.floor(raw.length / 100));
+  const smoothed = raw.map((p, i) => {
+    const lo = Math.max(0, i - Math.floor(window / 2));
+    const hi = Math.min(raw.length, i + Math.floor(window / 2));
+    const slice = raw.slice(lo, hi);
+    const avgAlt = slice.reduce((s, x) => s + x.alt, 0) / slice.length;
+    return { distM: p.distM, alt: avgAlt };
+  });
+
+  // Helper: altitude at any distance
+  function altAt(targetM) {
+    for (let i = 0; i < smoothed.length; i++) {
+      if (smoothed[i].distM >= targetM) {
+        if (i === 0) return smoothed[0].alt;
+        const a = smoothed[i - 1], b = smoothed[i];
+        if (b.distM === a.distM) return a.alt;
+        const t = (targetM - a.distM) / (b.distM - a.distM);
+        return a.alt + t * (b.alt - a.alt);
+      }
+    }
+    return smoothed[smoothed.length - 1].alt;
+  }
+
+  const totalM = smoothed[smoothed.length - 1].distM;
+  const totalKm = totalM / 1000;
+  const nFullKm = Math.floor(totalKm);
+  const segments = [];
+  for (let km = 1; km <= nFullKm; km++) {
+    const startM = (km - 1) * 1000;
+    const endM = km * 1000;
+    const a0 = altAt(startM);
+    const a1 = altAt(endM);
+    const grade = ((a1 - a0) / 1000) * 100;
+    segments.push({ km, altStart: a0, altEnd: a1, grade });
+  }
+  // Last partial km
+  if (totalKm - nFullKm > 0.05) {
+    const startM = nFullKm * 1000;
+    const endM = totalM;
+    const a0 = altAt(startM);
+    const a1 = altAt(endM);
+    const segLen = endM - startM;
+    const grade = ((a1 - a0) / segLen) * 100;
+    segments.push({ km: totalKm, altStart: a0, altEnd: a1, grade, partial: true });
+  }
+
+  // Minetti energy cost (relative)
+  function minetti(i) {
+    return 155.4*i**5 - 30.4*i**4 - 43.3*i**3 + 46.3*i**2 + 19.5*i + 3.6;
+  }
+  const cFlat = minetti(0);
+  segments.forEach(s => { s.relativeCost = minetti(s.grade / 100) / cFlat; });
+  const meanCost = segments.reduce((sum, s) => sum + s.relativeCost, 0) / segments.length;
+  segments.forEach(s => { s.factor = s.relativeCost / meanCost; });
+
+  return segments;
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+// =====================================================================
+// TERRAIN FACTORS (trail running adjustment)
+// =====================================================================
+const TERRENO_FACTORS = {
+  'asfalto':           { factor: 1.00, label: 'asfalto' },
+  'mixto':             { factor: 1.04, label: 'mixto/gravel' },
+  'trail-suave':       { factor: 1.10, label: 'trail suave' },
+  'trail-tecnico':     { factor: 1.20, label: 'trail técnico' },
+  'trail-muy-tecnico': { factor: 1.35, label: 'trail muy técnico' }
+};
+
+// Per-terrain D+ cost: fraction of flat pace added per 100m D+.
+// Trail técnico uses the "1km equivalent per 100m D+" rule (factor = 1.0).
+// Road / mild terrain use a fraction of that since climbs stay runnable.
+const TERRENO_DPLUS_FACTOR = {
+  'asfalto':           0.15,
+  'mixto':             0.40,
+  'trail-suave':       0.70,
+  'trail-tecnico':     1.00,
+  'trail-muy-tecnico': 1.30
+};
+
+// =====================================================================
+// FATIGUE FACTOR (long-duration trail races)
+// =====================================================================
+// Returns pace multiplier accumulated due to fatigue. Only kicks in for
+// trail races > 3h. Cumulative bands grow steeper as duration extends.
+function computeFatigueFactor(estimatedTimeSec, distanciaKm, terrainKey) {
+  const hours = estimatedTimeSec / 3600;
+  const isRoad = terrainKey === 'asfalto';
+  if (hours <= 3) return 1.00;
+  if (distanciaKm <= 30 && isRoad) return 1.00; // road half/full marathons are bounded by Riegel
+
+  let extra = 0;
+  if (hours > 3)  extra += Math.min(5, hours - 3) * 0.012;  // hrs 3-8: +1.2% per hour
+  if (hours > 8)  extra += Math.min(8, hours - 8) * 0.018;  // hrs 8-16: +1.8% per hour
+  if (hours > 16) extra += Math.min(8, hours - 16) * 0.025; // hrs 16-24: +2.5% per hour
+  if (hours > 24) extra += (hours - 24) * 0.030;            // hrs 24+: +3% per hour (sleep deprivation)
+
+  return 1 + Math.min(extra, 0.60); // cap at +60% slowdown
+}
+
+// =====================================================================
+// PRESET BUTTONS (distance)
+// =====================================================================
+function setDistanciaPreset(btn, val) {
+  document.getElementById('cDistancia').value = val;
+  document.getElementById('cDistancia').dispatchEvent(new Event('change'));
+  document.querySelectorAll('.preset-row button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  toggleUltraBlock();
+}
+
+// =====================================================================
+// STORAGE
+// =====================================================================
+const STORAGE_KEY = 'uphill-estrategia-v1';
+
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultStore();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultStore(), parsed);
+  } catch { return defaultStore(); }
+}
+function defaultStore() {
+  return {
+    athlete: { nombre: '', edad: '', peso: '', sexo: '', livingAltitude: '', trainingAltitude: '' },
+    threshold: { dist: '', fc: '', fcMax: '', fecha: '' },
+    lactate: {
+      lt1: { pace: '', mmol: '', fc: '' },
+      lt2: { pace: '', mmol: '', fc: '' },
+      fecha: ''
+    },
+    nutrition: {
+      sweatRate: '',
+      carbsMax: '',
+      sources: [],
+      otroText: ''
+    },
+    prs: { '5k': '', '10k': '', '21k': '', '42k': '', anio: '', altitud: '', temp: '', rating: '', condicion: '' },
+    pastRaces: [
+      { name: '', distancia: '', dPlus: '', tiempo: '', rating: '' },
+      { name: '', distancia: '', dPlus: '', tiempo: '', rating: '' },
+      { name: '', distancia: '', dPlus: '', tiempo: '', rating: '' }
+    ],
+    races: {},
+    currentRaceId: null
+  };
+}
+function saveStore(store) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); flashSaved(); return true; }
+  catch (e) { console.warn(e); return false; }
+}
+function flashSaved() {
+  document.getElementById('storageBadge').classList.add('saved');
+}
+
+let STORE = loadStore();
+
+// =====================================================================
+// PACE PARSING / FORMATTING
+// =====================================================================
+function parseTimeToSeconds(str) {
+  if (!str) return null;
+  const parts = str.trim().split(':').map(s => parseFloat(s));
+  if (parts.some(isNaN)) return null;
+  if (parts.length === 3) return parts[0]*3600 + parts[1]*60 + parts[2];
+  if (parts.length === 2) return parts[0]*60 + parts[1];
+  if (parts.length === 1) return parts[0]; // already seconds
+  return null;
+}
+function secondsToHMS(sec) {
+  sec = Math.max(0, Math.round(sec));
+  const h = Math.floor(sec/3600);
+  const m = Math.floor((sec%3600)/60);
+  const s = sec%60;
+  return (h>0 ? h+':'+String(m).padStart(2,'0') : m) + ':' + String(s).padStart(2,'0');
+}
+function secondsToMSPace(sec) {
+  sec = Math.max(0, Math.round(sec));
+  const m = Math.floor(sec/60);
+  const s = sec%60;
+  return m + ':' + String(s).padStart(2,'0');
+}
+
+// =====================================================================
+// PACE CALCULATION
+// =====================================================================
+// Riegel: T2 = T1 * (D2/D1)^1.06
+function riegelPredict(timeSec, fromDist, toDist) {
+  // Kept for backwards compat; new code should use riegelPredictVar
+  return timeSec * Math.pow(toDist / fromDist, 1.06);
+}
+
+// Variable Riegel exponent based on distance. The classic 1.06 underestimates
+// fatigue for ultras; use steeper exponent as distance grows.
+function riegelExponent(d1, d2) {
+  const maxD = Math.max(d1, d2);
+  if (maxD < 22)  return 1.06;
+  if (maxD < 45)  return 1.08;
+  if (maxD < 80)  return 1.12;
+  if (maxD < 120) return 1.16;
+  return 1.20;
+}
+
+function riegelPredictVar(timeSec, fromDist, toDist) {
+  return timeSec * Math.pow(toDist / fromDist, riegelExponent(fromDist, toDist));
+}
+
+// Subjective rating correction: 10 = no correction (perfect day = real potential),
+// 5 = 6% potential improvement, 1 = ~11% potential improvement
+function subjectiveCorrection(rating) {
+  const r = Math.max(1, Math.min(10, parseFloat(rating) || 7));
+  return 1 - ((10 - r) * 0.012);
+}
+
+// Predict target race time from a single past race result.
+// The past race's time ALREADY includes its own terrain, D+, climate, etc.
+// So we don't decompose those — we trust the past time as a direct signal.
+// We only apply: subjective correction (project to good day) + Riegel distance scaling.
+function predictFromPastRace(race, targetDistKm) {
+  const pastTimeSec = parseTimeToSeconds(race.tiempo);
+  const pastDist = parseFloat(race.distancia);
+  if (!pastTimeSec || !pastDist || pastDist <= 0) return null;
+  const correction = subjectiveCorrection(race.rating);
+  const correctedTime = pastTimeSec * correction;
+  const scaledTime = riegelPredictVar(correctedTime, pastDist, targetDistKm);
+  return { timeSec: scaledTime, paceSec: scaledTime / targetDistKm };
+}
+
+// Returns BASELINE flat-road pace (sec/km) from LT2 / threshold / PRs.
+// Recent data (LT2, threshold) dominates. PRs are a COMPLEMENT — with context
+// they normalize and contribute meaningfully; without context, they count little.
+// applyAdjustments will then add terrain/D+/altitude/climate/fatigue.
+// Past races are handled separately in generarEstrategia.
+function basePaceFromInputs(threshold, prs, lactate, targetDistKm, raceCarrera) {
+  const candidates = [];
+  const isUltraTarget = targetDistKm > 42;
+
+  // LT2 — precise threshold reference (no change in weight)
+  const lt2PaceSec = parseTimeToSeconds(lactate?.lt2?.pace);
+  if (lt2PaceSec) {
+    const lt2Dist = 3600 / lt2PaceSec;
+    const predicted = riegelPredictVar(3600, lt2Dist, targetDistKm);
+    const w = isUltraTarget ? 0.8 : 2.0;
+    candidates.push({ source: 'Lactato LT2', predicted, weight: w, fromDist: lt2Dist });
+  }
+
+  // Threshold 20-min test — most direct recent signal (BOOSTED weight)
+  if (threshold.dist && threshold.fc) {
+    const sec = 20 * 60;
+    const d = parseFloat(threshold.dist);
+    if (d > 0) {
+      const predicted = riegelPredictVar(sec, d, targetDistKm);
+      const w = isUltraTarget ? 1.0 : 2.0;
+      candidates.push({ source: 'Threshold 20min', predicted, weight: w, fromDist: d });
+    }
+  }
+
+  // PRs — now a COMPLEMENT, not the dominant source.
+  // Base weight is 1.0 (was 4.0). Context can adjust both the predicted time
+  // (normalizing for altitude/conditions/condition) and the weight itself.
+  const prMap = { '5k': 5, '10k': 10, '21k': 21.1, '42k': 42.2 };
+  const prCtx = {
+    altitud: parseFloat(prs.altitud) || null,
+    temp: parseFloat(prs.temp) || null,
+    rating: parseFloat(prs.rating) || null,
+    condicion: prs.condicion || ''
+  };
+  const hasContext = prCtx.altitud || prCtx.temp || prCtx.rating || prCtx.condicion;
+
+  for (const [k, d] of Object.entries(prMap)) {
+    const sec = parseTimeToSeconds(prs[k]);
+    if (!sec || sec <= 0) continue;
+
+    const distRatio = Math.max(d, targetDistKm) / Math.min(d, targetDistKm);
+    let weight;
+    if (distRatio < 1.05) weight = 1.0;        // PR at the target distance
+    else if (distRatio < 1.5) weight = 0.8;    // PR close in range
+    else weight = 0.5 / Math.pow(distRatio, 0.5);
+    if (isUltraTarget) weight *= 0.6;
+
+    // Without context, PRs have HALF weight — we can't trust them blindly.
+    if (!hasContext) weight *= 0.5;
+
+    let predicted = riegelPredictVar(sec, d, targetDistKm);
+    const sourceLabel = ['PR ' + k];
+
+    // --- Context corrections ---
+
+    // 1. Altitude normalization: if PR was at higher altitude than race, the PR
+    //    time has an implicit altitude penalty baked in. Remove it so the
+    //    prediction reflects sea-level (or race-altitude) equivalent.
+    if (prCtx.altitud && raceCarrera && raceCarrera.altitud) {
+      const prAlt = prCtx.altitud;
+      const raceAlt = parseFloat(raceCarrera.altitud) || 0;
+      const altDeltaPR = prAlt - raceAlt; // positive = PR was higher
+      if (Math.abs(altDeltaPR) > 100) {
+        // Apply same altitude formula: 0.3% per 100m above 100m delta, capped logic
+        let prAltCorrection = 1;
+        if (altDeltaPR > 100) {
+          // PR was at higher altitude — remove its penalty (race is faster)
+          prAltCorrection = (altDeltaPR <= 2000)
+            ? 1 - 0.003 * (altDeltaPR / 100)
+            : 1 - (0.003 * 20 + 0.005 * ((altDeltaPR - 2000) / 100));
+          sourceLabel.push(`altitud −${Math.round(altDeltaPR)}m`);
+        } else {
+          // PR was at lower altitude — add penalty (race is harder)
+          const absDelta = -altDeltaPR;
+          prAltCorrection = (absDelta <= 2000)
+            ? 1 + 0.003 * (absDelta / 100)
+            : 1 + 0.003 * 20 + 0.005 * ((absDelta - 2000) / 100);
+          sourceLabel.push(`altitud +${Math.round(absDelta)}m`);
+        }
+        predicted *= prAltCorrection;
+      }
+    }
+
+    // 2. Subjective rating: PR rated <10 wasn't optimal, project to potential
+    if (prCtx.rating) {
+      const correction = 1 - ((10 - prCtx.rating) * 0.012);
+      predicted *= correction;
+      if (prCtx.rating < 9) sourceLabel.push(`rating ${prCtx.rating}/10`);
+    }
+
+    // 3. Condition vs today
+    if (prCtx.condicion === 'mejor') {
+      predicted *= 0.97;     // you're 3% fitter now → predict faster
+      weight *= 0.7;         // but reduce confidence (it's based on old fitness)
+      sourceLabel.push('forma mejor hoy');
+    } else if (prCtx.condicion === 'peor') {
+      predicted *= 1.04;     // you're 4% less fit now → predict slower
+      weight *= 0.4;         // and reduce weight significantly
+      sourceLabel.push('forma peor hoy');
+    }
+
+    candidates.push({
+      source: sourceLabel.join(' · '),
+      predicted, weight, fromDist: d
+    });
+  }
+
+  if (candidates.length === 0) return null;
+  const totalWeight = candidates.reduce((a, c) => a + c.weight, 0);
+  const weightedTime = candidates.reduce((a, c) => a + c.predicted * c.weight, 0) / totalWeight;
+  return {
+    paceSec: weightedTime / targetDistKm,
+    timeSec: weightedTime,
+    sources: candidates
+  };
+}
+
+// Resolve which FC to use as "umbral" reference (LT2 FC preferred, then 20-min test)
+function resolveFcUmbral(threshold, lactate) {
+  const lt2Fc = parseFloat(lactate?.lt2?.fc);
+  if (lt2Fc) return { fc: lt2Fc, source: 'LT2' };
+  const t = parseFloat(threshold.fc);
+  if (t) return { fc: t, source: '20-min' };
+  return { fc: null, source: null };
+}
+
+// =====================================================================
+// ESCENARIOS A · B · C
+// =====================================================================
+// Distance-aware pace factors. Ultras have wider spread because asymmetric:
+// best case is bounded (physiology), worst case has long tail (GI, weather,
+// muscle fatigue, sleep deprivation, etc).
+function getScenarioFactors(distancia) {
+  if (distancia <= 30)  return { A: 0.97, B: 1.00, C: 1.04 }; // road/short
+  if (distancia <= 50)  return { A: 0.95, B: 1.00, C: 1.09 }; // marathon → ultra
+  if (distancia <= 80)  return { A: 0.93, B: 1.00, C: 1.14 }; // 50K → 80K
+  if (distancia <= 120) return { A: 0.91, B: 1.00, C: 1.22 }; // 100K
+  return { A: 0.89, B: 1.00, C: 1.30 };                       // 100mi+
+}
+
+function generateScenarios(targetPaceSec, targetTimeSec, fcUmbral, carrera) {
+  const distancia = parseFloat(carrera.distancia) || 21;
+  const factors = getScenarioFactors(distancia);
+  const isUltra = distancia > 50;
+  const isMega = distancia > 100;
+
+  // Distance-specific narrative content
+  const scenarios = isUltra ? ULTRA_SCENARIOS : STANDARD_SCENARIOS;
+
+  return ['A', 'B', 'C'].map(letter => {
+    const data = scenarios[letter];
+    const paceFactor = factors[letter];
+    const fcPct = data.fcPct;
+    return {
+      ...data,
+      tier: letter,
+      paceFactor,
+      paceSec: targetPaceSec * paceFactor,
+      timeSec: targetTimeSec * paceFactor,
+      fc: fcUmbral ? Math.round(fcUmbral * fcPct) : null
+    };
+  });
+}
+
+const STANDARD_SCENARIOS = {
+  A: {
+    label: 'Día Perfecto', fcPct: 0.94,
+    title: 'TODO ENCAJA. LAS PIERNAS RESPONDEN.',
+    feels: 'Esfuerzo presente pero "fácil". La respiración es ritmo 2:2 sin pedirla, los hombros están bajos, podés decir frases cortas sin cortarte. La mente está limpia, sin negociar.',
+    looks: 'Postura erguida, mirada lejos (15-20m), brazada relajada, cadencia 175-180 spm fluida. Estás pasando a gente sin acelerar conscientemente. Los kilómetros se sienten "cortos".',
+    doIt: 'NO acelerés porque te sentís bien. Respetá tu plan hasta el km 15 (en 21K) o km 30 (en 42K). Recién en el último tercio, si TODO sigue, empujás progresivamente. La trampa es regalar el día perfecto saliendo rápido.'
+  },
+  B: {
+    label: 'Plan Ejecutado', fcPct: 0.96,
+    title: 'ESTÁS EN EL PLAN. ACÁ SE DEFINE.',
+    feels: 'Esfuerzo claro pero sostenible. La respiración pide foco. Conversación monosílaba — sí, no, "vamos". Las piernas saben que están trabajando. Aparecen pensamientos negativos cíclicos: ignoralos.',
+    looks: 'Cadencia estable, hombros que tendés a subir (bajalos cada 500m), mirada 15m adelante. Cuerpo en compromiso técnico. La técnica empieza a degradarse del km 14 (21K) o km 30 (42K).',
+    doIt: 'Disciplina sobre motivación. Repetí tu mantra. Un km a la vez. Esta es la zona donde se gana o se pierde la carrera. Hidratación + carbos a tiempo, no esperés a sentir la falta. Checkpoint cada 500m: hombros, mirada, mandíbula.'
+  },
+  C: {
+    label: 'Día de Sobrevivir', fcPct: 0.98,
+    title: 'EL CUERPO NO RESPONDE COMO ESPERABAS.',
+    feels: 'Cada km pesa más que el anterior. Las piernas pierden resorte. La cabeza pregunta "¿por qué?". La respiración se vuelve corta, irregular. Aparece la duda: "¿abandono?". RESPUESTA: no.',
+    looks: 'Postura empieza a caer, hombros suben, zancada se acorta y se vuelve menos eficiente, mirada al piso. La cadencia baja. Aparece el balanceo lateral. Otros te empiezan a pasar.',
+    doIt: 'NO entres en pánico. Bajá ritmo 10-15s/km y RESPIRÁ profundo 30 segundos. Carbohidrato extra (gel inmediato + sorbo de líquido). Pasos cortos, mantené cadencia aunque baje el pace. Mirá al frente. Terminar es ganar. Ajustá el objetivo al día que tenés.'
+  }
+};
+
+const ULTRA_SCENARIOS = {
+  A: {
+    label: 'Clase Magistral', fcPct: 0.85,
+    title: 'PACIENCIA, EJECUCIÓN, NUTRICIÓN.',
+    feels: 'Las piernas responden por horas. La nutrición entra perfecta, cero malestar digestivo. Mente limpia, conversación clara con corredores y crew. Las primeras 6-8h se sienten "fáciles" — eso es justo lo correcto.',
+    looks: 'Ritmo controlado y fluido. Caminás las subidas más fuertes sin culpa. En los puestos: entrar, comer, salir en 2-3 minutos. Cadencia se mantiene alta incluso después de 50K.',
+    doIt: 'NO te emboles las primeras 5 horas. Una ultra es un test de paciencia, no de velocidad. Mantené el plan estricto los primeros 50-60% de km. La carrera real empieza después. Nutrición proactiva, no reactiva.'
+  },
+  B: {
+    label: 'Plan Ejecutado', fcPct: 0.82,
+    title: 'EL CUERPO TRABAJA. LA CABEZA MANEJA.',
+    feels: 'Esfuerzo presente y constante. Hay valles emocionales (3-4 por carrera) pero pasajeros. Aparecen molestias menores: pies, espalda, GI. Conversación corta. La cabeza repite mantras cada 30 min.',
+    looks: 'Cadencia se mantiene; postura empieza a degradarse después de 6-8h. Caminás las subidas con propósito (no por agotamiento). En los puestos: 3-5 min, comés algo, llenás botellas, salís.',
+    doIt: 'Disciplina sobre motivación. Hidratación + carbos cada 30-45 min sin excusas, aunque no tengas hambre. Checkpoint horario: hombros, mandíbula, mirada, paso, técnica. Cambio de mentalidad por etapas: "llegar al próximo puesto", no a la meta.'
+  },
+  C: {
+    label: 'Modo Supervivencia', fcPct: 0.78,
+    title: 'TODO SE COMPLICA. TERMINAR ES GANAR.',
+    feels: 'GI distress (náuseas, vómitos), calambres recurrentes, sueño profundo (en ultras nocturnas), dolor de pies. La cabeza piensa "abandono" cada 10 min. El cuerpo no responde como entrenaste. Bajón emocional fuerte.',
+    looks: 'Caminás más que corrés. Los puestos se alargan (10-15 min, te sentás). Postura caída, mirada al piso, brazada arrastrada. Cadencia baja, paso corto involuntario. Demoras acumuladas.',
+    doIt: 'PLAN DE CONTINGENCIA. Bajá objetivos: ahora vamos a terminar. No te sentés más de 5 min en puestos (te enfría y desconecta). Pasos cortos, cadencia 165+, caminá rápido. Comida sólida si los geles ya no entran. Sal/electrolitos extra. Compañía si la tenés. Avanzar es ganar.'
+  }
+};
+
+// Adjustments
+function applyAdjustments(basePaceSec, carrera, atleta) {
+  const raceAlt = parseFloat(carrera.altitud) || 0;
+  const livingAlt = parseFloat(atleta?.livingAltitude) || 0;
+  const trainingAlt = parseFloat(atleta?.trainingAltitude) || livingAlt;
+  const dPlus = parseFloat(carrera.dPlus) || 0;
+  const temp = parseFloat(carrera.temp);
+  const humedad = parseFloat(carrera.humedad);
+  const distancia = parseFloat(carrera.distancia);
+
+  // Reference altitude (where the athlete is adapted to).
+  // Living altitude is the primary driver; training higher gives partial credit (30%).
+  let refAlt = livingAlt;
+  if (trainingAlt > livingAlt) {
+    refAlt += (trainingAlt - livingAlt) * 0.3;
+  }
+  const altDelta = raceAlt - refAlt;
+
+  // Penalty only if race is meaningfully higher than acclimated altitude (>100m delta).
+  // 0.3%/100m up to +2000m delta, then +0.5%/100m above that (steeper at extreme).
+  let altFactor = 1;
+  if (altDelta > 100) {
+    if (altDelta <= 2000) {
+      altFactor = 1 + 0.003 * (altDelta / 100);
+    } else {
+      altFactor = 1 + 0.003 * 20 + 0.005 * ((altDelta - 2000) / 100);
+    }
+  }
+
+  // Temperature: above 15°C, +1% per 5°C
+  const tempFactor = (!isNaN(temp) && temp > 15) ? 1 + 0.01 * ((temp - 15) / 5) : 1;
+
+  // Humidity: above 70%, +0.5% per 10%
+  const humFactor = (!isNaN(humedad) && humedad > 70) ? 1 + 0.005 * ((humedad - 70) / 10) : 1;
+
+  // Terrain technicality (trail running)
+  const terrainKey = carrera.terreno || 'asfalto';
+  const terrainEntry = TERRENO_FACTORS[terrainKey] || TERRENO_FACTORS.asfalto;
+  const terrainFactor = terrainEntry.factor;
+
+  // Pace BEFORE elevation: how fast you'd run this race if it were flat
+  const paceBeforeDplus = basePaceSec * altFactor * tempFactor * humFactor * terrainFactor;
+
+  // Elevation gain ("1km equivalent per 100m D+" rule, scaled by terrain):
+  // - Trail técnico (factor 1.00) = full rule: 100m D+ ≈ 1 km flat equivalent
+  // - Road/asphalt (factor 0.15) = mild penalty since climbs stay runnable
+  // If GPX is loaded, Minetti per-km factors account for grade so we skip this.
+  const dPlusEnergyFactor = TERRENO_DPLUS_FACTOR[terrainKey] || 0.15;
+  const dPlusTotal = LOADED_GPX ? 0 : (dPlus / 100) * paceBeforeDplus * dPlusEnergyFactor;
+  const dPlusPerKm = dPlusTotal / distancia;
+
+  const preliminaryPace = paceBeforeDplus + dPlusPerKm;
+  const preliminaryTotalTime = preliminaryPace * distancia;
+
+  // Fatigue factor: pace decay for long durations (trail/ultra)
+  const fatigueFact = computeFatigueFactor(preliminaryTotalTime, distancia, terrainKey);
+
+  // Ultra-specific: experience + unknown territory + aid station time
+  const vecesEstaDist = parseFloat(carrera.vecesEstaDistancia);
+  const distMaxima = parseFloat(carrera.distanciaMaxima);
+  let experienceFactor = 1.00;
+  if (distancia > 50) {
+    if (isNaN(vecesEstaDist) || vecesEstaDist === 0) experienceFactor *= 1.05; // first time
+    else if (vecesEstaDist >= 5) experienceFactor *= 0.97;
+    else if (vecesEstaDist >= 3) experienceFactor *= 0.98;
+    if (!isNaN(distMaxima) && distancia > distMaxima) experienceFactor *= 1.05; // unknown territory
+  }
+
+  const adjustedPace = preliminaryPace * fatigueFact * experienceFactor;
+
+  // Aid station time (separate from running pace — added to total time at render)
+  const cantidadPuestos = parseFloat(carrera.cantidadPuestos) || 0;
+  const tiempoPorPuesto = parseFloat(carrera.tiempoPorPuesto) || 0;
+  const aidStationSec = cantidadPuestos * tiempoPorPuesto * 60;
+
+  return {
+    paceSec: adjustedPace,
+    factors: {
+      altitude: altFactor, temperature: tempFactor, humidity: humFactor,
+      terrain: terrainFactor, terrainLabel: terrainEntry.label,
+      dPlusTotalSec: dPlusTotal * fatigueFact * experienceFactor,
+      dPlusEnergyFactor, dPlusPerKm,
+      altDelta, refAlt, raceAlt, livingAlt, trainingAlt,
+      gpxLoaded: !!LOADED_GPX,
+      fatigue: fatigueFact,
+      experience: experienceFactor,
+      aidStationSec
+    },
+    pctSlowdown: ((adjustedPace / basePaceSec) - 1) * 100
+  };
+}
+
+// =====================================================================
+// PHASE / SPLIT GENERATION
+// =====================================================================
+function getPhases(distancia) {
+  if (distancia <= 12) {
+    return [
+      { hasta: 2, name: 'CALENTAR', factor: 1.05, note: 'Calentamiento activo. No te dejes llevar por el grupo. Control total.' },
+      { hasta: 7, name: 'RITMO', factor: 1.00, note: 'Ritmo objetivo estricto. Cadencia 175-180 spm. Mirada adelante.' },
+      { hasta: 10, name: 'EMPUJÁ', factor: 0.97, note: 'Última fracción. Si las piernas responden, presioná progresivamente.' }
+    ];
+  } else if (distancia <= 25) {
+    return [
+      { hasta: 2, name: 'ALINEACIÓN', factor: 1.04, note: '5-10s más lento. Calentamiento activo. No te dejes arrastrar.' },
+      { hasta: 10, name: 'ANCLAJE', factor: 1.00, note: 'Ritmo objetivo. Cadencia estable. Resistí acelerar en bajadas.' },
+      { hasta: 14, name: 'PUNTO MUERTO', factor: 1.00, note: 'El cuerpo pregunta "¿por qué?". Acá se define la carrera. Disciplina.' },
+      { hasta: 18, name: 'ENCENDIDO', factor: 0.99, note: 'Si el plan va bien, empezá a presionar progresivamente.' },
+      { hasta: 999, name: 'CIMA', factor: 0.97, note: 'Entrega progresiva. Vaciá el tanque. No acelerés hasta ver la línea.' }
+    ];
+  } else {
+    return [
+      { hasta: 8, name: 'PACIENCIA', factor: 1.06, note: 'Ritmo CONTROLADO. Te van a pasar. Dejalos pasar. Maratón = paciencia.' },
+      { hasta: 21.1, name: 'RITMO', factor: 1.00, note: 'Anclaje al ritmo objetivo. Hidratación + carbos en cada puesto.' },
+      { hasta: 32, name: 'CONCENTRACIÓN', factor: 1.01, note: 'Acá empieza el maratón real. Técnica antes que velocidad.' },
+      { hasta: 38, name: 'EL MURO', factor: 1.03, note: 'Si vas a perder ritmo, que sea ahora. Aguantá. Carbos a tiempo.' },
+      { hasta: 999, name: 'CIMA', factor: 0.99, note: 'Acortá zancada. Aumentá cadencia. Cruzá con la cabeza alta.' }
+    ];
+  }
+}
+
+function generateSplits(targetPaceSec, fcUmbral, carrera) {
+  const distancia = parseFloat(carrera.distancia);
+  const phases = getPhases(distancia);
+  const blockSize = distancia <= 12 ? 2 : (distancia >= 50 ? 10 : 5);
+  const splits = [];
+  let cumulativeSec = 0;
+
+  // If GPX is loaded, compute average gradient factor per BLOCK from the per-km data
+  function blockGradientFactor(fromKm, toKm) {
+    if (!LOADED_GPX) return { factor: 1, gradeAvg: null };
+    const within = LOADED_GPX.filter(p => p.km > fromKm && p.km <= toKm + 0.01);
+    if (within.length === 0) return { factor: 1, gradeAvg: null };
+    const factor = within.reduce((s, p) => s + p.factor, 0) / within.length;
+    const gradeAvg = within.reduce((s, p) => s + p.grade, 0) / within.length;
+    return { factor, gradeAvg };
+  }
+
+  let km = 0;
+  while (km < distancia) {
+    const blockEnd = Math.min(km + blockSize, distancia);
+    const blockMid = (km + blockEnd) / 2;
+    const phase = phases.find(p => blockMid <= p.hasta);
+    const blockKm = blockEnd - km;
+
+    // Combine phase factor + GPX gradient factor (normalized so average pace stays target)
+    const { factor: gpxFactor, gradeAvg } = blockGradientFactor(km, blockEnd);
+    const blockPaceSec = targetPaceSec * phase.factor * gpxFactor;
+    const blockTimeSec = blockPaceSec * blockKm;
+    cumulativeSec += blockTimeSec;
+
+    // FC zones by phase (% of threshold FC)
+    let fcPct = 0.95;
+    if (phase.name === 'ALINEACIÓN' || phase.name === 'CALENTAR' || phase.name === 'PACIENCIA') fcPct = 0.88;
+    else if (phase.name === 'ANCLAJE' || phase.name === 'RITMO') fcPct = 0.94;
+    else if (phase.name === 'PUNTO MUERTO' || phase.name === 'CONCENTRACIÓN') fcPct = 0.96;
+    else if (phase.name === 'ENCENDIDO' || phase.name === 'EL MURO' || phase.name === 'EMPUJÁ') fcPct = 0.98;
+    else if (phase.name === 'CIMA') fcPct = 1.00;
+
+    const fcEst = fcUmbral ? Math.round(fcUmbral * fcPct) : null;
+
+    splits.push({
+      from: km, to: blockEnd,
+      paceSec: blockPaceSec,
+      timeSec: blockTimeSec,
+      cumulativeSec,
+      phase: phase.name,
+      note: phase.note,
+      fc: fcEst,
+      gradeAvg
+    });
+    km = blockEnd;
+  }
+  return splits;
+}
+
+// =====================================================================
+// NUTRITION
+// =====================================================================
+function generateNutrition(targetTimeSec, atleta, carrera, nutritionProfile) {
+  const hours = targetTimeSec / 3600;
+  const peso = parseFloat(atleta.peso) || 70;
+
+  // Pre-race carb load: 8g/kg for 36-48h before
+  const carbLoadDailyG = Math.round(peso * 8);
+
+  const tiers = generateNutritionStrategies(targetTimeSec, nutritionProfile || {}, carrera);
+  const preRace = generatePreRaceTimeline(carrera, atleta, carbLoadDailyG);
+
+  return {
+    tiers,
+    carbLoadDailyG,
+    preRace,
+    hours
+  };
+}
+
+// Three tiers: CONSERVADOR · REALISTA · AGRESIVO
+function generateNutritionStrategies(targetTimeSec, profile, carrera) {
+  const hours = targetTimeSec / 3600;
+  const temp = parseFloat(carrera.temp);
+  const humedad = parseFloat(carrera.humedad);
+
+  // User-stated carb tolerance OR duration-based default
+  let userCarbsMax = parseFloat(profile.carbsMax);
+  let carbsFromProfile = !!userCarbsMax;
+  if (!userCarbsMax) {
+    if (hours < 1) userCarbsMax = 35;
+    else if (hours < 1.5) userCarbsMax = 50;
+    else if (hours < 2.5) userCarbsMax = 65;
+    else if (hours < 3.5) userCarbsMax = 80;
+    else userCarbsMax = 95;
+  }
+
+  // User-stated sweat rate OR derived from conditions
+  let userSweat = parseFloat(profile.sweatRate);
+  let sweatFromProfile = !!userSweat;
+  if (!userSweat) {
+    userSweat = 600;
+    if (!isNaN(temp) && temp > 20) userSweat = 750;
+    if (!isNaN(temp) && temp > 25) userSweat = 900;
+    if (!isNaN(humedad) && humedad > 80) userSweat += 80;
+  }
+
+  const sources = (profile.sources && profile.sources.length) ? profile.sources : ['geles', 'isotonico'];
+  const otroText = profile.otroText || '';
+
+  const tierDefs = [
+    {
+      tier: 'CONSERVADOR',
+      carbsFactor: 0.65, fluidFactor: 0.80,
+      sodiumBase: 400, freq: 35,
+      when: 'Día caluroso, primera vez en esta distancia, o si el estómago anda dudoso.',
+      risk: null
+    },
+    {
+      tier: 'REALISTA',
+      carbsFactor: 0.88, fluidFactor: 0.95,
+      sodiumBase: 550, freq: 25,
+      when: 'Día normal, condiciones esperadas, plan ejecutado. Tu punto de partida.',
+      risk: null
+    },
+    {
+      tier: 'AGRESIVO',
+      carbsFactor: 1.05, fluidFactor: 1.05,
+      sodiumBase: 700, freq: 20,
+      when: 'Día fresco, vas por PB, condiciones óptimas y entrenaste a este ritmo de ingesta.',
+      risk: 'Solo si ya tomaste esta cantidad sin malestar en al menos 2 rodajes largos.'
+    }
+  ];
+
+  return tierDefs.map(t => {
+    const carbsPerHour = Math.round(userCarbsMax * t.carbsFactor);
+    let fluidPerHour = Math.round(userSweat * t.fluidFactor);
+    fluidPerHour = Math.min(1000, Math.max(300, fluidPerHour));
+    let sodiumPerHour = t.sodiumBase;
+    if (!isNaN(temp) && temp > 25) sodiumPerHour += 200;
+    if (hours > 3) sodiumPerHour += 100;
+
+    return {
+      tier: t.tier,
+      carbsPerHour, fluidPerHour, sodiumPerHour,
+      totalCarbs: Math.round(carbsPerHour * hours),
+      totalFluid: Math.round(fluidPerHour * hours),
+      totalSodium: Math.round(sodiumPerHour * hours),
+      freq: t.freq,
+      recipe: buildRecipeFromSources(carbsPerHour, fluidPerHour, sources, otroText, hours),
+      when: t.when,
+      risk: t.risk,
+      basedOnProfile: { carbs: carbsFromProfile, sweat: sweatFromProfile }
+    };
+  });
+}
+
+// Returns array of recipe lines like ["4 geles", "1 botella isotónica", ...]
+function buildRecipeFromSources(carbsPerHour, fluidPerHour, sources, otroText, hours) {
+  const totalCarbs = carbsPerHour * hours;
+  const totalFluid = fluidPerHour * hours;
+
+  const SRC = {
+    geles:     { name: 'gel',                       plural: 'geles',                       g: 25 },
+    isotonico: { name: 'botella de isotónico',      plural: 'botellas de isotónico',       g: 30, fluid: 500 },
+    miel:      { name: 'cda de miel',               plural: 'cdas de miel',                g: 18 },
+    frutos:    { name: 'fruto (banano/dátiles)',    plural: 'frutos (banano/dátiles)',     g: 22 },
+    barras:    { name: 'barrita',                   plural: 'barritas',                    g: 28 },
+    solida:    { name: 'porción sólida',            plural: 'porciones sólidas',           g: 30 },
+    otro:      { name: otroText || 'fuente custom', plural: otroText || 'fuentes custom',  g: 22 }
+  };
+
+  // Distribute carbs across selected sources, weighted toward geles + isotonico as primary
+  const primaryOrder = ['geles', 'isotonico', 'miel', 'frutos', 'barras', 'solida', 'otro'];
+  const selected = primaryOrder.filter(s => sources.includes(s));
+
+  if (selected.length === 0) return ['Sin fuentes seleccionadas — definí tus preferidas en el form'];
+
+  // Weights: primary sources get larger share
+  const weights = selected.map((s, i) => {
+    if (s === 'isotonico') return 0.30; // always significant for fluid + carbs
+    if (s === 'geles') return 0.40;
+    return 0.15;
+  });
+  const wSum = weights.reduce((a, b) => a + b, 0);
+
+  const items = selected.map((src, i) => {
+    const carbs = totalCarbs * (weights[i] / wSum);
+    let count = Math.max(1, Math.round(carbs / SRC[src].g));
+    // For isotonico, derive count from fluid (1 bottle = 500ml)
+    if (src === 'isotonico') {
+      count = Math.max(1, Math.round(totalFluid * 0.6 / 500));
+    }
+    const label = count === 1 ? SRC[src].name : SRC[src].plural;
+    return `${count} ${label}`;
+  });
+
+  return items;
+}
+
+function generatePreRaceTimeline(carrera, atleta, carbLoadG) {
+  const items = [];
+  items.push({
+    time: '5-7 DÍAS ANTES',
+    text: `<strong>Hidratación base.</strong> 35 ml/kg/día (~${Math.round((parseFloat(atleta.peso)||70) * 35)} ml). Sumá sodio si entrenás o hace calor. Orina clara = control.`
+  });
+  items.push({
+    time: '3 DÍAS ANTES',
+    text: '<strong>Última sesión de calidad terminada.</strong> A partir de acá: tapering. Trotes suaves, movilidad, no experimentar nada nuevo.'
+  });
+  items.push({
+    time: '36-48H ANTES',
+    text: `<strong>Carga de carbos: ~${carbLoadG}g/día</strong> (8g por kg de peso). Aumentá porciones de arroz, pasta, papa, pan en cada comida. NO más volumen total — más carbos en lugar de grasa.`
+  });
+  items.push({
+    time: 'NOCHE PREVIA',
+    text: '<strong>Cena familiar, alta en carbos, baja en grasa/fibra.</strong> Pasta con pollo, arroz blanco con proteína magra. Lo que ya probaste antes de tus rodajes largos.'
+  });
+  items.push({
+    time: 'DESPERTAR',
+    text: '<strong>500 ml de agua con pizca de sal.</strong> No esperés a tener sed.'
+  });
+  items.push({
+    time: '2-3 H ANTES SALIDA',
+    text: `<strong>Desayuno probado.</strong> ~${Math.round((parseFloat(atleta.peso)||70) * 1.5)}g de carbos (avena con miel + plátano, pan con mermelada, lo que SIEMPRE te funciona). Acompañado de café si es tu costumbre.`
+  });
+  items.push({
+    time: '30 MIN ANTES',
+    text: '<strong>1 gel o ~150 ml de bebida deportiva.</strong> Solo si entrenaste así.'
+  });
+  return items;
+}
+
+// =====================================================================
+// CHECKLIST GENERATION
+// =====================================================================
+function generateChecklist(carrera, targetTimeSec, atleta) {
+  const distancia = parseFloat(carrera.distancia);
+  const hours = targetTimeSec / 3600;
+  const nGeles = Math.max(1, Math.ceil(hours - 0.5)); // rough estimate
+
+  const ck72 = [
+    'Última sesión de calidad completada',
+    'Carga de carbos iniciada (+ porción en cada comida)',
+    'Hidratación activa (orina clara como control)',
+    'Equipo revisado: zapatillas, ropa, calcetines, gorra/visera',
+    `Compra/preparación de ${nGeles} geles + bebida deportiva`,
+    'Ruta al estadio/salida verificada (incluye opción B por tráfico)'
+  ];
+  if (distancia >= 21) ck72.push('Pin sin estrenar zapatillas — usa las de tus rodajes largos');
+  if (distancia >= 30) ck72.push('Plan de recuperación post-carrera coordinado (transporte, comida, masaje)');
+
+  const ck24 = [
+    'Hidratación constante durante el día',
+    'Comida principal familiar, alta en carbos, baja en grasa/fibra',
+    'Geles, número de pecho, imperdibles, chip listos en bolso',
+    'Reloj/GPS cargado + plan de pacing configurado',
+    'Alarma puesta con 3h de margen para la última comida',
+    'Acostarse temprano (no esperar a "dormir bien", solo descansar)'
+  ];
+  if (distancia >= 21) ck24.push('Última comida del día: cena temprano (3-4h antes de dormir)');
+
+  const ckD = [
+    `Desayuno 2-3h antes de la salida (mismo que probaste en rodajes)`,
+    '500 ml de agua con pizca de sal al despertar',
+    'Vaselina/cremas anti-rozamiento en puntos críticos',
+    'Salir con ropa de descarte (camiseta vieja para la espera)',
+    'Llegada 60 min antes de la salida',
+    'Calentamiento: 10 min trote + 3×30" progresivos + movilidad'
+  ];
+  if (hours > 1.5) ckD.push('Gel o bebida deportiva 30 min antes de la salida');
+  ckD.push('Recordá: un paso a la vez. Disciplina sobre motivación.');
+
+  return { ck72, ck24, ckD };
+}
+
+// =====================================================================
+// MAIN ORCHESTRATOR
+// =====================================================================
+function generarEstrategia() {
+  // Read all inputs into temporary store
+  syncAthleteFromUI();
+  syncThresholdFromUI();
+  syncLactateFromUI();
+  syncNutritionFromUI();
+  syncPRsFromUI();
+  syncPastRacesFromUI();
+  const carrera = readCarreraFromUI();
+
+  // Validate minimums
+  if (!carrera.distancia) { toast('Falta seleccionar distancia'); return; }
+  const hasThreshold = STORE.threshold.dist && STORE.threshold.fc;
+  const hasAnyPR = ['5k','10k','21k','42k'].some(k => parseTimeToSeconds(STORE.prs[k]));
+  const hasLT2 = parseTimeToSeconds(STORE.lactate?.lt2?.pace);
+  const hasPastRace = (STORE.pastRaces || []).some(r => parseTimeToSeconds(r.tiempo) && parseFloat(r.distancia));
+  if (!hasThreshold && !hasAnyPR && !hasLT2 && !hasPastRace) {
+    toast('Necesitamos test de threshold, lactato (LT2), un PR o una carrera previa');
+    return;
+  }
+
+  const targetDistKm = parseFloat(carrera.distancia);
+  const allPredictions = [];
+
+  // --- Path A: baseline (threshold/PR/lactate) → adjustments applied ---
+  const baseFlat = basePaceFromInputs(
+    { dist: STORE.threshold.dist, fc: STORE.threshold.fc },
+    STORE.prs,
+    STORE.lactate,
+    targetDistKm,
+    carrera  // for PR context altitude comparison
+  );
+  let adj = null;
+  if (baseFlat) {
+    adj = applyAdjustments(baseFlat.paceSec, carrera, STORE.athlete);
+    const adjTime = adj.paceSec * targetDistKm;
+    const ultraReduce = targetDistKm > 42 ? 0.5 : 1.0; // past races dominate for ultras
+    allPredictions.push({
+      source: 'baseline ajustado',
+      timeSec: adjTime,
+      weight: 1.5 * ultraReduce
+    });
+  }
+
+  // --- Path B: past races (already include real conditions — no further adjustment) ---
+  (STORE.pastRaces || []).forEach((race, idx) => {
+    const pred = predictFromPastRace(race, targetDistKm);
+    if (!pred) return;
+    const pastDist = parseFloat(race.distancia);
+    const distRatio = Math.max(pastDist, targetDistKm) / Math.min(pastDist, targetDistKm);
+    const similarity = 1 / Math.pow(distRatio, 0.35);
+    const recencyWeight = [1.5, 1.2, 1.0][idx] || 1.0;
+    const ultraBoost = targetDistKm > 42 ? 2.5 : 1.3;
+    allPredictions.push({
+      source: 'carrera previa ' + (idx + 1),
+      timeSec: pred.timeSec,
+      weight: similarity * recencyWeight * ultraBoost
+    });
+  });
+
+  if (allPredictions.length === 0) { toast('No se pudo calcular el ritmo'); return; }
+
+  // Weighted average across all prediction sources
+  const totalWeight = allPredictions.reduce((s, p) => s + p.weight, 0);
+  const runningTimeSec = allPredictions.reduce((s, p) => s + p.timeSec * p.weight, 0) / totalWeight;
+  const finalPaceSec = runningTimeSec / targetDistKm;
+
+  // For UI, build a synthetic adj if baseline path wasn't available (only past races)
+  if (!adj) {
+    adj = applyAdjustments(finalPaceSec, carrera, STORE.athlete);
+    // Override the pace back to the weighted value (avoid double-counting adjustments)
+    adj.paceSec = finalPaceSec;
+    adj.factors.dPlusTotalSec = 0; // already in past race time
+    adj.factors.gpxLoaded = !!LOADED_GPX;
+  }
+
+  const fcRef = resolveFcUmbral(STORE.threshold, STORE.lactate);
+  const fcUmbral = fcRef.fc;
+  const splits = generateSplits(finalPaceSec, fcUmbral, carrera);
+
+  // Add aid station time (separate from running)
+  const aidSec = (adj.factors && adj.factors.aidStationSec) || 0;
+  const targetTime = runningTimeSec + aidSec;
+  const scenarios = generateScenarios(finalPaceSec, targetTime, fcUmbral, carrera);
+  const nutrition = generateNutrition(targetTime, STORE.athlete, carrera, STORE.nutrition);
+  const checklist = generateChecklist(carrera, targetTime, STORE.athlete);
+
+  const strategy = {
+    base: { paceSec: finalPaceSec, timeSec: runningTimeSec, sources: allPredictions },
+    adj, splits, targetTime, scenarios, nutrition, checklist, fcRef,
+    generatedAt: new Date().toISOString()
+  };
+
+  // Save race (with strategy + inputs snapshot)
+  saveCurrentRace(carrera, strategy);
+
+  // Render
+  renderStrategy(carrera, strategy);
+
+  document.getElementById('strategy').style.display = 'block';
+  document.getElementById('emptyHint').style.display = 'none';
+  document.getElementById('strategy').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// =====================================================================
+// RENDERING
+// =====================================================================
+function renderStrategy(carrera, s) {
+  document.getElementById('sTitulo').textContent = (carrera.nombre || 'Carrera').toUpperCase();
+  const fecha = carrera.fecha ? new Date(carrera.fecha + 'T00:00:00').toLocaleDateString('es-GT', { day:'numeric', month:'long', year:'numeric' }) : '—';
+  const ath = STORE.athlete.nombre || 'Atleta';
+  document.getElementById('sMeta').textContent =
+    `${ath} · ${carrera.distancia} km · ${fecha} · Salida ${carrera.hora || '—'} · ${carrera.altitud || '—'} msnm`;
+
+  // Summary — use the WEIGHTED final pace (s.base.paceSec) so display matches
+  // the projected time and the scenarios. Previously sRitmo used s.adj.paceSec
+  // (baseline path only) while sTiempo used the weighted average → mismatch.
+  document.getElementById('sTiempo').textContent = secondsToHMS(s.targetTime);
+  document.getElementById('sTiempoSub').textContent = `${carrera.distancia} km · ritmo promedio ${secondsToMSPace(s.base.paceSec)} min/km`;
+  document.getElementById('sRitmo').textContent = secondsToMSPace(s.base.paceSec);
+
+  // Sources breakdown — transparency on what inputs drove the prediction
+  if (s.base && s.base.sources && s.base.sources.length) {
+    const sourceLines = s.base.sources
+      .sort((a, b) => b.weight - a.weight)
+      .map(src => {
+        const pct = ((src.weight / s.base.sources.reduce((sum, x) => sum + x.weight, 0)) * 100).toFixed(0);
+        const tStr = secondsToHMS(src.timeSec);
+        return `<div><strong style="color:var(--white);">${src.source}</strong> → ${tStr} <span style="color:rgba(255,255,255,0.45);">· peso ${pct}%</span></div>`;
+      }).join('');
+    document.getElementById('sSourcesList').innerHTML = sourceLines;
+    document.getElementById('sSources').style.display = 'block';
+  } else {
+    document.getElementById('sSources').style.display = 'none';
+  }
+  const fcU = s.fcRef && s.fcRef.fc;
+  document.getElementById('sFc').textContent = fcU ? Math.round(fcU * 0.94) + '–' + Math.round(fcU * 0.98) : '—';
+  document.getElementById('sFcSub').textContent = fcU ? `bpm · umbral ${fcU} (${s.fcRef.source})` : 'sin datos de FC';
+  const pct = s.adj.pctSlowdown;
+  document.getElementById('sAjuste').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(1) + '%';
+  const f = s.adj.factors;
+
+  // Altitude delta description
+  let altDescr;
+  if (f.altDelta > 100) {
+    altDescr = `subís +${Math.round(f.altDelta)}m`;
+  } else if (f.altDelta < -100) {
+    altDescr = `bajás ${Math.round(f.altDelta)}m (favorable)`;
+  } else if (f.refAlt > 0 || f.raceAlt > 0) {
+    altDescr = 'mantenés altitud';
+  } else {
+    altDescr = null;
+  }
+
+  const adjParts = [];
+  if (altDescr) {
+    const altPct = f.altitude > 1.001 ? ` ${((f.altitude-1)*100).toFixed(1)}%` : '';
+    adjParts.push(`alt: ${altDescr}${altPct}`);
+  }
+  if (f.temperature > 1.001) adjParts.push(`temp ${((f.temperature-1)*100).toFixed(1)}%`);
+  if (f.humidity > 1.001) adjParts.push(`hum ${((f.humidity-1)*100).toFixed(1)}%`);
+  if (f.terrain && f.terrain > 1.001) adjParts.push(`terreno ${f.terrainLabel} ${((f.terrain-1)*100).toFixed(0)}%`);
+  if (f.gpxLoaded) adjParts.push('GPX cargado');
+  else if (f.dPlusTotalSec > 0) {
+    const dPlusMin = Math.round(f.dPlusTotalSec / 60);
+    adjParts.push(dPlusMin >= 1 ? `D+ +${dPlusMin}min` : `D+ +${Math.round(f.dPlusTotalSec)}s`);
+  }
+  if (f.fatigue && f.fatigue > 1.001) adjParts.push(`fatiga ${((f.fatigue-1)*100).toFixed(0)}%`);
+  if (f.experience && Math.abs(f.experience - 1) > 0.005) {
+    const sign = f.experience > 1 ? '+' : '';
+    adjParts.push(`experiencia ${sign}${((f.experience-1)*100).toFixed(0)}%`);
+  }
+  if (f.aidStationSec && f.aidStationSec > 0) {
+    const aidMin = Math.round(f.aidStationSec / 60);
+    adjParts.push(`puestos +${aidMin}min`);
+  }
+  document.getElementById('sAjusteSub').textContent = adjParts.length ? adjParts.join(' · ') : 'sin ajustes';
+
+  // Escenarios ABC
+  const scWrap = document.getElementById('sScenarios');
+  scWrap.innerHTML = '';
+  s.scenarios.forEach(sc => {
+    const card = document.createElement('div');
+    card.className = 'scenario';
+    card.dataset.tier = sc.tier;
+    card.innerHTML = `
+      <div class="tier">
+        <div class="tier-letter">${sc.tier}</div>
+        <div>
+          <div class="tier-label">${sc.label}</div>
+          <h4 style="margin-top:4px;">${sc.title}</h4>
+        </div>
+      </div>
+      <div class="scenario-stats">
+        <div class="scenario-stat">
+          <div class="lbl">Ritmo</div>
+          <div class="val">${secondsToMSPace(sc.paceSec)}</div>
+        </div>
+        <div class="scenario-stat">
+          <div class="lbl">Tiempo</div>
+          <div class="val">${secondsToHMS(sc.timeSec)}</div>
+        </div>
+        <div class="scenario-stat">
+          <div class="lbl">FC</div>
+          <div class="val">${sc.fc ? sc.fc : '—'}</div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="block-title">Cómo se siente</div>
+        <p>${sc.feels}</p>
+      </div>
+      <div class="block">
+        <div class="block-title">Cómo se ve</div>
+        <p>${sc.looks}</p>
+      </div>
+      <div class="block">
+        <div class="block-title">Qué hacer</div>
+        <p>${sc.doIt}</p>
+      </div>
+    `;
+    scWrap.appendChild(card);
+  });
+
+  // Pacing
+  const blockSizeNum = s.splits[0].to - s.splits[0].from;
+  const gpxNote = s.adj.factors.gpxLoaded ? ' · ajustado por pendiente GPS real' : '';
+  document.getElementById('pBlockNote').textContent = `Bloques de ${blockSizeNum} km${gpxNote}`;
+  const pBody = document.getElementById('pBody');
+  pBody.innerHTML = '';
+  s.splits.forEach(sp => {
+    let gradeIndicator = '';
+    if (sp.gradeAvg != null) {
+      if (sp.gradeAvg > 0.5) gradeIndicator = `<span style="color:#FCA5A5; font-size:11px; margin-left:6px;">↑ ${sp.gradeAvg.toFixed(1)}%</span>`;
+      else if (sp.gradeAvg < -0.5) gradeIndicator = `<span style="color:#86EFAC; font-size:11px; margin-left:6px;">↓ ${Math.abs(sp.gradeAvg).toFixed(1)}%</span>`;
+      else gradeIndicator = `<span style="color:rgba(255,255,255,0.4); font-size:11px; margin-left:6px;">~ ${sp.gradeAvg.toFixed(1)}%</span>`;
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${sp.from.toFixed(0)}–${sp.to.toFixed(sp.to % 1 === 0 ? 0 : 1)}</strong></td>
+      <td><span class="phase-pill" data-phase="${sp.phase}">${sp.phase}</span></td>
+      <td class="pace">${secondsToMSPace(sp.paceSec)}${gradeIndicator}</td>
+      <td>${sp.fc ? sp.fc + ' bpm' : '—'}</td>
+      <td style="color:rgba(255,255,255,0.6);">${secondsToHMS(sp.cumulativeSec)}</td>
+      <td style="font-size:12.5px; color:rgba(255,255,255,0.75);">${sp.note}</td>
+    `;
+    pBody.appendChild(tr);
+  });
+
+  // Nutrition: 3 tiers
+  document.getElementById('nDurationNote').textContent = `Para ${secondsToHMS(s.targetTime)} de carrera`;
+  const nTiers = document.getElementById('nTiers');
+  nTiers.innerHTML = '';
+  s.nutrition.tiers.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'nutr-tier';
+    card.dataset.tier = t.tier;
+    const recipeHtml = t.recipe.map(r => `<li>${r}</li>`).join('');
+    const warning = t.risk ? `<div class="warning"><strong>⚠️ Atención:</strong> ${t.risk}</div>` : '';
+    card.innerHTML = `
+      <div class="tier-head">
+        <div class="tier-name">${t.tier}</div>
+        <div class="tier-freq">cada ${t.freq} min</div>
+      </div>
+      <div class="tier-when">${t.when}</div>
+      <div class="tier-numbers">
+        <div class="num">
+          <div class="v">${t.carbsPerHour}</div>
+          <div class="l">Carbos</div>
+          <div class="t">g/h · ${t.totalCarbs}g tot</div>
+        </div>
+        <div class="num">
+          <div class="v">${t.fluidPerHour}</div>
+          <div class="l">Líquido</div>
+          <div class="t">ml/h · ${t.totalFluid}ml tot</div>
+        </div>
+        <div class="num">
+          <div class="v">${t.sodiumPerHour}</div>
+          <div class="l">Sodio</div>
+          <div class="t">mg/h · ${t.totalSodium}mg tot</div>
+        </div>
+      </div>
+      <div class="recipe">
+        <strong>Recipe total para la carrera:</strong>
+        <ul>${recipeHtml}</ul>
+      </div>
+      ${warning}
+    `;
+    nTiers.appendChild(card);
+  });
+
+  const nPreRace = document.getElementById('nPreRace');
+  nPreRace.innerHTML = '';
+  s.nutrition.preRace.forEach(it => {
+    const li = document.createElement('li');
+    li.innerHTML = `<strong style="color:var(--red); font-family:var(--font-secondary); letter-spacing:0.12em; font-size:12px;">${it.time}</strong><br>${it.text}`;
+    nPreRace.appendChild(li);
+  });
+
+  // Checklist
+  const renderCk = (id, items, key) => {
+    const ul = document.getElementById(id);
+    ul.innerHTML = '';
+    const savedChecks = (STORE.races[STORE.currentRaceId]?.checks?.[key]) || {};
+    items.forEach((text, idx) => {
+      const li = document.createElement('li');
+      li.textContent = text;
+      li.dataset.key = key + '-' + idx;
+      if (savedChecks[li.dataset.key]) li.classList.add('checked');
+      li.addEventListener('click', () => {
+        li.classList.toggle('checked');
+        persistCheck(key, li.dataset.key, li.classList.contains('checked'));
+      });
+      ul.appendChild(li);
+    });
+  };
+  renderCk('ck72', s.checklist.ck72, '72h');
+  renderCk('ck24', s.checklist.ck24, '24h');
+  renderCk('ckD',  s.checklist.ckD,  'dia');
+
+  // Notes
+  const notes = (carrera.notas || '').trim();
+  if (notes) {
+    document.getElementById('notesPanel').style.display = 'block';
+    document.getElementById('notesDisplay').textContent = notes;
+  } else {
+    document.getElementById('notesPanel').style.display = 'none';
+  }
+}
+
+function persistCheck(group, key, checked) {
+  const race = STORE.races[STORE.currentRaceId];
+  if (!race) return;
+  if (!race.checks) race.checks = { '72h': {}, '24h': {}, 'dia': {} };
+  if (checked) race.checks[group][key] = true;
+  else delete race.checks[group][key];
+  saveStore(STORE);
+}
+
+// =====================================================================
+// FORM <-> STORE SYNC
+// =====================================================================
+function syncAthleteFromUI() {
+  STORE.athlete = {
+    nombre: document.getElementById('aNombre').value.trim(),
+    edad: document.getElementById('aEdad').value,
+    peso: document.getElementById('aPeso').value,
+    sexo: document.getElementById('aSexo').value,
+    livingAltitude: document.getElementById('aLiveAlt').value,
+    trainingAltitude: document.getElementById('aTrainAlt').value
+  };
+  saveStore(STORE);
+}
+function syncThresholdFromUI() {
+  STORE.threshold = {
+    dist: document.getElementById('tDist').value,
+    fc: document.getElementById('tFc').value,
+    fcMax: document.getElementById('tFcMax').value,
+    fecha: document.getElementById('tFecha').value
+  };
+  saveStore(STORE);
+}
+function syncLactateFromUI() {
+  STORE.lactate = {
+    lt1: {
+      pace: document.getElementById('lt1Pace').value.trim(),
+      mmol: document.getElementById('lt1Mmol').value,
+      fc: document.getElementById('lt1Fc').value
+    },
+    lt2: {
+      pace: document.getElementById('lt2Pace').value.trim(),
+      mmol: document.getElementById('lt2Mmol').value,
+      fc: document.getElementById('lt2Fc').value
+    },
+    fecha: document.getElementById('ltFecha').value
+  };
+  saveStore(STORE);
+}
+function syncNutritionFromUI() {
+  const sources = Array.from(document.querySelectorAll('#nSources input[name="src"]:checked'))
+    .map(i => i.value);
+  STORE.nutrition = {
+    sweatRate: document.getElementById('nSweatRate').value,
+    carbsMax: document.getElementById('nCarbsMax').value,
+    sources,
+    otroText: document.getElementById('nOtroText').value.trim()
+  };
+  // Show/hide "Otro" text input
+  document.getElementById('nOtroWrap').style.display = sources.includes('otro') ? 'flex' : 'none';
+  saveStore(STORE);
+}
+function syncPRsFromUI() {
+  STORE.prs = {
+    '5k': document.getElementById('pr5k').value.trim(),
+    '10k': document.getElementById('pr10k').value.trim(),
+    '21k': document.getElementById('pr21k').value.trim(),
+    '42k': document.getElementById('pr42k').value.trim(),
+    anio: document.getElementById('prAnio').value,
+    altitud: document.getElementById('prAltitud').value,
+    temp: document.getElementById('prTemp').value,
+    rating: document.getElementById('prRating').value,
+    condicion: document.getElementById('prCondicion').value
+  };
+  saveStore(STORE);
+}
+function syncPastRacesFromUI() {
+  STORE.pastRaces = [1, 2, 3].map(i => ({
+    name: document.getElementById(`r${i}Name`).value.trim(),
+    distancia: document.getElementById(`r${i}Dist`).value,
+    dPlus: document.getElementById(`r${i}Dplus`).value,
+    tiempo: document.getElementById(`r${i}Time`).value.trim(),
+    rating: document.getElementById(`r${i}Rating`).value
+  }));
+  saveStore(STORE);
+}
+function readCarreraFromUI() {
+  return {
+    nombre: document.getElementById('cNombre').value.trim(),
+    fecha: document.getElementById('cFecha').value,
+    hora: document.getElementById('cHora').value,
+    distancia: document.getElementById('cDistancia').value,
+    altitud: document.getElementById('cAltitud').value,
+    dPlus: document.getElementById('cDplus').value,
+    temp: document.getElementById('cTemp').value,
+    humedad: document.getElementById('cHumedad').value,
+    terreno: document.getElementById('cTerreno').value,
+    objetivo: document.getElementById('cObjetivo').value,
+    notas: document.getElementById('cNotas').value.trim(),
+    // Ultra-only fields (used when distancia > 50)
+    vecesEstaDistancia: document.getElementById('cVecesEstaDist').value,
+    distanciaMaxima: document.getElementById('cDistanciaMaxima').value,
+    cantidadPuestos: document.getElementById('cCantidadPuestos').value,
+    tiempoPorPuesto: document.getElementById('cTiempoPorPuesto').value
+  };
+}
+function fillCarreraInUI(c) {
+  document.getElementById('cNombre').value = c.nombre || '';
+  document.getElementById('cFecha').value = c.fecha || '';
+  document.getElementById('cHora').value = c.hora || '07:00';
+  document.getElementById('cDistancia').value = c.distancia || '21.1';
+  document.getElementById('cAltitud').value = c.altitud || '';
+  document.getElementById('cDplus').value = c.dPlus || '';
+  document.getElementById('cTemp').value = c.temp || '';
+  document.getElementById('cHumedad').value = c.humedad || '';
+  document.getElementById('cTerreno').value = c.terreno || 'asfalto';
+  document.getElementById('cObjetivo').value = c.objetivo || 'pb';
+  document.getElementById('cNotas').value = c.notas || '';
+  document.getElementById('cVecesEstaDist').value = c.vecesEstaDistancia || '';
+  document.getElementById('cDistanciaMaxima').value = c.distanciaMaxima || '';
+  document.getElementById('cCantidadPuestos').value = c.cantidadPuestos || '';
+  document.getElementById('cTiempoPorPuesto').value = c.tiempoPorPuesto || '';
+  toggleUltraBlock();
+}
+
+// Show ultra-specific questions block only when distance > 50 km
+function toggleUltraBlock() {
+  const dist = parseFloat(document.getElementById('cDistancia').value) || 0;
+  const block = document.getElementById('ultraBlock');
+  if (block) block.style.display = dist > 50 ? 'block' : 'none';
+}
+
+function restoreUIFromStore() {
+  // Athlete
+  document.getElementById('aNombre').value = STORE.athlete.nombre || '';
+  document.getElementById('aEdad').value = STORE.athlete.edad || '';
+  document.getElementById('aPeso').value = STORE.athlete.peso || '';
+  document.getElementById('aSexo').value = STORE.athlete.sexo || '';
+  document.getElementById('aLiveAlt').value = STORE.athlete.livingAltitude || '';
+  document.getElementById('aTrainAlt').value = STORE.athlete.trainingAltitude || '';
+  // Threshold
+  document.getElementById('tDist').value = STORE.threshold.dist || '';
+  document.getElementById('tFc').value = STORE.threshold.fc || '';
+  document.getElementById('tFcMax').value = STORE.threshold.fcMax || '';
+  document.getElementById('tFecha').value = STORE.threshold.fecha || '';
+  // Lactate
+  const lt = STORE.lactate || { lt1: {}, lt2: {} };
+  document.getElementById('lt1Pace').value = lt.lt1?.pace || '';
+  document.getElementById('lt1Mmol').value = lt.lt1?.mmol || '';
+  document.getElementById('lt1Fc').value = lt.lt1?.fc || '';
+  document.getElementById('lt2Pace').value = lt.lt2?.pace || '';
+  document.getElementById('lt2Mmol').value = lt.lt2?.mmol || '';
+  document.getElementById('lt2Fc').value = lt.lt2?.fc || '';
+  document.getElementById('ltFecha').value = lt.fecha || '';
+  // Nutrition profile
+  const np = STORE.nutrition || { sources: [] };
+  document.getElementById('nSweatRate').value = np.sweatRate || '';
+  document.getElementById('nCarbsMax').value = np.carbsMax || '';
+  document.getElementById('nOtroText').value = np.otroText || '';
+  const npSources = np.sources || [];
+  document.querySelectorAll('#nSources input[name="src"]').forEach(input => {
+    input.checked = npSources.includes(input.value);
+    input.closest('.source-chip').classList.toggle('checked', input.checked);
+  });
+  document.getElementById('nOtroWrap').style.display = npSources.includes('otro') ? 'flex' : 'none';
+  // PRs
+  document.getElementById('pr5k').value = STORE.prs['5k'] || '';
+  document.getElementById('pr10k').value = STORE.prs['10k'] || '';
+  document.getElementById('pr21k').value = STORE.prs['21k'] || '';
+  document.getElementById('pr42k').value = STORE.prs['42k'] || '';
+  document.getElementById('prAnio').value = STORE.prs.anio || '';
+  document.getElementById('prAltitud').value = STORE.prs.altitud || '';
+  document.getElementById('prTemp').value = STORE.prs.temp || '';
+  document.getElementById('prRating').value = STORE.prs.rating || '';
+  document.getElementById('prCondicion').value = STORE.prs.condicion || '';
+  // Past races
+  const pr = STORE.pastRaces || [];
+  [1, 2, 3].forEach(i => {
+    const race = pr[i - 1] || {};
+    document.getElementById(`r${i}Name`).value = race.name || '';
+    document.getElementById(`r${i}Dist`).value = race.distancia || '';
+    document.getElementById(`r${i}Dplus`).value = race.dPlus || '';
+    document.getElementById(`r${i}Time`).value = race.tiempo || '';
+    document.getElementById(`r${i}Rating`).value = race.rating || '';
+  });
+
+  // Show saved indicator if anything stored
+  const hasData = STORE.athlete.nombre || STORE.threshold.dist || Object.values(STORE.prs).some(Boolean) || Object.keys(STORE.races).length;
+  if (hasData) document.getElementById('storageBadge').classList.add('saved');
+
+  refreshRaceSelector();
+
+  // If a current race is loaded, fill its form
+  if (STORE.currentRaceId && STORE.races[STORE.currentRaceId]) {
+    const r = STORE.races[STORE.currentRaceId];
+    fillCarreraInUI(r.carrera);
+    if (r.strategy) {
+      renderStrategy(r.carrera, r.strategy);
+      document.getElementById('strategy').style.display = 'block';
+      document.getElementById('emptyHint').style.display = 'none';
+    }
+  }
+}
+
+// =====================================================================
+// RACE MANAGEMENT
+// =====================================================================
+function saveCurrentRace(carrera, strategy) {
+  if (!STORE.currentRaceId) {
+    STORE.currentRaceId = 'race-' + Date.now().toString(36);
+  }
+  const existing = STORE.races[STORE.currentRaceId] || {};
+  STORE.races[STORE.currentRaceId] = {
+    carrera, strategy,
+    checks: existing.checks || { '72h': {}, '24h': {}, 'dia': {} },
+    updatedAt: new Date().toISOString()
+  };
+  saveStore(STORE);
+  refreshRaceSelector();
+}
+function refreshRaceSelector() {
+  const sel = document.getElementById('raceSelect');
+  sel.innerHTML = '<option value="">— Nueva carrera —</option>';
+  const races = Object.entries(STORE.races).sort((a, b) =>
+    new Date(b[1].updatedAt) - new Date(a[1].updatedAt)
+  );
+  races.forEach(([id, r]) => {
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = `${r.carrera.nombre || '(sin nombre)'} · ${r.carrera.distancia}K`;
+    if (id === STORE.currentRaceId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  document.getElementById('deleteRaceBtn').style.display = STORE.currentRaceId ? 'inline-block' : 'none';
+}
+function onRaceSelect() {
+  const sel = document.getElementById('raceSelect');
+  if (!sel.value) { nuevaCarrera(); return; }
+  STORE.currentRaceId = sel.value;
+  saveStore(STORE);
+  const r = STORE.races[STORE.currentRaceId];
+  if (r) {
+    fillCarreraInUI(r.carrera);
+    if (r.strategy) {
+      renderStrategy(r.carrera, r.strategy);
+      document.getElementById('strategy').style.display = 'block';
+      document.getElementById('emptyHint').style.display = 'none';
+    } else {
+      document.getElementById('strategy').style.display = 'none';
+      document.getElementById('emptyHint').style.display = 'block';
+    }
+  }
+  document.getElementById('deleteRaceBtn').style.display = 'inline-block';
+}
+function nuevaCarrera() {
+  STORE.currentRaceId = null;
+  saveStore(STORE);
+  fillCarreraInUI({});
+  document.getElementById('strategy').style.display = 'none';
+  document.getElementById('emptyHint').style.display = 'block';
+  refreshRaceSelector();
+  document.getElementById('cNombre').focus();
+}
+function borrarCarreraActual() {
+  if (!STORE.currentRaceId) return;
+  const r = STORE.races[STORE.currentRaceId];
+  if (!confirm(`¿Borrar "${r?.carrera?.nombre || 'esta carrera'}"? No se puede deshacer.`)) return;
+  delete STORE.races[STORE.currentRaceId];
+  STORE.currentRaceId = null;
+  saveStore(STORE);
+  nuevaCarrera();
+  toast('Carrera borrada');
+}
+
+// =====================================================================
+// UI WIRING
+// =====================================================================
+function wireInputAutoSave() {
+  // Athlete inputs
+  ['aNombre','aEdad','aPeso','aSexo','aLiveAlt','aTrainAlt'].forEach(id => {
+    document.getElementById(id).addEventListener('change', syncAthleteFromUI);
+    document.getElementById(id).addEventListener('blur', syncAthleteFromUI);
+  });
+  // Threshold
+  ['tDist','tFc','tFcMax','tFecha'].forEach(id => {
+    document.getElementById(id).addEventListener('change', syncThresholdFromUI);
+    document.getElementById(id).addEventListener('blur', syncThresholdFromUI);
+  });
+  // Lactate
+  ['lt1Pace','lt1Mmol','lt1Fc','lt2Pace','lt2Mmol','lt2Fc','ltFecha'].forEach(id => {
+    document.getElementById(id).addEventListener('change', syncLactateFromUI);
+    document.getElementById(id).addEventListener('blur', syncLactateFromUI);
+  });
+  // Nutrition profile
+  ['nSweatRate','nCarbsMax','nOtroText'].forEach(id => {
+    document.getElementById(id).addEventListener('change', syncNutritionFromUI);
+    document.getElementById(id).addEventListener('blur', syncNutritionFromUI);
+  });
+  document.querySelectorAll('#nSources input[name="src"]').forEach(input => {
+    input.addEventListener('change', () => {
+      input.closest('.source-chip').classList.toggle('checked', input.checked);
+      syncNutritionFromUI();
+    });
+  });
+  // PRs (incl. context)
+  ['pr5k','pr10k','pr21k','pr42k','prAnio','prAltitud','prTemp','prRating','prCondicion'].forEach(id => {
+    document.getElementById(id).addEventListener('change', syncPRsFromUI);
+    document.getElementById(id).addEventListener('blur', syncPRsFromUI);
+  });
+  // Past races
+  [1, 2, 3].forEach(i => {
+    ['Name', 'Dist', 'Dplus', 'Time', 'Rating'].forEach(f => {
+      const el = document.getElementById(`r${i}${f}`);
+      if (el) {
+        el.addEventListener('change', syncPastRacesFromUI);
+        el.addEventListener('blur', syncPastRacesFromUI);
+      }
+    });
+  });
+  // Toggle ultra block when distance changes
+  document.getElementById('cDistancia').addEventListener('input', toggleUltraBlock);
+  document.getElementById('cDistancia').addEventListener('change', toggleUltraBlock);
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// =====================================================================
+// SERVICE WORKER + INIT
+// =====================================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then((reg) => console.log('[Uphill] SW registered:', reg.scope))
+      .catch((err) => console.warn('[Uphill] SW registration failed:', err));
+  });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  restoreUIFromStore();
+  wireInputAutoSave();
+  // Check if user already has a valid code in localStorage; if so, unlock immediately
+  const hasAccess = await checkExistingAccess();
+  if (!hasAccess) {
+    // Focus the code input so they can type
+    setTimeout(() => document.getElementById('codeInput').focus(), 100);
+  }
+});
+</script>
+
+</body>
+</html>
